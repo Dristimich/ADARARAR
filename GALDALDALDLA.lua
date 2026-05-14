@@ -189,10 +189,10 @@ balanceLayout.Padding = UDim.new(0,5)
 balanceLayout.Parent = balanceFrame
 
 local balanceIcon = Instance.new("ImageLabel")
-balanceIcon.Size = UDim2.fromOffset(14,14)
+balanceIcon.Size = UDim2.fromOffset(13,13)
 balanceIcon.BackgroundTransparency = 1
 balanceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=420&h=420"
-balanceIcon.ScaleType = Enum.ScaleType.Stretch
+balanceIcon.ScaleType = Enum.ScaleType.Fit
 balanceIcon.ZIndex = 4
 balanceIcon.Parent = balanceFrame
 
@@ -247,10 +247,10 @@ priceLayout.Padding = UDim.new(0,3)
 priceLayout.Parent = priceFrame
 
 local priceIcon = Instance.new("ImageLabel")
-priceIcon.Size = UDim2.fromOffset(14,14)
+priceIcon.Size = UDim2.fromOffset(13,13)
 priceIcon.BackgroundTransparency = 1
 priceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=420&h=420"
-priceIcon.ScaleType = Enum.ScaleType.Stretch
+priceIcon.ScaleType = Enum.ScaleType.Fit
 priceIcon.ZIndex = 4
 priceIcon.Parent = priceFrame
 
@@ -269,8 +269,8 @@ itemPrice.Parent = priceFrame
 -- BUY BUTTON
 
 local buyBtn = Instance.new("TextButton")
-buyBtn.Size = UDim2.new(1,-34,0,38)
-buyBtn.Position = UDim2.new(0,17,1,-54)
+buyBtn.Size = UDim2.new(1,-24,0,36)
+buyBtn.Position = UDim2.new(0,12,1,-48)
 buyBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
 buyBtn.Text = ""
 buyBtn.AutoButtonColor = false
@@ -284,7 +284,7 @@ buyCorner.Parent = buyBtn
 
 local progressFill = Instance.new("Frame")
 progressFill.Size = UDim2.new(0,0,1,0)
-progressFill.BackgroundColor3 = Color3.fromRGB(47,68,177)
+progressFill.BackgroundColor3 = Color3.fromRGB(43,63,165)
 progressFill.BorderSizePixel = 0
 progressFill.ZIndex = 4
 progressFill.Parent = buyBtn
@@ -313,17 +313,17 @@ successContainer.ZIndex = 3
 successContainer.Parent = modal
 
 local checkIcon = Instance.new("ImageLabel")
-checkIcon.Size = UDim2.fromOffset(54,54)
-checkIcon.Position = UDim2.new(0.5,-27,0,38)
+checkIcon.Size = UDim2.fromOffset(50,50)
+checkIcon.Position = UDim2.new(0.5,-25,0,40)
 checkIcon.BackgroundTransparency = 1
 checkIcon.Image = "rbxthumb://type=Asset&id=110759125205910&w=420&h=420"
-checkIcon.ScaleType = Enum.ScaleType.Stretch
+checkIcon.ScaleType = Enum.ScaleType.Fit
 checkIcon.ZIndex = 4
 checkIcon.Parent = successContainer
 
 local successMsg = Instance.new("TextLabel")
 successMsg.Size = UDim2.new(1,-56,0,20)
-successMsg.Position = UDim2.new(0,28,0,108)
+successMsg.Position = UDim2.new(0,28,0,98)
 successMsg.BackgroundTransparency = 1
 successMsg.Font = Enum.Font.Gotham
 successMsg.TextSize = 12
@@ -334,8 +334,8 @@ successMsg.ZIndex = 3
 successMsg.Parent = successContainer
 
 local okBtn = Instance.new("TextButton")
-okBtn.Size = UDim2.new(1,-34,0,38)
-okBtn.Position = UDim2.new(0,17,1,-54)
+okBtn.Size = UDim2.new(1,-24,0,36)
+okBtn.Position = UDim2.new(0,12,1,-48)
 okBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
 okBtn.Font = Enum.Font.GothamMedium
 okBtn.Text = "OK"
@@ -455,7 +455,9 @@ buyBtn.MouseButton1Click:Connect(function()
 
 	promptContainer.Visible = false
 	successContainer.Visible = true
+
 	balanceFrame.Visible = false
+	balanceFrame.Position = UDim2.new(2,0,2,0)
 
 	title.Text = "Purchase completed"
 	title.TextSize = 18
@@ -472,13 +474,15 @@ local function fetchAndShow(id, infoType)
 
 	successContainer.Visible = false
 	promptContainer.Visible = true
+
 	balanceFrame.Visible = true
+	balanceFrame.Position = UDim2.new(1,-145,0,19)
 
 	itemName.Text = "Loading..."
 	itemPrice.Text = "..."
 
 	buyBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
-	progressFill.BackgroundColor3 = Color3.fromRGB(47,68,177)
+	progressFill.BackgroundColor3 = Color3.fromRGB(43,63,165)
 
 	buyText.TextTransparency = 0
 

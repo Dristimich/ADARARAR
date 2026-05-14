@@ -9,9 +9,9 @@ math.randomseed(os.time())
 
 -- УБИВАЕМ СТАРУЮ ВЕРСИЮ
 for _, v in pairs(player:WaitForChild("PlayerGui"):GetChildren()) do
-if v.Name == "RobloxPurchaseMenu_Pro" then
-v:Destroy()
-end
+	if v.Name == "RobloxPurchaseMenu_Pro" then
+		v:Destroy()
+	end
 end
 
 -- Создаем ScreenGui
@@ -81,25 +81,25 @@ applyCorner.Parent = applyBtn
 -- Перетаскивание меню настроек
 local dragging, dragInput, dragStart, startPos
 setupFrame.InputBegan:Connect(function(input)
-if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-dragging = true
-dragStart = input.Position
-startPos = setupFrame.Position
-input.Changed:Connect(function()
-if input.UserInputState == Enum.UserInputState.End then dragging = false end
-end)
-end
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = true
+		dragStart = input.Position
+		startPos = setupFrame.Position
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then dragging = false end
+		end)
+	end
 end)
 setupFrame.InputChanged:Connect(function(input)
-if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-dragInput = input
-end
+	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+		dragInput = input
+	end
 end)
 UserInputService.InputChanged:Connect(function(input)
-if input == dragInput and dragging then
-local delta = input.Position - dragStart
-setupFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-end
+	if input == dragInput and dragging then
+		local delta = input.Position - dragStart
+		setupFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
 end)
 
 -- 2. ГЛАВНОЕ МЕНЮ ПОКУПКИ
@@ -211,9 +211,9 @@ itemPrice.ZIndex = 5
 -- КНОПКА ПОКУПКИ
 local buyBtnBase = Instance.new("TextButton", promptContainer)
 buyBtnBase.Size = UDim2.new(1, -40, 0, 48)
-buyBtnBase.Position = UDim2.new(0, 20, 1, -68)
+buyBtnBase.Position = UDim2.new(0, 20, 1, -68) 
 buyBtnBase.Text = ""
-buyBtnBase.BackgroundColor3 = Color3.fromRGB(36, 59, 146)
+buyBtnBase.BackgroundColor3 = Color3.fromRGB(36, 59, 146) 
 buyBtnBase.AutoButtonColor = false
 buyBtnBase.ClipsDescendants = true
 buyBtnBase.ZIndex = 4
@@ -285,22 +285,20 @@ okCorner.CornerRadius = UDim.new(0, 10)
 
 -- 4. ЛОГИКА
 applyBtn.MouseButton1Click:Connect(function()
-customBalance = balanceInput.Text
-if customBalance == "" then customBalance = "623" end
-balanceText.Text = customBalance
-
-text
-
--- Идеальное выравнивание иконки робуксов левее текста (динамическое)
-local textWidth = balanceText.TextBounds.X
-balanceIcon.Position = UDim2.new(1, -textWidth - 75, 0, 23)
-
-setupFrame.Visible = false
+	customBalance = balanceInput.Text
+	if customBalance == "" then customBalance = "623" end
+	balanceText.Text = customBalance
+	
+	-- Идеальное выравнивание иконки робуксов левее текста (динамическое)
+	local textWidth = balanceText.TextBounds.X
+	balanceIcon.Position = UDim2.new(1, -textWidth - 75, 0, 23)
+	
+	setupFrame.Visible = false
 end)
 
 local function HideModal()
-modal.Visible = false
-overlay.Visible = false
+	modal.Visible = false
+	overlay.Visible = false
 end
 
 closeBtn.MouseButton1Click:Connect(HideModal)
@@ -311,105 +309,98 @@ local isProcessing = false
 local currentTween = nil
 
 buyBtnBase.MouseButton1Click:Connect(function()
-if not canBuy or isProcessing then return end
-isProcessing = true
+	if not canBuy or isProcessing then return end
+	isProcessing = true
 
-text
+	buyBtnBase.BackgroundColor3 = Color3.fromRGB(36, 59, 146)
+	buyTextLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
 
-buyBtnBase.BackgroundColor3 = Color3.fromRGB(36, 59, 146)
-buyTextLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+	local randomWaitTime = math.random(125, 175) / 100 
+	task.wait(randomWaitTime)
 
-local randomWaitTime = math.random(125, 175) / 100 
-task.wait(randomWaitTime)
+	promptContainer.Visible = false
+	balanceText.Visible = false
+	balanceIcon.Visible = false
+	
+	title.Text = "Purchase completed"
 
-promptContainer.Visible = false
-balanceText.Visible = false
-balanceIcon.Visible = false
-
-title.Text = "Purchase completed"
-
-local safeName = (itemName.Text ~= "Unknown Item" and itemName.Text ~= "Loading...") and itemName.Text or "Item"
-successMsg.Text = "You have successfully bought " .. safeName .. "."
-successContainer.Visible = true
+	local safeName = (itemName.Text ~= "Unknown Item" and itemName.Text ~= "Loading...") and itemName.Text or "Item"
+	successMsg.Text = "You have successfully bought " .. safeName .. "."
+	successContainer.Visible = true
 end)
 
 local function fetchAndShow(id, infoType)
-title.Text = "Buy item"
+	title.Text = "Buy item"
+	
+	promptContainer.Visible = false
+	successContainer.Visible = false
+	balanceText.Visible = true
+	balanceIcon.Visible = true
+	canBuy = false
+	isProcessing = false
+	itemName.Text = "Loading..."
+	itemPrice.Text = "..."
 
-text
+	buyTextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	buyBtnBase.BackgroundColor3 = Color3.fromRGB(36, 59, 146)
+	progressFill.Size = UDim2.new(0, 0, 1, 0)
+	progressFill.Visible = true
 
-promptContainer.Visible = false
-successContainer.Visible = false
-balanceText.Visible = true
-balanceIcon.Visible = true
-canBuy = false
-isProcessing = false
-itemName.Text = "Loading..."
-itemPrice.Text = "..."
-text
+	overlay.Visible = true
+	modal.Visible = true
+	promptContainer.Visible = true
 
-buyTextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-buyBtnBase.BackgroundColor3 = Color3.fromRGB(36, 59, 146)
-progressFill.Size = UDim2.new(0, 0, 1, 0)
-progressFill.Visible = true
-
-overlay.Visible = true
-modal.Visible = true
-promptContainer.Visible = true
-
-task.spawn(function()
-	local success, result = pcall(function()
-		return MarketplaceService:GetProductInfo(id, infoType)
+	task.spawn(function()
+		local success, result = pcall(function()
+			return MarketplaceService:GetProductInfo(id, infoType)
+		end)
+		if success and result and result.Name then
+			itemName.Text = result.Name
+			itemPrice.Text = tostring(result.PriceInRobux or 0)
+		else
+			itemName.Text = "Unknown Item"
+			itemPrice.Text = "???"
+		end
 	end)
-	if success and result and result.Name then
-		itemName.Text = result.Name
-		itemPrice.Text = tostring(result.PriceInRobux or 0)
-	else
-		itemName.Text = "Unknown Item"
-		itemPrice.Text = "???"
-	end
-end)
 
-if currentTween then currentTween:Cancel() end
-currentTween = TweenService:Create(progressFill, TweenInfo.new(3.0, Enum.EasingStyle.Linear), {Size = UDim2.new(1, 0, 1, 0)})
-currentTween:Play()
+	if currentTween then currentTween:Cancel() end
+	currentTween = TweenService:Create(progressFill, TweenInfo.new(3.0, Enum.EasingStyle.Linear), {Size = UDim2.new(1, 0, 1, 0)})
+	currentTween:Play()
 
-task.spawn(function()
-	currentTween.Completed:Wait()
-	if promptContainer.Visible then
-		progressFill.Visible = false
-		buyBtnBase.BackgroundColor3 = Color3.fromRGB(59, 99, 246)
-		canBuy = true
-	end
-end)
+	task.spawn(function()
+		currentTween.Completed:Wait()
+		if promptContainer.Visible then
+			progressFill.Visible = false
+			buyBtnBase.BackgroundColor3 = Color3.fromRGB(59, 99, 246)
+			canBuy = true
+		end
+	end)
 end
 
 -- ПЕРЕХВАТ ОРИГИНАЛЬНОГО МЕНЮ
 local oldNamecall
 oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
-local method = getnamecallmethod()
-local args = {...}
+	local method = getnamecallmethod()
+	local args = {...}
 
-text
+	if self == MarketplaceService and not setupFrame.Visible then
+		local id = tonumber(args[2])
+		if not id then return oldNamecall(self, ...) end
 
-if self == MarketplaceService and not setupFrame.Visible then
-	local id = tonumber(args[2])
-	if not id then return oldNamecall(self, ...) end
-
-	if method == "PromptGamePassPurchase" then
-		fetchAndShow(id, Enum.InfoType.GamePass)
-		return
-	elseif method == "PromptProductPurchase" then
-		fetchAndShow(id, Enum.InfoType.Product)
-		return
-	elseif method == "PromptPurchase" then
-		fetchAndShow(id, Enum.InfoType.Asset)
-		return 
-	elseif method == "PromptBundlePurchase" then
-		fetchAndShow(id, Enum.InfoType.Bundle)
-		return
+		if method == "PromptGamePassPurchase" then
+			fetchAndShow(id, Enum.InfoType.GamePass)
+			return
+		elseif method == "PromptProductPurchase" then
+			fetchAndShow(id, Enum.InfoType.Product)
+			return
+		elseif method == "PromptPurchase" then
+			fetchAndShow(id, Enum.InfoType.Asset)
+			return 
+		elseif method == "PromptBundlePurchase" then
+			fetchAndShow(id, Enum.InfoType.Bundle)
+			return
+		end
 	end
-end
 
-return oldNamecall(self, ...)
+	return oldNamecall(self, ...)
 end)

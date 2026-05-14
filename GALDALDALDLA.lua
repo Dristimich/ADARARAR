@@ -20,7 +20,7 @@ local setupFrame = Instance.new("Frame")
 setupFrame.Size = UDim2.new(0, 300, 0, 180)
 setupFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 setupFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-setupFrame.BackgroundColor3 = Color3.fromRGB(25, 27, 33)
+setupFrame.BackgroundColor3 = Color3.fromRGB(30, 32, 38)
 setupFrame.BorderSizePixel = 0
 setupFrame.Active = true
 setupFrame.Parent = gui
@@ -29,11 +29,15 @@ local setupCorner = Instance.new("UICorner")
 setupCorner.CornerRadius = UDim.new(0, 12)
 setupCorner.Parent = setupFrame
 
+local setupStroke = Instance.new("UIStroke", setupFrame)
+setupStroke.Color = Color3.fromRGB(60, 60, 65)
+setupStroke.Thickness = 1
+
 local setupTitle = Instance.new("TextLabel")
 setupTitle.Size = UDim2.new(1, 0, 0, 40)
 setupTitle.Text = "Settings (Drag me)"
 setupTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-setupTitle.TextSize = 20
+setupTitle.TextSize = 18
 setupTitle.Font = Enum.Font.BuilderSansExtraBold
 setupTitle.BackgroundTransparency = 1
 setupTitle.Parent = setupFrame
@@ -43,7 +47,7 @@ balanceInput.Size = UDim2.new(1, -40, 0, 40)
 balanceInput.Position = UDim2.new(0, 20, 0, 60)
 balanceInput.PlaceholderText = "Enter fake balance (e.g. 10000)"
 balanceInput.Text = "62"
-balanceInput.BackgroundColor3 = Color3.fromRGB(40, 43, 53)
+balanceInput.BackgroundColor3 = Color3.fromRGB(45, 48, 56)
 balanceInput.TextColor3 = Color3.fromRGB(255, 255, 255)
 balanceInput.Font = Enum.Font.BuilderSans
 balanceInput.TextSize = 16
@@ -67,7 +71,7 @@ local applyCorner = Instance.new("UICorner")
 applyCorner.CornerRadius = UDim.new(0, 8)
 applyCorner.Parent = applyBtn
 
--- Перетаскивание
+-- Функция перетаскивания (Drag)
 local dragging, dragInput, dragStart, startPos
 setupFrame.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -92,12 +96,12 @@ UserInputService.InputChanged:Connect(function(input)
 end)
 
 --------------------------------------------------
--- 2. ГЛАВНОЕ ФЕЙК-МЕНЮ (ИДЕАЛЬНОЕ ВЫРАВНИВАНИЕ)
+-- 2. ГЛАВНОЕ ФЕЙК-МЕНЮ
 --------------------------------------------------
 local overlay = Instance.new("TextButton")
 overlay.Size = UDim2.new(1, 0, 1, 0)
 overlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-overlay.BackgroundTransparency = 0.5
+overlay.BackgroundTransparency = 1 
 overlay.Text = ""
 overlay.AutoButtonColor = false
 overlay.Visible = false
@@ -115,19 +119,13 @@ local modalCorner = Instance.new("UICorner")
 modalCorner.CornerRadius = UDim.new(0, 14)
 modalCorner.Parent = modal
 
--- Заголовок "Buy item"
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(0, 200, 0, 30)
-title.Position = UDim2.new(0, 20, 0, 20)
-title.Text = "Buy item"
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.TextSize = 22
-title.Font = Enum.Font.BuilderSansBold
-title.TextXAlignment = Enum.TextXAlignment.Left
-title.BackgroundTransparency = 1
-title.Parent = modal
+local modalStroke = Instance.new("UIStroke", modal)
+modalStroke.Color = Color3.fromRGB(50, 50, 55)
+modalStroke.Thickness = 1
 
--- Кнопка закрытия
+local modalScale = Instance.new("UIScale", modal)
+modalScale.Scale = 0.8
+
 local closeBtn = Instance.new("TextButton")
 closeBtn.Size = UDim2.new(0, 30, 0, 30)
 closeBtn.Position = UDim2.new(1, -40, 0, 20)
@@ -136,124 +134,122 @@ closeBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
 closeBtn.TextSize = 22
 closeBtn.Font = Enum.Font.Gotham
 closeBtn.BackgroundTransparency = 1
+closeBtn.ZIndex = 10
 closeBtn.Parent = modal
 
--- Баланс сверху справа
-local balanceContainer = Instance.new("Frame")
-balanceContainer.Size = UDim2.new(0, 150, 0, 30)
-balanceContainer.Position = UDim2.new(1, -195, 0, 20)
-balanceContainer.BackgroundTransparency = 1
-balanceContainer.Parent = modal
-
-local balanceLayout = Instance.new("UIListLayout", balanceContainer)
-balanceLayout.FillDirection = Enum.FillDirection.Horizontal
-balanceLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
-balanceLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-balanceLayout.Padding = UDim.new(0, 5)
-
-local balanceIcon = Instance.new("ImageLabel", balanceContainer)
-balanceIcon.Size = UDim2.new(0, 20, 0, 20)
-balanceIcon.BackgroundTransparency = 1
-balanceIcon.Image = "rbxassetid://13087340654"
-
-local balanceText = Instance.new("TextLabel", balanceContainer)
-balanceText.AutomaticSize = Enum.AutomaticSize.X
-balanceText.Size = UDim2.new(0, 0, 1, 0)
+local balanceText = Instance.new("TextLabel")
+balanceText.Size = UDim2.new(0, 60, 0, 30)
+balanceText.Position = UDim2.new(1, -115, 0, 20)
 balanceText.Text = "62"
 balanceText.TextColor3 = Color3.fromRGB(255, 255, 255)
 balanceText.TextSize = 18
 balanceText.Font = Enum.Font.BuilderSansMedium
+balanceText.TextXAlignment = Enum.TextXAlignment.Right
 balanceText.BackgroundTransparency = 1
+balanceText.Parent = modal
 
--- ЦЕНТР: Название товара и цена (Идеально выровненные)
-local itemInfoContainer = Instance.new("Frame")
-itemInfoContainer.Size = UDim2.new(0, 300, 0, 60)
-itemInfoContainer.AnchorPoint = Vector2.new(0.5, 0.5)
-itemInfoContainer.Position = UDim2.new(0.5, 0, 0.45, 0)
-itemInfoContainer.BackgroundTransparency = 1
-itemInfoContainer.Parent = modal
+local balanceIcon = Instance.new("ImageLabel")
+balanceIcon.Size = UDim2.new(0, 20, 0, 20)
+balanceIcon.Position = UDim2.new(1, -145, 0, 25)
+balanceIcon.BackgroundTransparency = 1
+balanceIcon.Image = "rbxassetid://13087340654"
+balanceIcon.Parent = modal
 
-local itemInfoLayout = Instance.new("UIListLayout", itemInfoContainer)
-itemInfoLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-itemInfoLayout.SortOrder = Enum.SortOrder.LayoutOrder
-itemInfoLayout.Padding = UDim.new(0, 5)
+--------------------------------------------------
+-- 3. СОСТОЯНИЯ ОКНА
+--------------------------------------------------
+-- [СОСТОЯНИЕ 1] Меню покупки
+local promptContainer = Instance.new("Frame")
+promptContainer.Size = UDim2.new(1, 0, 1, 0)
+promptContainer.BackgroundTransparency = 1
+promptContainer.Visible = false
+promptContainer.Parent = modal
 
-local itemName = Instance.new("TextLabel", itemInfoContainer)
-itemName.Size = UDim2.new(1, 0, 0, 25)
+local title = Instance.new("TextLabel", promptContainer)
+title.Size = UDim2.new(0, 200, 0, 30)
+title.Position = UDim2.new(0, 20, 0, 20)
+title.Text = "Buy item"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextSize = 22
+title.Font = Enum.Font.BuilderSansBold
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.BackgroundTransparency = 1
+
+local itemName = Instance.new("TextLabel", promptContainer)
+itemName.Size = UDim2.new(1, -40, 0, 25)
+itemName.Position = UDim2.new(0, 20, 0, 85)
 itemName.Text = "Loading..."
 itemName.TextColor3 = Color3.fromRGB(255, 255, 255)
 itemName.TextSize = 18
 itemName.Font = Enum.Font.BuilderSansBold
 itemName.TextXAlignment = Enum.TextXAlignment.Center
 itemName.BackgroundTransparency = 1
-itemName.LayoutOrder = 1
 
-local priceContainer = Instance.new("Frame", itemInfoContainer)
+-- Контейнер для цены (ИДЕАЛЬНОЕ ВЫРАВНИВАНИЕ ПО ЦЕНТРУ)
+local priceContainer = Instance.new("Frame", promptContainer)
 priceContainer.Size = UDim2.new(1, 0, 0, 25)
+priceContainer.Position = UDim2.new(0, 0, 0, 115)
 priceContainer.BackgroundTransparency = 1
-priceContainer.LayoutOrder = 2
 
 local priceLayout = Instance.new("UIListLayout", priceContainer)
 priceLayout.FillDirection = Enum.FillDirection.Horizontal
 priceLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 priceLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+priceLayout.SortOrder = Enum.SortOrder.LayoutOrder
 priceLayout.Padding = UDim.new(0, 5)
 
 local priceIcon = Instance.new("ImageLabel", priceContainer)
-priceIcon.Size = UDim2.new(0, 18, 0, 18)
+priceIcon.Size = UDim2.new(0, 20, 0, 20)
 priceIcon.BackgroundTransparency = 1
 priceIcon.Image = "rbxassetid://13087340654"
+priceIcon.LayoutOrder = 1
 
 local itemPrice = Instance.new("TextLabel", priceContainer)
-itemPrice.AutomaticSize = Enum.AutomaticSize.X
 itemPrice.Size = UDim2.new(0, 0, 1, 0)
+itemPrice.AutomaticSize = Enum.AutomaticSize.X
 itemPrice.Text = "..."
 itemPrice.TextColor3 = Color3.fromRGB(255, 255, 255)
 itemPrice.TextSize = 18
 itemPrice.Font = Enum.Font.BuilderSansBold
+itemPrice.TextXAlignment = Enum.TextXAlignment.Left
 itemPrice.BackgroundTransparency = 1
+itemPrice.LayoutOrder = 2
 
 --------------------------------------------------
--- 3. КНОПКА ПОКУПКИ И АНИМАЦИЯ (1.5 сек)
+-- КНОПКА ПОКУПКИ С АНИМАЦИЕЙ
 --------------------------------------------------
-local buyBtnBase = Instance.new("TextButton")
-buyBtnBase.Size = UDim2.new(1, -40, 0, 48)
-buyBtnBase.Position = UDim2.new(0, 20, 1, -85)
-buyBtnBase.Text = "" 
--- ТЕМНО СИНИЙ по умолчанию (до нажатия)
-buyBtnBase.BackgroundColor3 = Color3.fromRGB(36, 59, 146)
-buyBtnBase.AutoButtonColor = false
-buyBtnBase.ClipsDescendants = true
-buyBtnBase.Parent = modal
+local buyBtn = Instance.new("TextButton", promptContainer)
+buyBtn.Size = UDim2.new(1, -40, 0, 45)
+buyBtn.Position = UDim2.new(0, 20, 1, -85)
+buyBtn.Text = ""
+buyBtn.BackgroundColor3 = Color3.fromRGB(59, 99, 246) -- Изначально синяя
+buyBtn.AutoButtonColor = false
+buyBtn.ClipsDescendants = true
 
-local baseCorner = Instance.new("UICorner")
-baseCorner.CornerRadius = UDim.new(0, 10)
-baseCorner.Parent = buyBtnBase
+local buyCorner = Instance.new("UICorner", buyBtn)
+buyCorner.CornerRadius = UDim.new(0, 8)
 
-local progressFill = Instance.new("Frame")
-progressFill.Size = UDim2.new(0, 0, 1, 0)
-progressFill.Position = UDim2.new(0, 0, 0, 0)
--- СВЕТЛО СИНИЙ для ползунка
-progressFill.BackgroundColor3 = Color3.fromRGB(59, 99, 246)
-progressFill.BorderSizePixel = 0
-progressFill.Visible = false
-progressFill.Parent = buyBtnBase
+-- Ползунок, который будет заполняться по клику
+local buyFill = Instance.new("Frame", buyBtn)
+buyFill.Size = UDim2.new(0, 0, 1, 0)
+buyFill.BackgroundColor3 = Color3.fromRGB(59, 99, 246)
+buyFill.BorderSizePixel = 0
+buyFill.Visible = false
 
-local fillCorner = Instance.new("UICorner")
-fillCorner.CornerRadius = UDim.new(0, 10)
-fillCorner.Parent = progressFill
+local buyFillCorner = Instance.new("UICorner", buyFill)
+buyFillCorner.CornerRadius = UDim.new(0, 8)
 
-local buyTextLabel = Instance.new("TextLabel")
+-- Текст кнопки поверх
+local buyTextLabel = Instance.new("TextLabel", buyBtn)
 buyTextLabel.Size = UDim2.new(1, 0, 1, 0)
+buyTextLabel.BackgroundTransparency = 1
 buyTextLabel.Text = "Buy"
 buyTextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 buyTextLabel.Font = Enum.Font.BuilderSansBold
 buyTextLabel.TextSize = 18
-buyTextLabel.BackgroundTransparency = 1
 buyTextLabel.ZIndex = 2
-buyTextLabel.Parent = buyBtnBase
 
-local testInfoText = Instance.new("TextLabel")
+local testInfoText = Instance.new("TextLabel", promptContainer)
 testInfoText.Size = UDim2.new(1, 0, 0, 20)
 testInfoText.Position = UDim2.new(0, 0, 1, -30)
 testInfoText.Text = "This is a test purchase. Your account will not be charged."
@@ -261,7 +257,51 @@ testInfoText.TextColor3 = Color3.fromRGB(120, 120, 120)
 testInfoText.TextSize = 12
 testInfoText.Font = Enum.Font.BuilderSans
 testInfoText.BackgroundTransparency = 1
-testInfoText.Parent = modal
+
+-- [СОСТОЯНИЕ 2] Меню успеха
+local successContainer = Instance.new("Frame")
+successContainer.Size = UDim2.new(1, 0, 1, 0)
+successContainer.BackgroundTransparency = 1
+successContainer.Visible = false
+successContainer.Parent = modal
+
+local successTitle = Instance.new("TextLabel", successContainer)
+successTitle.Size = UDim2.new(0, 200, 0, 30)
+successTitle.Position = UDim2.new(0, 20, 0, 20)
+successTitle.Text = "Purchase completed"
+successTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+successTitle.TextSize = 22
+successTitle.Font = Enum.Font.BuilderSansBold
+successTitle.TextXAlignment = Enum.TextXAlignment.Left
+successTitle.BackgroundTransparency = 1
+
+local checkIcon = Instance.new("ImageLabel", successContainer)
+checkIcon.Size = UDim2.new(0, 50, 0, 50)
+checkIcon.AnchorPoint = Vector2.new(0.5, 0)
+checkIcon.Position = UDim2.new(0.5, 0, 0, 70)
+checkIcon.BackgroundTransparency = 1
+checkIcon.Image = "rbxassetid://14389141029" 
+
+local successMsg = Instance.new("TextLabel", successContainer)
+successMsg.Size = UDim2.new(1, -40, 0, 25)
+successMsg.Position = UDim2.new(0, 20, 0, 135)
+successMsg.Text = "You have successfully bought ..."
+successMsg.TextColor3 = Color3.fromRGB(210, 210, 210)
+successMsg.TextSize = 16
+successMsg.Font = Enum.Font.BuilderSans
+successMsg.TextXAlignment = Enum.TextXAlignment.Center
+successMsg.BackgroundTransparency = 1
+
+local okBtn = Instance.new("TextButton", successContainer)
+okBtn.Size = UDim2.new(1, -40, 0, 45)
+okBtn.Position = UDim2.new(0, 20, 1, -65)
+okBtn.Text = "OK"
+okBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+okBtn.BackgroundColor3 = Color3.fromRGB(59, 99, 246)
+okBtn.Font = Enum.Font.BuilderSansBold
+okBtn.TextSize = 18
+local okCorner = Instance.new("UICorner", okBtn)
+okCorner.CornerRadius = UDim.new(0, 8)
 
 --------------------------------------------------
 -- 4. ЛОГИКА ОТОБРАЖЕНИЯ И КНОПОК
@@ -273,18 +313,11 @@ applyBtn.MouseButton1Click:Connect(function()
     setupFrame.Visible = false
 end)
 
-local function ShowModal(name, price)
-    itemName.Text = name or "Loading..."
-    itemPrice.Text = price and tostring(price) or "..."
-    
-    -- Сброс состояния кнопки
-    buyBtnBase.BackgroundColor3 = Color3.fromRGB(36, 59, 146)
-    progressFill.Size = UDim2.new(0, 0, 1, 0)
-    progressFill.Visible = false
-    buyTextLabel.Text = "Buy"
-    
-    overlay.Visible = true
-    modal.Visible = true
+local function ResetStates()
+    promptContainer.Visible = false
+    successContainer.Visible = false
+    balanceText.Visible = true
+    balanceIcon.Visible = true
 end
 
 local function HideModal()
@@ -294,39 +327,67 @@ end
 
 overlay.MouseButton1Click:Connect(HideModal)
 closeBtn.MouseButton1Click:Connect(HideModal)
+okBtn.MouseButton1Click:Connect(HideModal)
 
 local isProcessing = false
 
-buyBtnBase.MouseButton1Click:Connect(function()
+-- КЛИК ПО КНОПКЕ BUY (С анимацией 1.5 сек)
+buyBtn.MouseButton1Click:Connect(function()
     if isProcessing then return end
     isProcessing = true
     
-    progressFill.Visible = true
+    -- Делаем фон кнопки темным, чтобы было видно как заполняется светлый ползунок
+    buyBtn.BackgroundColor3 = Color3.fromRGB(35, 40, 50) 
     
-    -- Анимация заполнения ровно 1.5 секунды
-    local tween = TweenService:Create(progressFill, TweenInfo.new(1.5, Enum.EasingStyle.Linear), {Size = UDim2.new(1, 0, 1, 0)})
+    -- Запускаем анимацию на 1.5 секунды
+    buyFill.Size = UDim2.new(0, 0, 1, 0)
+    buyFill.Visible = true
+    
+    local tween = TweenService:Create(buyFill, TweenInfo.new(1.5, Enum.EasingStyle.Linear), {Size = UDim2.new(1, 0, 1, 0)})
     tween:Play()
-    tween.Completed:Wait() -- Ждем 1.5 сек
+    tween.Completed:Wait() -- Ждем ровно 1.5 секунды
     
-    -- После заполнения делаем саму кнопку полностью светло-синей и меняем текст
-    buyBtnBase.BackgroundColor3 = Color3.fromRGB(59, 99, 246)
-    progressFill.Visible = false -- Убираем ползунок, так как кнопка уже закрасилась
-    buyTextLabel.Text = "Purchased!"
+    -- Переход к окну успешной покупки
+    promptContainer.Visible = false
+    balanceText.Visible = false 
+    balanceIcon.Visible = false
     
-    task.wait(1.5) -- Ждем еще секунду, чтобы игрок увидел успех
-    HideModal()
+    local safeName = (itemName.Text ~= "Unknown Item" and itemName.Text ~= "Loading...") and itemName.Text or "Item"
+    successMsg.Text = "You have successfully bought " .. safeName .. "."
+    successContainer.Visible = true
+    
     isProcessing = false
 end)
 
 local function fetchAndShow(id, infoType)
-    ShowModal("Loading...", "...") 
+    ResetStates()
+    itemName.Text = "Loading..."
+    itemPrice.Text = "..."
+    
+    -- Изначальное состояние кнопки (Полностью синяя, текст Buy)
+    buyBtn.BackgroundColor3 = Color3.fromRGB(59, 99, 246)
+    buyFill.Visible = false
+    buyTextLabel.Text = "Buy"
+    
+    -- Открываем UI
+    overlay.BackgroundTransparency = 1
+    modalScale.Scale = 0.8
+    overlay.Visible = true
+    modal.Visible = true
+    promptContainer.Visible = true
+    
+    TweenService:Create(overlay, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundTransparency = 0.5}):Play()
+    TweenService:Create(modalScale, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Scale = 1}):Play()
+    
+    -- Запрашиваем информацию
     task.spawn(function()
-        local success, info = pcall(function()
+        local success, result = pcall(function()
             return MarketplaceService:GetProductInfo(id, infoType)
         end)
-        if success and info then
-            itemName.Text = info.Name
-            itemPrice.Text = tostring(info.PriceInRobux or 0)
+        
+        if success and result and result.Name then
+            itemName.Text = result.Name
+            itemPrice.Text = tostring(result.PriceInRobux or 0)
         else
             itemName.Text = "Unknown Item"
             itemPrice.Text = "???"
@@ -335,7 +396,7 @@ local function fetchAndShow(id, infoType)
 end
 
 --------------------------------------------------
--- 5. ТОЧНЫЙ ПЕРЕХВАТ ОРИГИНАЛЬНОГО МЕНЮ
+-- 5. ПЕРЕХВАТ ОРИГИНАЛЬНОГО МЕНЮ (ТОЧНО КАК В ТВОЕМ РАБОЧЕМ)
 --------------------------------------------------
 local oldNamecall
 oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
@@ -343,16 +404,19 @@ oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
     local args = {...}
     
     if self == MarketplaceService and not setupFrame.Visible then
-        -- Точно определяем тип, чтобы избежать "Unknown Item"
+        
         if method == "PromptGamePassPurchase" then
             fetchAndShow(args[2], Enum.InfoType.GamePass)
-            return
+            return -- БЛОКИРУЕТ ОРИГИНАЛЬНОЕ МЕНЮ
+            
         elseif method == "PromptProductPurchase" then
             fetchAndShow(args[2], Enum.InfoType.Product)
-            return
+            return -- БЛОКИРУЕТ ОРИГИНАЛЬНОЕ МЕНЮ
+            
         elseif method == "PromptPurchase" then
             fetchAndShow(args[2], Enum.InfoType.Asset)
-            return
+            return 
+            
         elseif method == "PromptBundlePurchase" then
             fetchAndShow(args[2], Enum.InfoType.Bundle)
             return

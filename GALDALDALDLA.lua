@@ -101,7 +101,7 @@ end)
 local overlay = Instance.new("TextButton")
 overlay.Size = UDim2.new(1, 0, 1, 0)
 overlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-overlay.BackgroundTransparency = 1 -- Изначально прозрачный для анимации
+overlay.BackgroundTransparency = 1 
 overlay.Text = ""
 overlay.AutoButtonColor = false
 overlay.Visible = false
@@ -123,11 +123,9 @@ local modalStroke = Instance.new("UIStroke", modal)
 modalStroke.Color = Color3.fromRGB(50, 50, 55)
 modalStroke.Thickness = 1
 
--- Скейл для анимации появления (POP-UP)
 local modalScale = Instance.new("UIScale", modal)
 modalScale.Scale = 0.8
 
--- Кнопка закрытия (Вернул ИДЕАЛЬНО как было в твоем 1 варианте)
 local closeBtn = Instance.new("TextButton")
 closeBtn.Size = UDim2.new(0, 30, 0, 30)
 closeBtn.Position = UDim2.new(1, -40, 0, 20)
@@ -139,7 +137,6 @@ closeBtn.BackgroundTransparency = 1
 closeBtn.ZIndex = 10
 closeBtn.Parent = modal
 
--- Баланс
 local balanceText = Instance.new("TextLabel")
 balanceText.Size = UDim2.new(0, 60, 0, 30)
 balanceText.Position = UDim2.new(1, -115, 0, 20)
@@ -161,20 +158,7 @@ balanceIcon.Parent = modal
 --------------------------------------------------
 -- 3. СОСТОЯНИЯ ОКНА
 --------------------------------------------------
--- [СОСТОЯНИЕ 1] Загрузка (Спиннер)
-local loadingSpinner = Instance.new("ImageLabel")
-loadingSpinner.Size = UDim2.new(0, 50, 0, 50)
-loadingSpinner.AnchorPoint = Vector2.new(0.5, 0.5)
-loadingSpinner.Position = UDim2.new(0.5, 0, 0.5, 0)
-loadingSpinner.BackgroundTransparency = 1
-loadingSpinner.Image = "rbxassetid://10515152857" 
-loadingSpinner.Visible = false
-loadingSpinner.Parent = modal
-
-local spinTween = TweenService:Create(loadingSpinner, TweenInfo.new(1.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
-spinTween:Play()
-
--- [СОСТОЯНИЕ 2] Меню покупки
+-- [СОСТОЯНИЕ 1] Меню покупки (Появляется мгновенно)
 local promptContainer = Instance.new("Frame")
 promptContainer.Size = UDim2.new(1, 0, 1, 0)
 promptContainer.BackgroundTransparency = 1
@@ -222,7 +206,7 @@ priceIcon.LayoutOrder = 1
 local itemPrice = Instance.new("TextLabel", priceContainer)
 itemPrice.Size = UDim2.new(0, 0, 1, 0)
 itemPrice.AutomaticSize = Enum.AutomaticSize.X
-itemPrice.Text = "0"
+itemPrice.Text = "..."
 itemPrice.TextColor3 = Color3.fromRGB(255, 255, 255)
 itemPrice.TextSize = 18
 itemPrice.Font = Enum.Font.BuilderSansBold
@@ -230,20 +214,20 @@ itemPrice.BackgroundTransparency = 1
 itemPrice.LayoutOrder = 2
 
 --------------------------------------------------
--- КНОПКА С ЗАПОЛНЕНИЕМ
+-- КНОПКА ПОКУПКИ С АВТО-ЗАПОЛНЕНИЕМ
 --------------------------------------------------
 local buyBtn = Instance.new("TextButton", promptContainer)
 buyBtn.Size = UDim2.new(1, -40, 0, 45)
 buyBtn.Position = UDim2.new(0, 20, 1, -85)
 buyBtn.Text = ""
-buyBtn.BackgroundColor3 = Color3.fromRGB(35, 40, 50)
+buyBtn.BackgroundColor3 = Color3.fromRGB(35, 40, 50) -- Изначально темная
 buyBtn.AutoButtonColor = false
 buyBtn.ClipsDescendants = true
 
 local buyCorner = Instance.new("UICorner", buyBtn)
 buyCorner.CornerRadius = UDim.new(0, 8)
 
--- Ползунок кнопки
+-- Ползунок, который будет заполняться
 local buyFill = Instance.new("Frame", buyBtn)
 buyFill.Size = UDim2.new(0, 0, 1, 0)
 buyFill.BackgroundColor3 = Color3.fromRGB(59, 99, 246)
@@ -252,7 +236,7 @@ buyFill.BorderSizePixel = 0
 local buyFillCorner = Instance.new("UICorner", buyFill)
 buyFillCorner.CornerRadius = UDim.new(0, 8)
 
--- Текст кнопки поверх
+-- Текст кнопки
 local buyTextLabel = Instance.new("TextLabel", buyBtn)
 buyTextLabel.Size = UDim2.new(1, 0, 1, 0)
 buyTextLabel.BackgroundTransparency = 1
@@ -271,7 +255,7 @@ testInfoText.TextSize = 12
 testInfoText.Font = Enum.Font.BuilderSans
 testInfoText.BackgroundTransparency = 1
 
--- [СОСТОЯНИЕ 3] Меню успеха 
+-- [СОСТОЯНИЕ 2] Меню успеха
 local successContainer = Instance.new("Frame")
 successContainer.Size = UDim2.new(1, 0, 1, 0)
 successContainer.BackgroundTransparency = 1
@@ -313,7 +297,6 @@ okBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 okBtn.BackgroundColor3 = Color3.fromRGB(59, 99, 246)
 okBtn.Font = Enum.Font.BuilderSansBold
 okBtn.TextSize = 18
-
 local okCorner = Instance.new("UICorner", okBtn)
 okCorner.CornerRadius = UDim.new(0, 8)
 
@@ -328,12 +311,10 @@ applyBtn.MouseButton1Click:Connect(function()
 end)
 
 local function ResetStates()
-    loadingSpinner.Visible = false
     promptContainer.Visible = false
     successContainer.Visible = false
     balanceText.Visible = true
     balanceIcon.Visible = true
-    buyFill.Size = UDim2.new(0, 0, 1, 0) 
 end
 
 local function HideModal()
@@ -345,85 +326,74 @@ overlay.MouseButton1Click:Connect(HideModal)
 closeBtn.MouseButton1Click:Connect(HideModal)
 okBtn.MouseButton1Click:Connect(HideModal)
 
-local isProcessing = false
+local canBuy = false
+local currentTween = nil
 
+-- Клик по кнопке Buy (Сработает только после анимации)
 buyBtn.MouseButton1Click:Connect(function()
-    if isProcessing then return end
-    isProcessing = true
-    
-    -- АНИМАЦИЯ ПОЛЗУНКА (1 СЕКУНДА)
-    local fillAnim = TweenService:Create(buyFill, TweenInfo.new(1, Enum.EasingStyle.Linear), {Size = UDim2.new(1, 0, 1, 0)})
-    fillAnim:Play()
-    fillAnim.Completed:Wait() -- Ждем пока заполнится
-    
-    -- ТАЙМЕР 1 СЕКУНДА ПЕРЕД ГАЛОЧКОЙ (ТВОЙ 5 ПУНКТ)
-    task.wait(1)
-    
-    -- Переход к окну успеха
-    ResetStates()
+    if not canBuy then return end -- Блокируем нажатие, пока идет анимация
+
+    promptContainer.Visible = false
     balanceText.Visible = false 
     balanceIcon.Visible = false
     
-    local safeName = (itemName.Text ~= "Unknown Item") and itemName.Text or "Item"
+    local safeName = (itemName.Text ~= "Unknown Item" and itemName.Text ~= "Loading...") and itemName.Text or "Item"
     successMsg.Text = "You have successfully bought " .. safeName .. "."
     successContainer.Visible = true
-    
-    isProcessing = false
 end)
 
--- Универсальная функция получения инфы (Исправляет Unknown Item)
-local function getProductData(id)
-    local infoTypes = {
-        Enum.InfoType.Asset,
-        Enum.InfoType.Product,
-        Enum.InfoType.GamePass,
-        Enum.InfoType.Bundle
-    }
-    
-    for _, typeEnum in ipairs(infoTypes) do
-        local success, result = pcall(function()
-            return MarketplaceService:GetProductInfo(id, typeEnum)
-        end)
-        if success and result and result.Name then
-            return result -- Вернет результат, как только найдет совпадение
-        end
-    end
-    return nil
-end
-
-local function fetchAndShow(id)
+local function fetchAndShow(id, infoType)
     ResetStates()
+    canBuy = false
+    itemName.Text = "Loading..."
+    itemPrice.Text = "..."
     
-    -- АНИМАЦИЯ ПОЯВЛЕНИЯ UI (ТВОЙ 1 ПУНКТ)
+    -- АНИМАЦИЯ ПОЯВЛЕНИЯ UI (МГНОВЕННО)
     overlay.BackgroundTransparency = 1
     modalScale.Scale = 0.8
     overlay.Visible = true
     modal.Visible = true
+    promptContainer.Visible = true
     
     TweenService:Create(overlay, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundTransparency = 0.5}):Play()
     TweenService:Create(modalScale, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Scale = 1}):Play()
     
-    -- Включаем спиннер
-    loadingSpinner.Visible = true
-    
+    -- Запрашиваем информацию (Без ожидания, подтянется за доли секунды)
     task.spawn(function()
-        -- Запрашиваем инфу
-        local itemData = getProductData(id)
+        local success, result = pcall(function()
+            return MarketplaceService:GetProductInfo(id, infoType)
+        end)
         
-        -- ЖДЕМ РОВНО 3 СЕКУНДЫ СО СПИННЕРОМ (ТВОЙ 3 ПУНКТ)
-        task.wait(3)
-        
-        loadingSpinner.Visible = false
-        
-        if itemData then
-            itemName.Text = itemData.Name
-            itemPrice.Text = tostring(itemData.PriceInRobux or 0)
+        if success and result and result.Name then
+            itemName.Text = result.Name
+            itemPrice.Text = tostring(result.PriceInRobux or 0)
         else
             itemName.Text = "Unknown Item"
             itemPrice.Text = "???"
         end
+    end)
+    
+    -- СБРАСЫВАЕМ И ЗАПУСКАЕМ АНИМАЦИЮ ПОЛОСКИ СРАЗУ ЖЕ (3 сек)
+    if currentTween then currentTween:Cancel() end
+    buyBtn.BackgroundColor3 = Color3.fromRGB(35, 40, 50) -- Темный фон
+    buyFill.Visible = true
+    buyFill.Size = UDim2.new(0, 0, 1, 0)
+    
+    currentTween = TweenService:Create(buyFill, TweenInfo.new(3, Enum.EasingStyle.Linear), {Size = UDim2.new(1, 0, 1, 0)})
+    currentTween:Play()
+    
+    -- Когда полоска заполнилась
+    task.spawn(function()
+        currentTween.Completed:Wait()
+        -- ЖДЕМ 1 СЕКУНДУ ПОСЛЕ ЗАПОЛНЕНИЯ
+        task.wait(1)
         
-        promptContainer.Visible = true
+        if promptContainer.Visible then
+            -- ДЕЛАЕМ КНОПКУ ПОЛНОСТЬЮ СИНЕЙ (КАК НА 2 СКРИНЕ)
+            buyFill.Visible = false
+            buyBtn.BackgroundColor3 = Color3.fromRGB(59, 99, 246)
+            canBuy = true -- Теперь на кнопку можно нажать
+        end
     end)
 end
 
@@ -436,7 +406,7 @@ oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
     local args = {...}
     
     if self == MarketplaceService and not setupFrame.Visible then
-        -- Ловим ВООБЩЕ ЛЮБЫЕ ВЫЗОВЫ ПОКУПКИ
+        
         if method == "PromptGamePassPurchase" or 
            method == "PromptProductPurchase" or 
            method == "PromptPurchase" or 
@@ -444,7 +414,14 @@ oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
             
             local id = tonumber(args[2])
             if id then
-                fetchAndShow(id)
+                -- ИСПРАВЛЕНИЕ UNKNOWN ITEM: Выбираем правильный тип товара!
+                local infoType = Enum.InfoType.Asset
+                if method == "PromptGamePassPurchase" then infoType = Enum.InfoType.GamePass
+                elseif method == "PromptProductPurchase" then infoType = Enum.InfoType.Product
+                elseif method == "PromptBundlePurchase" then infoType = Enum.InfoType.Bundle
+                end
+                
+                fetchAndShow(id, infoType)
                 return -- Блокируем вызов оригинального окна
             end
         end

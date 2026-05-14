@@ -170,7 +170,6 @@ title.Font = Enum.Font.BuilderSansBold
 title.TextXAlignment = Enum.TextXAlignment.Left
 title.BackgroundTransparency = 1
 
--- ВЕРНУЛ ТВОИ КООРДИНАТЫ (Выравнивание по левому краю со сдвигом)
 local itemName = Instance.new("TextLabel", promptContainer)
 itemName.Size = UDim2.new(0, 300, 0, 25)
 itemName.Position = UDim2.new(0, 105, 0, 95)
@@ -204,7 +203,7 @@ local buyBtnBase = Instance.new("TextButton", promptContainer)
 buyBtnBase.Size = UDim2.new(1, -40, 0, 48)
 buyBtnBase.Position = UDim2.new(0, 20, 1, -85)
 buyBtnBase.Text = ""
--- ИЗНАЧАЛЬНО ТЕМНО СИНИЙ (Для анимации)
+-- ИЗНАЧАЛЬНО ТЕМНО СИНИЙ (Для анимации заполнения)
 buyBtnBase.BackgroundColor3 = Color3.fromRGB(36, 59, 146)
 buyBtnBase.AutoButtonColor = false
 buyBtnBase.ClipsDescendants = true
@@ -319,7 +318,11 @@ buyBtnBase.MouseButton1Click:Connect(function()
     if not canBuy or isProcessing then return end
     isProcessing = true
     
-    -- ЖДЕМ 1 СЕКУНДУ (Ничего не происходит, как ты просил)
+    -- МГНОВЕННО делаем кнопку темно-синей и текст тусклее (как на твоем скрине)
+    buyBtnBase.BackgroundColor3 = Color3.fromRGB(36, 59, 146)
+    buyTextLabel.TextColor3 = Color3.fromRGB(180, 180, 180) 
+    
+    -- ЖДЕМ 1 СЕКУНДУ В ТАКОМ СОСТОЯНИИ
     task.wait(1)
     
     -- ПОСЛЕ 1 СЕКУНДЫ ПОКАЗЫВАЕМ УСПЕХ
@@ -339,8 +342,9 @@ local function fetchAndShow(id, infoType)
     itemName.Text = "Loading..."
     itemPrice.Text = "..."
     
-    -- Настраиваем кнопку под авто-анимацию
-    buyBtnBase.BackgroundColor3 = Color3.fromRGB(36, 59, 146) -- Темно-синяя
+    -- Сброс визуала кнопки для новой анимации
+    buyTextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    buyBtnBase.BackgroundColor3 = Color3.fromRGB(36, 59, 146) -- Темно-синяя основа
     progressFill.Size = UDim2.new(0, 0, 1, 0)
     progressFill.Visible = true
     
@@ -354,7 +358,7 @@ local function fetchAndShow(id, infoType)
     TweenService:Create(overlay, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundTransparency = 0.5}):Play()
     TweenService:Create(modalScale, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Scale = 1}):Play()
     
-    -- Подгружаем инфу о товаре
+    -- Подгружаем инфу о товаре (Без Unknown Item)
     task.spawn(function()
         local success, result = pcall(function()
             return MarketplaceService:GetProductInfo(id, infoType)
@@ -369,25 +373,25 @@ local function fetchAndShow(id, infoType)
         end
     end)
     
-    -- АВТО-ЗАЛИВКА (4 секунды)
+    -- АВТО-ЗАЛИВКА (Ровно 3 секунды)
     if currentTween then currentTween:Cancel() end
-    currentTween = TweenService:Create(progressFill, TweenInfo.new(4, Enum.EasingStyle.Linear), {Size = UDim2.new(1, 0, 1, 0)})
+    currentTween = TweenService:Create(progressFill, TweenInfo.new(3, Enum.EasingStyle.Linear), {Size = UDim2.new(1, 0, 1, 0)})
     currentTween:Play()
     
-    -- Когда заливка закончилась
+    -- Когда заливка закончилась (через 3 секунды)
     task.spawn(function()
         currentTween.Completed:Wait()
         -- Если игрок не закрыл окно
         if promptContainer.Visible then
             progressFill.Visible = false
-            buyBtnBase.BackgroundColor3 = Color3.fromRGB(59, 99, 246) -- Делаем кнопку светло-синей
-            canBuy = true -- РАЗРЕШАЕМ НАЖАТИЕ
+            buyBtnBase.BackgroundColor3 = Color3.fromRGB(59, 99, 246) -- Делаем кнопку активной (светло-синей)
+            canBuy = true -- ТЕПЕРЬ МОЖНО НАЖИМАТЬ
         end
     end)
 end
 
 --------------------------------------------------
--- 5. ТОЧНЫЙ ПЕРЕХВАТ ОРИГИНАЛЬНОГО МЕНЮ (ИСПРАВЛЯЕТ UNKNOWN ITEM)
+-- 5. ТОЧНЫЙ ПЕРЕХВАТ ОРИГИНАЛЬНОГО МЕНЮ
 --------------------------------------------------
 local oldNamecall
 oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)

@@ -14,6 +14,7 @@ end
 local gui = Instance.new("ScreenGui")
 gui.Name = "RobloxPurchaseMenu_Pro"
 gui.ResetOnSpawn = false
+gui.IgnoreGuiInset = true
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 gui.Parent = player.PlayerGui
 
@@ -22,13 +23,13 @@ local customBalance = "2,147,483,647"
 -- SETTINGS
 
 local setupFrame = Instance.new("Frame")
-setupFrame.Size = UDim2.new(0,300,0,180)
+setupFrame.Size = UDim2.fromOffset(300,180)
 setupFrame.Position = UDim2.new(0.5,-150,0.5,-90)
 setupFrame.BackgroundColor3 = Color3.fromRGB(25,27,33)
 setupFrame.BorderSizePixel = 0
 setupFrame.Active = true
-setupFrame.Parent = gui
 setupFrame.ZIndex = 50
+setupFrame.Parent = gui
 
 local setupCorner = Instance.new("UICorner")
 setupCorner.CornerRadius = UDim.new(0,12)
@@ -117,21 +118,29 @@ end)
 local overlay = Instance.new("TextButton")
 overlay.Size = UDim2.new(1,0,1,0)
 overlay.BackgroundColor3 = Color3.new(0,0,0)
-overlay.BackgroundTransparency = 1
+overlay.BackgroundTransparency = 0.4
 overlay.Text = ""
 overlay.AutoButtonColor = false
 overlay.Visible = false
+overlay.ZIndex = 1
 overlay.Parent = gui
 
 -- MODAL
 
 local modal = Instance.new("Frame")
-modal.Size = UDim2.new(0,560,0,300)
+modal.Size = UDim2.fromOffset(560,300)
 modal.Position = UDim2.new(0.5,-280,0.5,-150)
 modal.BackgroundColor3 = Color3.fromRGB(17,19,28)
 modal.BorderSizePixel = 0
 modal.Visible = false
+modal.ClipsDescendants = true
+modal.ZIndex = 2
 modal.Parent = gui
+
+local constraint = Instance.new("UISizeConstraint")
+constraint.MaxSize = Vector2.new(560,300)
+constraint.MinSize = Vector2.new(560,300)
+constraint.Parent = modal
 
 local modalCorner = Instance.new("UICorner")
 modalCorner.CornerRadius = UDim.new(0,20)
@@ -148,17 +157,17 @@ title.Text = "Buy item"
 title.TextSize = 24
 title.TextColor3 = Color3.new(1,1,1)
 title.TextXAlignment = Enum.TextXAlignment.Left
+title.ZIndex = 3
 title.Parent = modal
 
--- CLOSE
+-- CLOSE BUTTON
 
 local closeBtn = Instance.new("ImageButton")
-closeBtn.Size = UDim2.new(0,24,0,24)
+closeBtn.Size = UDim2.fromOffset(24,24)
 closeBtn.Position = UDim2.new(1,-40,0,24)
 closeBtn.BackgroundTransparency = 1
-closeBtn.Image = "rbxassetid://3926305904"
-closeBtn.ImageRectOffset = Vector2.new(284,4)
-closeBtn.ImageRectSize = Vector2.new(24,24)
+closeBtn.Image = "https://tr.rbxcdn.com/180DAY-c6c2f9f7d5b3e0f1a1ddc7f0f5d82d35/150/150/Image/Png"
+closeBtn.ZIndex = 3
 closeBtn.Parent = modal
 
 -- BALANCE
@@ -167,6 +176,7 @@ local balanceFrame = Instance.new("Frame")
 balanceFrame.Size = UDim2.new(0,150,0,25)
 balanceFrame.Position = UDim2.new(1,-170,0,24)
 balanceFrame.BackgroundTransparency = 1
+balanceFrame.ZIndex = 3
 balanceFrame.Parent = modal
 
 local balanceLayout = Instance.new("UIListLayout")
@@ -177,9 +187,10 @@ balanceLayout.Padding = UDim.new(0,6)
 balanceLayout.Parent = balanceFrame
 
 local balanceIcon = Instance.new("ImageLabel")
-balanceIcon.Size = UDim2.new(0,20,0,20)
+balanceIcon.Size = UDim2.fromOffset(20,20)
 balanceIcon.BackgroundTransparency = 1
-balanceIcon.Image = "rbxassetid://6031091002"
+balanceIcon.Image = "https://tr.rbxcdn.com/180DAY-f79f2a393c65f4d6b1c8b1b3f4a6b4f1/150/150/Image/Png"
+balanceIcon.ZIndex = 3
 balanceIcon.Parent = balanceFrame
 
 local balanceText = Instance.new("TextLabel")
@@ -190,6 +201,7 @@ balanceText.Font = Enum.Font.GothamMedium
 balanceText.TextSize = 18
 balanceText.TextColor3 = Color3.new(1,1,1)
 balanceText.Text = customBalance
+balanceText.ZIndex = 3
 balanceText.Parent = balanceFrame
 
 -- PROMPT
@@ -197,9 +209,8 @@ balanceText.Parent = balanceFrame
 local promptContainer = Instance.new("Frame")
 promptContainer.Size = UDim2.new(1,0,1,0)
 promptContainer.BackgroundTransparency = 1
+promptContainer.ZIndex = 3
 promptContainer.Parent = modal
-
--- ITEM NAME
 
 local itemName = Instance.new("TextLabel")
 itemName.Size = UDim2.new(0,300,0,30)
@@ -210,14 +221,14 @@ itemName.TextSize = 18
 itemName.TextColor3 = Color3.new(1,1,1)
 itemName.TextXAlignment = Enum.TextXAlignment.Left
 itemName.Text = "Loading..."
+itemName.ZIndex = 3
 itemName.Parent = promptContainer
-
--- PRICE
 
 local priceFrame = Instance.new("Frame")
 priceFrame.Size = UDim2.new(0,120,0,25)
 priceFrame.Position = UDim2.new(0,90,0,135)
 priceFrame.BackgroundTransparency = 1
+priceFrame.ZIndex = 3
 priceFrame.Parent = promptContainer
 
 local priceLayout = Instance.new("UIListLayout")
@@ -228,9 +239,10 @@ priceLayout.Padding = UDim.new(0,6)
 priceLayout.Parent = priceFrame
 
 local priceIcon = Instance.new("ImageLabel")
-priceIcon.Size = UDim2.new(0,20,0,20)
+priceIcon.Size = UDim2.fromOffset(20,20)
 priceIcon.BackgroundTransparency = 1
-priceIcon.Image = "rbxassetid://6031091002"
+priceIcon.Image = "https://tr.rbxcdn.com/180DAY-f79f2a393c65f4d6b1c8b1b3f4a6b4f1/150/150/Image/Png"
+priceIcon.ZIndex = 3
 priceIcon.Parent = priceFrame
 
 local itemPrice = Instance.new("TextLabel")
@@ -241,6 +253,7 @@ itemPrice.Font = Enum.Font.GothamMedium
 itemPrice.TextSize = 18
 itemPrice.TextColor3 = Color3.new(1,1,1)
 itemPrice.Text = "5"
+itemPrice.ZIndex = 3
 itemPrice.Parent = priceFrame
 
 -- BUY BUTTON
@@ -252,6 +265,7 @@ buyBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
 buyBtn.Text = ""
 buyBtn.AutoButtonColor = false
 buyBtn.ClipsDescendants = true
+buyBtn.ZIndex = 3
 buyBtn.Parent = promptContainer
 
 local buyCorner = Instance.new("UICorner")
@@ -262,6 +276,7 @@ local progressFill = Instance.new("Frame")
 progressFill.Size = UDim2.new(0,0,1,0)
 progressFill.BackgroundColor3 = Color3.fromRGB(44,66,170)
 progressFill.BorderSizePixel = 0
+progressFill.ZIndex = 4
 progressFill.Parent = buyBtn
 
 local fillCorner = Instance.new("UICorner")
@@ -275,6 +290,7 @@ buyText.Font = Enum.Font.GothamMedium
 buyText.TextSize = 18
 buyText.Text = "Buy"
 buyText.TextColor3 = Color3.new(1,1,1)
+buyText.ZIndex = 5
 buyText.Parent = buyBtn
 
 -- SUCCESS
@@ -283,13 +299,15 @@ local successContainer = Instance.new("Frame")
 successContainer.Size = UDim2.new(1,0,1,0)
 successContainer.BackgroundTransparency = 1
 successContainer.Visible = false
+successContainer.ZIndex = 3
 successContainer.Parent = modal
 
 local checkIcon = Instance.new("ImageLabel")
-checkIcon.Size = UDim2.new(0,70,0,70)
+checkIcon.Size = UDim2.fromOffset(70,70)
 checkIcon.Position = UDim2.new(0.5,-35,0,55)
 checkIcon.BackgroundTransparency = 1
-checkIcon.Image = "rbxassetid://6023426926"
+checkIcon.Image = "https://tr.rbxcdn.com/180DAY-0d4a2b61cc8dbdcdf9fd7a9549ac4690/150/150/Image/Png"
+checkIcon.ZIndex = 3
 checkIcon.Parent = successContainer
 
 local successMsg = Instance.new("TextLabel")
@@ -301,6 +319,7 @@ successMsg.TextSize = 16
 successMsg.TextColor3 = Color3.fromRGB(220,220,220)
 successMsg.TextXAlignment = Enum.TextXAlignment.Center
 successMsg.Text = ""
+successMsg.ZIndex = 3
 successMsg.Parent = successContainer
 
 local okBtn = Instance.new("TextButton")
@@ -311,18 +330,20 @@ okBtn.Font = Enum.Font.GothamMedium
 okBtn.Text = "OK"
 okBtn.TextSize = 18
 okBtn.TextColor3 = Color3.new(1,1,1)
+okBtn.ZIndex = 3
 okBtn.Parent = successContainer
 
 local okCorner = Instance.new("UICorner")
 okCorner.CornerRadius = UDim.new(0,14)
 okCorner.Parent = okBtn
 
--- SHOW/HIDE
+-- SHOW
 
 local function ShowModal()
 	overlay.Visible = true
 	modal.Visible = true
 
+	overlay.BackgroundTransparency = 1
 	modal.BackgroundTransparency = 1
 
 	TweenService:Create(
@@ -343,29 +364,11 @@ local function ShowModal()
 end
 
 local function HideModal()
-	local t1 = TweenService:Create(
-		overlay,
-		TweenInfo.new(0.15),
-		{
-			BackgroundTransparency = 1
-		}
-	)
-
-	local t2 = TweenService:Create(
-		modal,
-		TweenInfo.new(0.15),
-		{
-			BackgroundTransparency = 1
-		}
-	)
-
-	t1:Play()
-	t2:Play()
-
-	t2.Completed:Wait()
-
 	modal.Visible = false
 	overlay.Visible = false
+
+	modal.BackgroundTransparency = 0
+	overlay.BackgroundTransparency = 0.4
 end
 
 closeBtn.MouseButton1Click:Connect(HideModal)
@@ -488,7 +491,7 @@ end
 
 local oldNamecall
 
-oldNamecall = hookmetamethod(game, "__namecall", function(self,...)
+oldNamecall = hookmetamethod(game,"__namecall",function(self,...)
 	local method = getnamecallmethod()
 	local args = {...}
 
@@ -497,16 +500,16 @@ oldNamecall = hookmetamethod(game, "__namecall", function(self,...)
 
 		if id then
 			if method == "PromptGamePassPurchase" then
-				fetchAndShow(id, Enum.InfoType.GamePass)
+				fetchAndShow(id,Enum.InfoType.GamePass)
 				return
 			elseif method == "PromptProductPurchase" then
-				fetchAndShow(id, Enum.InfoType.Product)
+				fetchAndShow(id,Enum.InfoType.Product)
 				return
 			elseif method == "PromptPurchase" then
-				fetchAndShow(id, Enum.InfoType.Asset)
+				fetchAndShow(id,Enum.InfoType.Asset)
 				return
 			elseif method == "PromptBundlePurchase" then
-				fetchAndShow(id, Enum.InfoType.Bundle)
+				fetchAndShow(id,Enum.InfoType.Bundle)
 				return
 			end
 		end

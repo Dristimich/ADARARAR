@@ -5,12 +5,69 @@ local player = Players.LocalPlayer
 
 -- Создаем ScreenGui
 local gui = Instance.new("ScreenGui")
-gui.Name = "RobloxPurchaseModal_Exact"
+gui.Name = "RobloxPurchaseMenu_Pro"
 gui.ResetOnSpawn = false
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 gui.Parent = player:WaitForChild("PlayerGui")
 
--- Overlay (затемнение заднего фона)
+-- Переменная для кастомного баланса
+local customBalance = "62"
+
+--------------------------------------------------
+-- 1. СТАРТОВОЕ МЕНЮ (НАСТРОЙКА БАЛАНСА)
+--------------------------------------------------
+local setupFrame = Instance.new("Frame")
+setupFrame.Size = UDim2.new(0, 300, 0, 180)
+setupFrame.Position = UDim2.new(0.5, -150, 0.5, -90)
+setupFrame.BackgroundColor3 = Color3.fromRGB(25, 27, 33)
+setupFrame.BorderSizePixel = 0
+setupFrame.Parent = gui
+
+local setupCorner = Instance.new("UICorner")
+setupCorner.CornerRadius = UDim.new(0, 12)
+setupCorner.Parent = setupFrame
+
+local setupTitle = Instance.new("TextLabel")
+setupTitle.Size = UDim2.new(1, 0, 0, 40)
+setupTitle.Text = "Settings"
+setupTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+setupTitle.TextSize = 20
+setupTitle.Font = Enum.Font.GothamBold
+setupTitle.BackgroundTransparency = 1
+setupTitle.Parent = setupFrame
+
+local balanceInput = Instance.new("TextBox")
+balanceInput.Size = UDim2.new(1, -40, 0, 40)
+balanceInput.Position = UDim2.new(0, 20, 0, 60)
+balanceInput.PlaceholderText = "Enter fake balance (e.g. 10000)"
+balanceInput.Text = "62"
+balanceInput.BackgroundColor3 = Color3.fromRGB(40, 43, 53)
+balanceInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+balanceInput.Font = Enum.Font.Gotham
+balanceInput.TextSize = 16
+balanceInput.Parent = setupFrame
+
+local inputCorner = Instance.new("UICorner")
+inputCorner.CornerRadius = UDim.new(0, 8)
+inputCorner.Parent = balanceInput
+
+local applyBtn = Instance.new("TextButton")
+applyBtn.Size = UDim2.new(1, -40, 0, 40)
+applyBtn.Position = UDim2.new(0, 20, 0, 120)
+applyBtn.Text = "Save & Start"
+applyBtn.BackgroundColor3 = Color3.fromRGB(59, 99, 246)
+applyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+applyBtn.Font = Enum.Font.GothamBold
+applyBtn.TextSize = 16
+applyBtn.Parent = setupFrame
+
+local applyCorner = Instance.new("UICorner")
+applyCorner.CornerRadius = UDim.new(0, 8)
+applyCorner.Parent = applyBtn
+
+--------------------------------------------------
+-- 2. ГЛАВНОЕ ФЕЙК-МЕНЮ (КАК НА 1 СКРИНШОТЕ)
+--------------------------------------------------
 local overlay = Instance.new("TextButton")
 overlay.Size = UDim2.new(1, 0, 1, 0)
 overlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -20,26 +77,22 @@ overlay.AutoButtonColor = false
 overlay.Visible = false
 overlay.Parent = gui
 
--- Главное модальное окно (Размер и цвет под скриншот 5)
 local modal = Instance.new("Frame")
-modal.Size = UDim2.new(0, 480, 0, 380) -- Увеличили высоту для блока с паком робуксов
-modal.Position = UDim2.new(0.5, -240, 0.5, -190)
+modal.Size = UDim2.new(0, 480, 0, 260) -- Размер как на 1 скрине
+modal.Position = UDim2.new(0.5, -240, 0.5, -130)
 modal.BackgroundColor3 = Color3.fromRGB(25, 27, 33)
-modal.BorderSizePixel = 0
 modal.Visible = false
 modal.Parent = gui
 
-local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 14)
-corner.Parent = modal
+local modalCorner = Instance.new("UICorner")
+modalCorner.CornerRadius = UDim.new(0, 14)
+modalCorner.Parent = modal
 
---------------------------------------------------
--- ВЕРХНЯЯ ПАНЕЛЬ
---------------------------------------------------
+-- Заголовок "Buy item"
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(0, 250, 0, 30)
+title.Size = UDim2.new(0, 200, 0, 30)
 title.Position = UDim2.new(0, 20, 0, 20)
-title.Text = "Buy Robux and item"
+title.Text = "Buy item"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.TextSize = 22
 title.Font = Enum.Font.GothamBold
@@ -57,9 +110,10 @@ closeBtn.Font = Enum.Font.Gotham
 closeBtn.BackgroundTransparency = 1
 closeBtn.Parent = modal
 
+-- Фейк баланс (будет обновляться из стартового меню)
 local balanceText = Instance.new("TextLabel")
-balanceText.Size = UDim2.new(0, 40, 0, 30)
-balanceText.Position = UDim2.new(1, -95, 0, 20)
+balanceText.Size = UDim2.new(0, 60, 0, 30)
+balanceText.Position = UDim2.new(1, -115, 0, 20)
 balanceText.Text = "62"
 balanceText.TextColor3 = Color3.fromRGB(255, 255, 255)
 balanceText.TextSize = 18
@@ -70,17 +124,15 @@ balanceText.Parent = modal
 
 local balanceIcon = Instance.new("ImageLabel")
 balanceIcon.Size = UDim2.new(0, 20, 0, 20)
-balanceIcon.Position = UDim2.new(1, -125, 0, 25)
+balanceIcon.Position = UDim2.new(1, -145, 0, 25)
 balanceIcon.BackgroundTransparency = 1
 balanceIcon.Image = "rbxassetid://13087340654"
 balanceIcon.Parent = modal
 
---------------------------------------------------
--- ИНФОРМАЦИЯ О ПРЕДМЕТЕ (Динамическая)
---------------------------------------------------
+-- Данные предмета (название и цена)
 local itemName = Instance.new("TextLabel")
 itemName.Size = UDim2.new(0, 300, 0, 25)
-itemName.Position = UDim2.new(0, 105, 0, 85)
+itemName.Position = UDim2.new(0, 105, 0, 95)
 itemName.Text = "Loading..."
 itemName.TextColor3 = Color3.fromRGB(255, 255, 255)
 itemName.TextSize = 18
@@ -91,14 +143,14 @@ itemName.Parent = modal
 
 local priceIcon = Instance.new("ImageLabel")
 priceIcon.Size = UDim2.new(0, 18, 0, 18)
-priceIcon.Position = UDim2.new(0, 105, 0, 116)
+priceIcon.Position = UDim2.new(0, 105, 0, 126)
 priceIcon.BackgroundTransparency = 1
 priceIcon.Image = "rbxassetid://13087340654"
 priceIcon.Parent = modal
 
 local itemPrice = Instance.new("TextLabel")
 itemPrice.Size = UDim2.new(0, 100, 0, 25)
-itemPrice.Position = UDim2.new(0, 130, 0, 112)
+itemPrice.Position = UDim2.new(0, 130, 0, 122)
 itemPrice.Text = "..."
 itemPrice.TextColor3 = Color3.fromRGB(255, 255, 255)
 itemPrice.TextSize = 18
@@ -108,103 +160,69 @@ itemPrice.BackgroundTransparency = 1
 itemPrice.Parent = modal
 
 --------------------------------------------------
--- БЛОК ПАКА РОБУКСОВ (Как на 5 скрине)
+-- 3. КНОПКА С АНИМАЦИЕЙ ЗАЛИВКИ (Как на скринах 2 и 3)
 --------------------------------------------------
-local packFrame = Instance.new("Frame")
-packFrame.Size = UDim2.new(1, -40, 0, 60)
-packFrame.Position = UDim2.new(0, 20, 0, 165)
-packFrame.BackgroundColor3 = Color3.fromRGB(25, 27, 33)
-packFrame.Parent = modal
+-- Базовый контейнер кнопки (он становится темным при клике)
+local buyBtnBase = Instance.new("TextButton")
+buyBtnBase.Size = UDim2.new(1, -40, 0, 48)
+buyBtnBase.Position = UDim2.new(0, 20, 1, -68)
+buyBtnBase.Text = "" -- Текст вынесен отдельно
+buyBtnBase.BackgroundColor3 = Color3.fromRGB(59, 99, 246) -- Исходный ярко-синий
+buyBtnBase.AutoButtonColor = false
+buyBtnBase.Parent = modal
 
-local packCorner = Instance.new("UICorner")
-packCorner.CornerRadius = UDim.new(0, 10)
-packCorner.Parent = packFrame
+local baseCorner = Instance.new("UICorner")
+baseCorner.CornerRadius = UDim.new(0, 10)
+baseCorner.Parent = buyBtnBase
 
-local packStroke = Instance.new("UIStroke")
-packStroke.Color = Color3.fromRGB(255, 255, 255)
-packStroke.Thickness = 1.5
-packStroke.Parent = packFrame
+-- Ползунок заливки (светло-синий), который движется слева направо
+local progressFill = Instance.new("Frame")
+progressFill.Size = UDim2.new(0, 0, 1, 0) -- Ширина изначально 0
+progressFill.Position = UDim2.new(0, 0, 0, 0)
+progressFill.BackgroundColor3 = Color3.fromRGB(59, 99, 246) -- Цвет заливки
+progressFill.BorderSizePixel = 0
+progressFill.Visible = false
+progressFill.Parent = buyBtnBase
 
-local packIcon = Instance.new("ImageLabel")
-packIcon.Size = UDim2.new(0, 20, 0, 20)
-packIcon.Position = UDim2.new(0, 15, 0.5, -10)
-packIcon.BackgroundTransparency = 1
-packIcon.Image = "rbxassetid://13087340654"
-packIcon.Parent = packFrame
+local fillCorner = Instance.new("UICorner")
+fillCorner.CornerRadius = UDim.new(0, 10)
+fillCorner.Parent = progressFill
 
-local packRobuxText = Instance.new("TextLabel")
-packRobuxText.Size = UDim2.new(0, 100, 1, 0)
-packRobuxText.Position = UDim2.new(0, 45, 0, 0)
-packRobuxText.Text = "240"
-packRobuxText.TextColor3 = Color3.fromRGB(255, 255, 255)
-packRobuxText.TextSize = 20
-packRobuxText.Font = Enum.Font.GothamBold
-packRobuxText.TextXAlignment = Enum.TextXAlignment.Left
-packRobuxText.BackgroundTransparency = 1
-packRobuxText.Parent = packFrame
-
-local packPriceText = Instance.new("TextLabel")
-packPriceText.Size = UDim2.new(0, 100, 1, 0)
-packPriceText.Position = UDim2.new(1, -115, 0, 0)
-packPriceText.Text = "$2.99"
-packPriceText.TextColor3 = Color3.fromRGB(255, 255, 255)
-packPriceText.TextSize = 20
-packPriceText.Font = Enum.Font.GothamBold
-packPriceText.TextXAlignment = Enum.TextXAlignment.Right
-packPriceText.BackgroundTransparency = 1
-packPriceText.Parent = packFrame
+-- Текст кнопки поверх всего
+local buyTextLabel = Instance.new("TextLabel")
+buyTextLabel.Size = UDim2.new(1, 0, 1, 0)
+buyTextLabel.Text = "Buy"
+buyTextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+buyTextLabel.Font = Enum.Font.GothamBold
+buyTextLabel.TextSize = 18
+buyTextLabel.BackgroundTransparency = 1
+buyTextLabel.ZIndex = 2
+buyTextLabel.Parent = buyBtnBase
 
 --------------------------------------------------
--- КНОПКА BUY И ПОДВАЛ
---------------------------------------------------
-local buyBtnContainer = Instance.new("Frame")
-buyBtnContainer.Size = UDim2.new(1, -40, 0, 46) -- Чуть уменьшили высоту
-buyBtnContainer.Position = UDim2.new(0, 20, 1, -100)
-buyBtnContainer.BackgroundTransparency = 1
-buyBtnContainer.Parent = modal
-
-local buyBtn = Instance.new("TextButton")
-buyBtn.Size = UDim2.new(1, 0, 1, 0)
-buyBtn.Position = UDim2.new(0.5, 0, 0.5, 0)
-buyBtn.AnchorPoint = Vector2.new(0.5, 0.5)
-buyBtn.Text = "Buy"
-buyBtn.BackgroundColor3 = Color3.fromRGB(45, 65, 150) -- Более темный синий как на 5 скрине
-buyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-buyBtn.Font = Enum.Font.GothamBold
-buyBtn.TextSize = 18
-buyBtn.AutoButtonColor = false
-buyBtn.Parent = buyBtnContainer
-
-local buyCorner = Instance.new("UICorner")
-buyCorner.CornerRadius = UDim.new(0, 10)
-buyCorner.Parent = buyBtn
-
-local footerText = Instance.new("TextLabel")
-footerText.Size = UDim2.new(1, 0, 0, 20)
-footerText.Position = UDim2.new(0, 0, 1, -40)
-footerText.Text = "Your payment method will be charged. Roblox Terms of Use apply."
-footerText.TextColor3 = Color3.fromRGB(180, 180, 180)
-footerText.TextSize = 12
-footerText.Font = Enum.Font.Gotham
-footerText.BackgroundTransparency = 1
-footerText.Parent = modal
-
---------------------------------------------------
--- АНИМАЦИИ И ЛОГИКА
+-- ЛОГИКА СКРИПТА
 --------------------------------------------------
 
--- Анимация кнопки (нажатие)
-local shrinkTween = TweenService:Create(buyBtn, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0.96, 0, 0.9, 0)})
-local growTween = TweenService:Create(buyBtn, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(1, 0, 1, 0)})
+-- 1. Настройка баланса и запуск
+applyBtn.MouseButton1Click:Connect(function()
+    customBalance = balanceInput.Text
+    if customBalance == "" then customBalance = "62" end
+    balanceText.Text = customBalance
+    
+    setupFrame.Visible = false -- Прячем меню настроек
+end)
 
-buyBtn.MouseButton1Down:Connect(function() shrinkTween:Play() end)
-buyBtn.MouseButton1Up:Connect(function() growTween:Play() end)
-buyBtn.MouseLeave:Connect(function() growTween:Play() end)
-
--- Функции отображения
+-- Открытие / Закрытие окна
 local function ShowModal(name, price)
     itemName.Text = name or "Loading..."
     itemPrice.Text = price and tostring(price) or "..."
+    
+    -- Сброс кнопки
+    buyBtnBase.BackgroundColor3 = Color3.fromRGB(59, 99, 246)
+    progressFill.Size = UDim2.new(0, 0, 1, 0)
+    progressFill.Visible = false
+    buyTextLabel.Text = "Buy"
+    
     overlay.Visible = true
     modal.Visible = true
 end
@@ -216,26 +234,39 @@ end
 
 overlay.MouseButton1Click:Connect(HideModal)
 closeBtn.MouseButton1Click:Connect(HideModal)
-closeBtn.MouseEnter:Connect(function() closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255) end)
-closeBtn.MouseLeave:Connect(function() closeBtn.TextColor3 = Color3.fromRGB(200, 200, 200) end)
 
-buyBtn.MouseButton1Click:Connect(function()
-    buyBtn.Text = "Processing..."
-    task.wait(0.9)
-    buyBtn.Text = "Purchased!"
-    buyBtn.BackgroundColor3 = Color3.fromRGB(34, 197, 94)
-    task.wait(1.2)
+-- 2. Анимация кнопки Buy (Заливка как на скрине)
+local isProcessing = false
+
+buyBtnBase.MouseButton1Click:Connect(function()
+    if isProcessing then return end
+    isProcessing = true
+    
+    -- Делаем фон кнопки тёмно-синим
+    buyBtnBase.BackgroundColor3 = Color3.fromRGB(36, 59, 146)
+    
+    -- Показываем ползунок и настраиваем анимацию
+    progressFill.BackgroundColor3 = Color3.fromRGB(59, 99, 246)
+    progressFill.Visible = true
+    
+    local tween = TweenService:Create(progressFill, TweenInfo.new(1.2, Enum.EasingStyle.Linear), {Size = UDim2.new(1, 0, 1, 0)})
+    tween:Play()
+    
+    -- Ждем конца анимации
+    tween.Completed:Wait()
+    
+    -- Действие после "покупки"
+    buyTextLabel.Text = "Purchased!"
+    progressFill.BackgroundColor3 = Color3.fromRGB(34, 197, 94) -- Окрашиваем в зеленый для эффекта (можешь убрать, если не нужно)
+    
+    task.wait(1)
     HideModal()
-    buyBtn.Text = "Buy"
-    buyBtn.BackgroundColor3 = Color3.fromRGB(45, 65, 150)
+    isProcessing = false
 end)
 
---------------------------------------------------
--- ПЕРЕХВАТ РЕАЛЬНЫХ ПОКУПОК
---------------------------------------------------
-
+-- 3. Перехват реальных геймпасов
 local function fetchAndShow(id, infoType)
-    ShowModal("Loading...", "...") -- Показываем окно сразу
+    ShowModal("Loading...", "...") 
     task.spawn(function()
         local success, info = pcall(function()
             return MarketplaceService:GetProductInfo(id, infoType)
@@ -250,19 +281,15 @@ local function fetchAndShow(id, infoType)
     end)
 end
 
--- Срабатывает при вызове покупки Gamepass
+-- Хуки на покупку
 MarketplaceService.PromptGamePassPurchaseRequested:Connect(function(plr, gamePassId)
-    if plr == player then
+    if plr == player and not setupFrame.Visible then
         fetchAndShow(gamePassId, Enum.InfoType.GamePass)
     end
 end)
 
--- Срабатывает при вызове покупки Developer Product (Донат в игре)
 MarketplaceService.PromptProductPurchaseRequested:Connect(function(plr, productId)
-    if plr == player then
+    if plr == player and not setupFrame.Visible then
         fetchAndShow(productId, Enum.InfoType.Product)
     end
 end)
-
--- Тестовый вызов для проверки дизайна (удали, если не нужно):
--- ShowModal("Деньги 20000", 199)

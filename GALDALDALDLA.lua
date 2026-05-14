@@ -129,8 +129,8 @@ overlay.Parent = gui
 -- MODAL
 
 local modal = Instance.new("Frame")
-modal.Size = UDim2.fromOffset(455,240)
-modal.Position = UDim2.new(0.5,-227,0.5,-120)
+modal.Size = UDim2.fromOffset(455,190)
+modal.Position = UDim2.new(0.5,-227,0.5,-95)
 modal.BackgroundColor3 = Color3.fromRGB(17,19,28)
 modal.BorderSizePixel = 0
 modal.Visible = false
@@ -139,8 +139,8 @@ modal.ZIndex = 2
 modal.Parent = gui
 
 local constraint = Instance.new("UISizeConstraint")
-constraint.MaxSize = Vector2.new(455,240)
-constraint.MinSize = Vector2.new(455,240)
+constraint.MaxSize = Vector2.new(455,190)
+constraint.MinSize = Vector2.new(455,190)
 constraint.Parent = modal
 
 local modalCorner = Instance.new("UICorner")
@@ -220,7 +220,7 @@ promptContainer.Parent = modal
 
 local itemName = Instance.new("TextLabel")
 itemName.Size = UDim2.new(0,300,0,30)
-itemName.Position = UDim2.new(0,56,0,68)
+itemName.Position = UDim2.new(0,56,0,52)
 itemName.BackgroundTransparency = 1
 itemName.Font = Enum.Font.GothamBold
 itemName.TextSize = 14
@@ -234,7 +234,7 @@ itemName.Parent = promptContainer
 
 local priceFrame = Instance.new("Frame")
 priceFrame.Size = UDim2.fromOffset(90,18)
-priceFrame.Position = UDim2.new(0,56,0,92)
+priceFrame.Position = UDim2.new(0,56,0,72)
 priceFrame.BackgroundTransparency = 1
 priceFrame.ZIndex = 3
 priceFrame.Parent = promptContainer
@@ -270,7 +270,7 @@ itemPrice.Parent = priceFrame
 
 local buyBtn = Instance.new("TextButton")
 buyBtn.Size = UDim2.new(1,-32,0,38)
-buyBtn.Position = UDim2.new(0,6,1,-46)
+buyBtn.Position = UDim2.new(0,8,1,-40)
 buyBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
 buyBtn.Text = ""
 buyBtn.AutoButtonColor = false
@@ -315,7 +315,7 @@ successContainer.Parent = modal
 
 local checkIcon = Instance.new("ImageLabel")
 checkIcon.Size = UDim2.fromOffset(50,50)
-checkIcon.Position = UDim2.new(0.5,-25,0,32)
+checkIcon.Position = UDim2.new(0.5,-25,0,26)
 checkIcon.BackgroundTransparency = 1
 checkIcon.Image = "rbxthumb://type=Asset&id=110759125205910&w=420&h=420"
 checkIcon.ScaleType = Enum.ScaleType.Fit
@@ -324,7 +324,7 @@ checkIcon.Parent = successContainer
 
 local successMsg = Instance.new("TextLabel")
 successMsg.Size = UDim2.new(1,-40,0,18)
-successMsg.Position = UDim2.new(0,20,0,84)
+successMsg.Position = UDim2.new(0,20,0,70)
 successMsg.BackgroundTransparency = 1
 successMsg.Font = Enum.Font.Gotham
 successMsg.TextSize = 11
@@ -336,7 +336,7 @@ successMsg.Parent = successContainer
 
 local okBtn = Instance.new("TextButton")
 okBtn.Size = UDim2.new(1,-16,0,34)
-okBtn.Position = UDim2.new(0,8,1,-42)
+okBtn.Position = UDim2.new(0,8,1,-38)
 okBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
 okBtn.Font = Enum.Font.GothamMedium
 okBtn.Text = "OK"
@@ -367,8 +367,8 @@ local function ShowModal()
 	overlay.BackgroundTransparency = 1
 	modal.BackgroundTransparency = 1
 
-	modal.Size = UDim2.fromOffset(440,228)
-	modal.Position = UDim2.new(0.5,-220,0.5,-114)
+	modal.Size = UDim2.fromOffset(435,180)
+	modal.Position = UDim2.new(0.5,-217,0.5,-90)
 
 	TweenService:Create(
 		overlay,
@@ -387,8 +387,8 @@ local function ShowModal()
 		),
 		{
 			BackgroundTransparency = 0,
-			Size = UDim2.fromOffset(455,240),
-			Position = UDim2.new(0.5,-227,0.5,-120)
+			Size = UDim2.fromOffset(455,190),
+			Position = UDim2.new(0.5,-227,0.5,-95)
 		}
 	):Play()
 end
@@ -549,3 +549,6 @@ oldNamecall = hookmetamethod(game,"__namecall",function(self,...)
 
 	return oldNamecall(self,...)
 end)
+
+
+

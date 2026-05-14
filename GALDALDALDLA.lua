@@ -109,7 +109,7 @@ overlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 overlay.BackgroundTransparency = 0.5
 overlay.Text = ""
 overlay.AutoButtonColor = false
-overlay.Active = true -- Блокирует клики по игре
+overlay.Active = true
 overlay.Visible = false
 overlay.ZIndex = 1
 overlay.Parent = gui
@@ -138,12 +138,12 @@ title.BackgroundTransparency = 1
 title.ZIndex = 3
 title.Parent = modal
 
--- КРЕСТИК (Отдельно привязан к modal с ZIndex = 10)
+-- КРЕСТИК (Используем rbxthumb для Decal ID)
 local closeBtn = Instance.new("ImageButton")
 closeBtn.Size = UDim2.new(0, 16, 0, 16)
 closeBtn.Position = UDim2.new(1, -35, 0, 27)
 closeBtn.BackgroundTransparency = 1
-closeBtn.Image = "rbxassetid://78940278565096"
+closeBtn.Image = "rbxthumb://type=Asset&id=78940278565096&w=150&h=150"
 closeBtn.ZIndex = 10
 closeBtn.Parent = modal
 
@@ -161,11 +161,11 @@ balanceText.BackgroundTransparency = 1
 balanceText.ZIndex = 5
 balanceText.Parent = modal
 
--- РОБУКСЫ БАЛАНС (ИКОНКА)
+-- РОБУКСЫ БАЛАНС (ИКОНКА - rbxthumb)
 local balanceIcon = Instance.new("ImageLabel")
 balanceIcon.Size = UDim2.new(0, 20, 0, 20)
 balanceIcon.BackgroundTransparency = 1
-balanceIcon.Image = "rbxassetid://70493384532723"
+balanceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=150&h=150"
 balanceIcon.ZIndex = 10
 balanceIcon.Parent = modal
 
@@ -188,12 +188,12 @@ itemName.TextXAlignment = Enum.TextXAlignment.Left
 itemName.BackgroundTransparency = 1
 itemName.ZIndex = 5
 
--- РОБУКСЫ ЦЕНА (ИКОНКА)
+-- РОБУКСЫ ЦЕНА (ИКОНКА - rbxthumb)
 local priceIcon = Instance.new("ImageLabel", promptContainer)
 priceIcon.Size = UDim2.new(0, 18, 0, 18)
 priceIcon.Position = UDim2.new(0, 105, 0, 111)
 priceIcon.BackgroundTransparency = 1
-priceIcon.Image = "rbxassetid://70493384532723"
+priceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=150&h=150"
 priceIcon.ZIndex = 10
 
 local itemPrice = Instance.new("TextLabel", promptContainer)
@@ -207,7 +207,7 @@ itemPrice.TextXAlignment = Enum.TextXAlignment.Left
 itemPrice.BackgroundTransparency = 1
 itemPrice.ZIndex = 5
 
--- КНОПКА ПОКУПКИ (СМЕЩЕНА ЧУТЬ ВНИЗ ТАК КАК ТЕКСТА БОЛЬШЕ НЕТ)
+-- КНОПКА ПОКУПКИ
 local buyBtnBase = Instance.new("TextButton", promptContainer)
 buyBtnBase.Size = UDim2.new(1, -40, 0, 48)
 buyBtnBase.Position = UDim2.new(0, 20, 1, -68) 
@@ -241,7 +241,7 @@ buyTextLabel.TextSize = 18
 buyTextLabel.BackgroundTransparency = 1
 buyTextLabel.ZIndex = 6
 
--- КОНТЕЙНЕР УСПЕХА (Галочка)
+-- КОНТЕЙНЕР УСПЕХА
 local successContainer = Instance.new("Frame")
 successContainer.Size = UDim2.new(1, 0, 1, 0)
 successContainer.BackgroundTransparency = 1
@@ -249,13 +249,13 @@ successContainer.Visible = false
 successContainer.ZIndex = 3
 successContainer.Parent = modal
 
--- ГАЛОЧКА (ZIndex = 10)
+-- ГАЛОЧКА (rbxthumb)
 local checkIcon = Instance.new("ImageLabel", successContainer)
 checkIcon.Size = UDim2.new(0, 50, 0, 50)
 checkIcon.AnchorPoint = Vector2.new(0.5, 0)
 checkIcon.Position = UDim2.new(0.5, 0, 0, 60)
 checkIcon.BackgroundTransparency = 1
-checkIcon.Image = "rbxassetid://110759125205910"
+checkIcon.Image = "rbxthumb://type=Asset&id=110759125205910&w=150&h=150"
 checkIcon.ZIndex = 10
 
 local successMsg = Instance.new("TextLabel", successContainer)
@@ -288,7 +288,6 @@ applyBtn.MouseButton1Click:Connect(function()
 	if customBalance == "" then customBalance = "623" end
 	balanceText.Text = customBalance
 	
-	-- Идеальное выравнивание иконки робуксов левее баланса
 	local textWidth = balanceText.TextBounds.X
 	balanceIcon.Position = UDim2.new(1, -textWidth - 70, 0, 25)
 	
@@ -300,7 +299,6 @@ local function HideModal()
 	overlay.Visible = false
 end
 
--- ВНИМАНИЕ: УДАЛЕН КЛИК ПО OVERLAY! ТЕПЕРЬ МЕНЮ НЕ ЗАКРЫВАЕТСЯ ПРИ КЛИКЕ НА ФОН!
 closeBtn.MouseButton1Click:Connect(HideModal)
 okBtn.MouseButton1Click:Connect(HideModal)
 
@@ -308,20 +306,16 @@ local canBuy = false
 local isProcessing = false
 local currentTween = nil
 
--- КЛИК ПО КНОПКЕ BUY
 buyBtnBase.MouseButton1Click:Connect(function()
 	if not canBuy or isProcessing then return end
 	isProcessing = true
 
-	-- Эффект нажатия
 	buyBtnBase.BackgroundColor3 = Color3.fromRGB(36, 59, 146)
 	buyTextLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
 
-	-- ЗАДЕРЖКА СТРОГО ОТ 1.25 ДО 1.75 СЕК
 	local randomWaitTime = math.random(125, 175) / 100 
 	task.wait(randomWaitTime)
 
-	-- Меняем интерфейс
 	promptContainer.Visible = false
 	balanceText.Visible = false
 	balanceIcon.Visible = false
@@ -345,7 +339,6 @@ local function fetchAndShow(id, infoType)
 	itemName.Text = "Loading..."
 	itemPrice.Text = "..."
 
-	-- Сброс кнопки
 	buyTextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 	buyBtnBase.BackgroundColor3 = Color3.fromRGB(36, 59, 146)
 	progressFill.Size = UDim2.new(0, 0, 1, 0)
@@ -355,7 +348,6 @@ local function fetchAndShow(id, infoType)
 	modal.Visible = true
 	promptContainer.Visible = true
 
-	-- Получение данных товара
 	task.spawn(function()
 		local success, result = pcall(function()
 			return MarketplaceService:GetProductInfo(id, infoType)
@@ -369,7 +361,6 @@ local function fetchAndShow(id, infoType)
 		end
 	end)
 
-	-- Полоска (3 секунды)
 	if currentTween then currentTween:Cancel() end
 	currentTween = TweenService:Create(progressFill, TweenInfo.new(3.0, Enum.EasingStyle.Linear), {Size = UDim2.new(1, 0, 1, 0)})
 	currentTween:Play()

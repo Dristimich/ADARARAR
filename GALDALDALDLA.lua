@@ -175,8 +175,8 @@ closeBtn.Parent = modal
 -- BALANCE
 
 local balanceFrame = Instance.new("Frame")
-balanceFrame.Size = UDim2.fromOffset(132,18)
-balanceFrame.Position = UDim2.new(1,-145,0,19)
+balanceFrame.Size = UDim2.fromOffset(120,16)
+balanceFrame.Position = UDim2.new(1,-128,0,18)
 balanceFrame.BackgroundTransparency = 1
 balanceFrame.ZIndex = 3
 balanceFrame.Parent = modal
@@ -189,12 +189,12 @@ balanceLayout.Padding = UDim.new(0,5)
 balanceLayout.Parent = balanceFrame
 
 local balanceIcon = Instance.new("ImageLabel")
-balanceIcon.Size = UDim2.fromOffset(13,13)
+balanceIcon.Size = UDim2.fromOffset(12,12)
 balanceIcon.BackgroundTransparency = 1
 balanceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=420&h=420"
-balanceIcon.ScaleType = Enum.ScaleType.Crop
-balanceIcon.ImageRectOffset = Vector2.new(8,8)
-balanceIcon.ImageRectSize = Vector2.new(112,112)
+balanceIcon.ScaleType = Enum.ScaleType.Fit
+balanceIcon.ImageRectOffset = Vector2.new(0,0)
+balanceIcon.ImageRectSize = Vector2.new(0,0)
 balanceIcon.ZIndex = 4
 balanceIcon.Parent = balanceFrame
 
@@ -203,7 +203,7 @@ balanceText.AutomaticSize = Enum.AutomaticSize.X
 balanceText.Size = UDim2.new(0,0,1,0)
 balanceText.BackgroundTransparency = 1
 balanceText.Font = Enum.Font.GothamMedium
-balanceText.TextSize = 13
+balanceText.TextSize = 12
 balanceText.TextColor3 = Color3.new(1,1,1)
 balanceText.Text = customBalance
 balanceText.TextXAlignment = Enum.TextXAlignment.Left
@@ -222,10 +222,10 @@ promptContainer.Parent = modal
 
 local itemName = Instance.new("TextLabel")
 itemName.Size = UDim2.new(0,300,0,30)
-itemName.Position = UDim2.new(0,98,0,70)
+itemName.Position = UDim2.new(0,42,0,68)
 itemName.BackgroundTransparency = 1
 itemName.Font = Enum.Font.GothamBold
-itemName.TextSize = 14
+itemName.TextSize = 13
 itemName.TextColor3 = Color3.new(1,1,1)
 itemName.TextXAlignment = Enum.TextXAlignment.Left
 itemName.Text = "Loading..."
@@ -235,8 +235,8 @@ itemName.Parent = promptContainer
 -- PRICE
 
 local priceFrame = Instance.new("Frame")
-priceFrame.Size = UDim2.fromOffset(90,18)
-priceFrame.Position = UDim2.new(0,98,0,94)
+priceFrame.Size = UDim2.fromOffset(70,18)
+priceFrame.Position = UDim2.new(0,42,0,92)
 priceFrame.BackgroundTransparency = 1
 priceFrame.ZIndex = 3
 priceFrame.Parent = promptContainer
@@ -245,16 +245,16 @@ local priceLayout = Instance.new("UIListLayout")
 priceLayout.FillDirection = Enum.FillDirection.Horizontal
 priceLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
 priceLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-priceLayout.Padding = UDim.new(0,3)
+priceLayout.Padding = UDim.new(0,2)
 priceLayout.Parent = priceFrame
 
 local priceIcon = Instance.new("ImageLabel")
-priceIcon.Size = UDim2.fromOffset(13,13)
+priceIcon.Size = UDim2.fromOffset(12,12)
 priceIcon.BackgroundTransparency = 1
 priceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=420&h=420"
-priceIcon.ScaleType = Enum.ScaleType.Crop
-priceIcon.ImageRectOffset = Vector2.new(8,8)
-priceIcon.ImageRectSize = Vector2.new(112,112)
+priceIcon.ScaleType = Enum.ScaleType.Fit
+priceIcon.ImageRectOffset = Vector2.new(0,0)
+priceIcon.ImageRectSize = Vector2.new(0,0)
 priceIcon.ZIndex = 4
 priceIcon.Parent = priceFrame
 
@@ -263,7 +263,7 @@ itemPrice.AutomaticSize = Enum.AutomaticSize.X
 itemPrice.Size = UDim2.new(0,0,1,0)
 itemPrice.BackgroundTransparency = 1
 itemPrice.Font = Enum.Font.GothamMedium
-itemPrice.TextSize = 14
+itemPrice.TextSize = 13
 itemPrice.TextColor3 = Color3.new(1,1,1)
 itemPrice.Text = "5"
 itemPrice.TextXAlignment = Enum.TextXAlignment.Left
@@ -273,8 +273,8 @@ itemPrice.Parent = priceFrame
 -- BUY BUTTON
 
 local buyBtn = Instance.new("TextButton")
-buyBtn.Size = UDim2.new(1,-24,0,36)
-buyBtn.Position = UDim2.new(0,12,1,-44)
+buyBtn.Size = UDim2.new(1,-16,0,34)
+buyBtn.Position = UDim2.new(0,8,1,-42)
 buyBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
 buyBtn.Text = ""
 buyBtn.AutoButtonColor = false
@@ -287,8 +287,8 @@ buyCorner.CornerRadius = UDim.new(0,8)
 buyCorner.Parent = buyBtn
 
 local progressFill = Instance.new("Frame")
-progressFill.Size = UDim2.new(0,0,1,-2)
-progressFill.Position = UDim2.new(0,0,0,1)
+progressFill.Size = UDim2.new(0,0,1,0)
+progressFill.Position = UDim2.new(0,0,0,0)
 progressFill.BackgroundColor3 = Color3.fromRGB(43,63,165)
 progressFill.BorderSizePixel = 0
 progressFill.ZIndex = 4
@@ -302,7 +302,7 @@ local buyText = Instance.new("TextLabel")
 buyText.Size = UDim2.new(1,0,1,0)
 buyText.BackgroundTransparency = 1
 buyText.Font = Enum.Font.GothamMedium
-buyText.TextSize = 16
+buyText.TextSize = 14
 buyText.Text = "Buy"
 buyText.TextColor3 = Color3.new(1,1,1)
 buyText.ZIndex = 5
@@ -322,18 +322,18 @@ checkIcon.Size = UDim2.fromOffset(50,50)
 checkIcon.Position = UDim2.new(0.5,-25,0,32)
 checkIcon.BackgroundTransparency = 1
 checkIcon.Image = "rbxthumb://type=Asset&id=110759125205910&w=420&h=420"
-checkIcon.ScaleType = Enum.ScaleType.Crop
-checkIcon.ImageRectOffset = Vector2.new(8,8)
-checkIcon.ImageRectSize = Vector2.new(112,112)
+checkIcon.ScaleType = Enum.ScaleType.Fit
+checkIcon.ImageRectOffset = Vector2.new(0,0)
+checkIcon.ImageRectSize = Vector2.new(0,0)
 checkIcon.ZIndex = 4
 checkIcon.Parent = successContainer
 
 local successMsg = Instance.new("TextLabel")
-successMsg.Size = UDim2.new(1,-56,0,20)
-successMsg.Position = UDim2.new(0,28,0,88)
+successMsg.Size = UDim2.new(1,-40,0,18)
+successMsg.Position = UDim2.new(0,20,0,84)
 successMsg.BackgroundTransparency = 1
 successMsg.Font = Enum.Font.Gotham
-successMsg.TextSize = 12
+successMsg.TextSize = 11
 successMsg.TextColor3 = Color3.fromRGB(220,220,220)
 successMsg.TextXAlignment = Enum.TextXAlignment.Center
 successMsg.Text = ""
@@ -341,12 +341,12 @@ successMsg.ZIndex = 3
 successMsg.Parent = successContainer
 
 local okBtn = Instance.new("TextButton")
-okBtn.Size = UDim2.new(1,-24,0,36)
-okBtn.Position = UDim2.new(0,12,1,-48)
+okBtn.Size = UDim2.new(1,-16,0,34)
+okBtn.Position = UDim2.new(0,8,1,-42)
 okBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
 okBtn.Font = Enum.Font.GothamMedium
 okBtn.Text = "OK"
-okBtn.TextSize = 16
+okBtn.TextSize = 14
 okBtn.TextColor3 = Color3.new(1,1,1)
 okBtn.ZIndex = 3
 okBtn.Parent = successContainer
@@ -378,10 +378,7 @@ local function ShowModal()
 
 	TweenService:Create(
 		overlay,
-		TweenInfo.new(
-			0.12,
-			Enum.EasingStyle.Linear
-		),
+		TweenInfo.new(0.12, Enum.EasingStyle.Linear),
 		{
 			BackgroundTransparency = 0.4
 		}
@@ -405,9 +402,6 @@ end
 local function HideModal()
 	modal.Visible = false
 	overlay.Visible = false
-
-	modal.BackgroundTransparency = 0
-	overlay.BackgroundTransparency = 0.4
 end
 
 closeBtn.MouseButton1Click:Connect(HideModal)
@@ -467,7 +461,6 @@ buyBtn.MouseButton1Click:Connect(function()
 
 	title.Text = "Purchase completed"
 	title.TextSize = 18
-	title.Position = UDim2.new(0,18,0,16)
 
 	successMsg.Text =
 		"You have successfully bought "..itemName.Text.."."
@@ -476,7 +469,6 @@ end)
 local function fetchAndShow(id, infoType)
 	title.Text = "Buy item"
 	title.TextSize = 19
-	title.Position = UDim2.new(0,18,0,16)
 
 	successContainer.Visible = false
 	promptContainer.Visible = true
@@ -494,7 +486,7 @@ local function fetchAndShow(id, infoType)
 	buyText.TextTransparency = 0
 
 	progressFill.Visible = true
-	progressFill.Size = UDim2.new(0,0,1,-2)
+	progressFill.Size = UDim2.new(0,0,1,0)
 
 	ShowModal()
 
@@ -515,12 +507,9 @@ local function fetchAndShow(id, infoType)
 
 	currentTween = TweenService:Create(
 		progressFill,
-		TweenInfo.new(
-			3,
-			Enum.EasingStyle.Linear
-		),
+		TweenInfo.new(3, Enum.EasingStyle.Linear),
 		{
-			Size = UDim2.new(1,0,1,-2)
+			Size = UDim2.new(1,0,1,0)
 		}
 	)
 
@@ -566,8 +555,3 @@ oldNamecall = hookmetamethod(game,"__namecall",function(self,...)
 
 	return oldNamecall(self,...)
 end)
-
-
-
-
-

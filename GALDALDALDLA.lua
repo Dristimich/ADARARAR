@@ -177,7 +177,8 @@ closeBtn.Parent = modal
 local balanceFrame = Instance.new("Frame")
 balanceFrame.AutomaticSize = Enum.AutomaticSize.X
 balanceFrame.Size = UDim2.new(0,0,0,18)
-balanceFrame.Position = UDim2.new(1,-88,0,18)
+balanceFrame.AnchorPoint = Vector2.new(1,0)
+balanceFrame.Position = UDim2.new(1,-42,0,18)
 balanceFrame.BackgroundTransparency = 1
 balanceFrame.ZIndex = 3
 balanceFrame.Parent = modal
@@ -186,11 +187,11 @@ local balanceLayout = Instance.new("UIListLayout")
 balanceLayout.FillDirection = Enum.FillDirection.Horizontal
 balanceLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
 balanceLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-balanceLayout.Padding = UDim.new(0,6)
+balanceLayout.Padding = UDim.new(0,4)
 balanceLayout.Parent = balanceFrame
 
 local balanceIcon = Instance.new("ImageLabel")
-balanceIcon.Size = UDim2.fromOffset(14,14)
+balanceIcon.Size = UDim2.fromOffset(15,15)
 balanceIcon.BackgroundTransparency = 1
 balanceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=420&h=420"
 balanceIcon.ScaleType = Enum.ScaleType.Fit
@@ -205,19 +206,8 @@ balanceText.Font = Enum.Font.GothamMedium
 balanceText.TextSize = 14
 balanceText.TextColor3 = Color3.new(1,1,1)
 balanceText.Text = customBalance
-balanceText.TextXAlignment = Enum.TextXAlignment.Left
 balanceText.ZIndex = 4
 balanceText.Parent = balanceFrame
-
-task.defer(function()
-	balanceFrame.Position =
-		UDim2.new(
-			1,
-			-(balanceFrame.AbsoluteSize.X + 42),
-			0,
-			18
-		)
-end)
 
 -- PROMPT
 
@@ -255,11 +245,11 @@ local priceLayout = Instance.new("UIListLayout")
 priceLayout.FillDirection = Enum.FillDirection.Horizontal
 priceLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
 priceLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-priceLayout.Padding = UDim.new(0,5)
+priceLayout.Padding = UDim.new(0,4)
 priceLayout.Parent = priceFrame
 
 local priceIcon = Instance.new("ImageLabel")
-priceIcon.Size = UDim2.fromOffset(14,14)
+priceIcon.Size = UDim2.fromOffset(15,15)
 priceIcon.BackgroundTransparency = 1
 priceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=420&h=420"
 priceIcon.ScaleType = Enum.ScaleType.Fit
@@ -274,7 +264,6 @@ itemPrice.Font = Enum.Font.GothamMedium
 itemPrice.TextSize = 14
 itemPrice.TextColor3 = Color3.new(1,1,1)
 itemPrice.Text = "5"
-itemPrice.TextXAlignment = Enum.TextXAlignment.Left
 itemPrice.ZIndex = 4
 itemPrice.Parent = priceFrame
 
@@ -282,7 +271,7 @@ itemPrice.Parent = priceFrame
 
 local buyBtn = Instance.new("TextButton")
 buyBtn.Size = UDim2.new(1,-32,0,38)
-buyBtn.Position = UDim2.new(0,8,1,-48)
+buyBtn.Position = UDim2.new(0,8,1,-52)
 buyBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
 buyBtn.Text = ""
 buyBtn.AutoButtonColor = false
@@ -348,7 +337,7 @@ successMsg.Parent = successContainer
 
 local okBtn = Instance.new("TextButton")
 okBtn.Size = UDim2.new(1,-16,0,34)
-okBtn.Position = UDim2.new(0,8,1,-48)
+okBtn.Position = UDim2.new(0,8,1,-52)
 okBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
 okBtn.Font = Enum.Font.GothamMedium
 okBtn.Text = "OK"
@@ -421,17 +410,6 @@ applyBtn.MouseButton1Click:Connect(function()
 	end
 
 	balanceText.Text = customBalance
-
-	task.wait()
-
-	balanceFrame.Position =
-		UDim2.new(
-			1,
-			-(balanceFrame.AbsoluteSize.X + 42),
-			0,
-			18
-		)
-
 	setupFrame.Visible = false
 end)
 
@@ -515,16 +493,6 @@ local function fetchAndShow(id, infoType)
 		if success and result then
 			itemName.Text = result.Name or "Unknown Item"
 			itemPrice.Text = tostring(result.PriceInRobux or 0)
-
-			task.wait()
-
-			balanceFrame.Position =
-				UDim2.new(
-					1,
-					-(balanceFrame.AbsoluteSize.X + 42),
-					0,
-					18
-				)
 		end
 	end)
 

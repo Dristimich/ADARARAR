@@ -114,7 +114,7 @@ local modalCorner = Instance.new("UICorner")
 modalCorner.CornerRadius = UDim.new(0, 14)
 modalCorner.Parent = modal
 
--- Кнопка закрытия (общая для всех окон)
+-- Кнопка закрытия
 local closeBtn = Instance.new("TextButton")
 closeBtn.Size = UDim2.new(0, 30, 0, 30)
 closeBtn.Position = UDim2.new(1, -40, 0, 20)
@@ -126,7 +126,7 @@ closeBtn.BackgroundTransparency = 1
 closeBtn.ZIndex = 10
 closeBtn.Parent = modal
 
--- Баланс (показывается только в меню покупки)
+-- Баланс
 local balanceText = Instance.new("TextLabel")
 balanceText.Size = UDim2.new(0, 60, 0, 30)
 balanceText.Position = UDim2.new(1, -115, 0, 20)
@@ -146,7 +146,7 @@ balanceIcon.Image = "rbxassetid://13087340654"
 balanceIcon.Parent = modal
 
 --------------------------------------------------
--- 3. СОСТОЯНИЯ ОКНА (ЗАГРУЗКА, ПОКУПКА, УСПЕХ)
+-- 3. СОСТОЯНИЯ ОКНА
 --------------------------------------------------
 
 -- [СОСТОЯНИЕ 1] Загрузка
@@ -154,7 +154,7 @@ local loadingSpinner = Instance.new("ImageLabel")
 loadingSpinner.Size = UDim2.new(0, 50, 0, 50)
 loadingSpinner.Position = UDim2.new(0.5, -25, 0.5, -25)
 loadingSpinner.BackgroundTransparency = 1
-loadingSpinner.Image = "rbxassetid://10515152857"
+loadingSpinner.Image = "rbxassetid://10515152857" 
 loadingSpinner.Visible = false
 loadingSpinner.Parent = modal
 
@@ -181,7 +181,7 @@ title.BackgroundTransparency = 1
 local itemName = Instance.new("TextLabel", promptContainer)
 itemName.Size = UDim2.new(1, -40, 0, 25)
 itemName.Position = UDim2.new(0, 20, 0, 85)
-itemName.Text = "Item Name"
+itemName.Text = "Loading..."
 itemName.TextColor3 = Color3.fromRGB(255, 255, 255)
 itemName.TextSize = 18
 itemName.Font = Enum.Font.GothamBold
@@ -237,12 +237,11 @@ testInfoText.TextSize = 12
 testInfoText.Font = Enum.Font.Gotham
 testInfoText.BackgroundTransparency = 1
 
--- Создаем Анимацию Пульсации Кнопки
-local pulseTweenInfo = TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
-local pulseAnim = TweenService:Create(buyBtn, pulseTweenInfo, {BackgroundColor3 = Color3.fromRGB(80, 120, 255)})
+-- Анимация для кнопки (пульсация в цикле)
+local pulseAnim = TweenService:Create(buyBtn, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {BackgroundColor3 = Color3.fromRGB(80, 120, 255)})
 
 
--- [СОСТОЯНИЕ 3] Меню успеха (Скриншот 2)
+-- [СОСТОЯНИЕ 3] Меню успеха 
 local successContainer = Instance.new("Frame")
 successContainer.Size = UDim2.new(1, 0, 1, 0)
 successContainer.BackgroundTransparency = 1
@@ -263,7 +262,7 @@ local checkIcon = Instance.new("ImageLabel", successContainer)
 checkIcon.Size = UDim2.new(0, 50, 0, 50)
 checkIcon.Position = UDim2.new(0.5, -25, 0, 70)
 checkIcon.BackgroundTransparency = 1
-checkIcon.Image = "rbxassetid://14389141029" -- Иконка круглой галочки
+checkIcon.Image = "rbxassetid://14389141029" 
 
 local successMsg = Instance.new("TextLabel", successContainer)
 successMsg.Size = UDim2.new(1, -40, 0, 25)
@@ -303,12 +302,13 @@ local function ResetStates()
     successContainer.Visible = false
     balanceText.Visible = true
     balanceIcon.Visible = true
+    pulseAnim:Cancel() -- Выключаем анимацию
 end
 
 local function HideModal()
     modal.Visible = false
     overlay.Visible = false
-    pulseAnim:Cancel() -- Выключаем анимацию при скрытии
+    pulseAnim:Cancel()
 end
 
 overlay.MouseButton1Click:Connect(HideModal)
@@ -317,21 +317,20 @@ okBtn.MouseButton1Click:Connect(HideModal)
 
 local isProcessing = false
 
--- Логика кнопки покупки
 buyBtn.MouseButton1Click:Connect(function()
     if isProcessing then return end
     isProcessing = true
     
-    -- Выключаем пульсацию и делаем кнопку темнее (эффект нажатия/ожидания)
+    -- Выключаем пульсацию и затемняем кнопку на 1 секунду
     pulseAnim:Cancel()
     buyBtn.BackgroundColor3 = Color3.fromRGB(40, 70, 190)
     
-    -- Ждем ровно 1 секунду как просил
+    -- ЖДЕМ РОВНО 1 СЕКУНДУ (Без зелёных загрузок)
     task.wait(1)
     
-    -- Переход к окну успеха
+    -- Переход к окну успеха (Галочка)
     ResetStates()
-    balanceText.Visible = false -- Скрываем баланс на экране успеха
+    balanceText.Visible = false 
     balanceIcon.Visible = false
     
     successMsg.Text = "You have successfully bought " .. itemName.Text .. "."
@@ -340,12 +339,10 @@ buyBtn.MouseButton1Click:Connect(function()
     isProcessing = false
 end)
 
--- Функция получения инфы и показа (со спиннером)
 local function fetchAndShow(id, infoType)
     overlay.Visible = true
     modal.Visible = true
     
-    -- Включаем спиннер загрузки
     ResetStates()
     loadingSpinner.Visible = true
     
@@ -354,7 +351,6 @@ local function fetchAndShow(id, infoType)
             return MarketplaceService:GetProductInfo(id, infoType)
         end)
         
-        -- Как только загрузилось, показываем меню покупки
         ResetStates()
         if success and info then
             itemName.Text = info.Name
@@ -364,10 +360,10 @@ local function fetchAndShow(id, infoType)
             itemPrice.Text = "???"
         end
         
-        buyBtn.BackgroundColor3 = Color3.fromRGB(59, 99, 246) -- Возвращаем базовый цвет
+        buyBtn.BackgroundColor3 = Color3.fromRGB(59, 99, 246)
         promptContainer.Visible = true
         
-        -- ЗАПУСКАЕМ АНИМАЦИЮ ПУЛЬСАЦИИ КНОПКИ BUY
+        -- ВКЛЮЧАЕМ АНИМАЦИЮ ПУЛЬСАЦИИ КНОПКИ BUY
         pulseAnim:Play()
     end)
 end

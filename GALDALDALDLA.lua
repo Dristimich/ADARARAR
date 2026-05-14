@@ -404,3 +404,4 @@ oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
 
 	return oldNamecall(self, ...)
 end)
+

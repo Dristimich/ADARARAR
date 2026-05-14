@@ -138,10 +138,10 @@ title.BackgroundTransparency = 1
 title.ZIndex = 3
 title.Parent = modal
 
--- КРЕСТИК (Используем rbxthumb для Decal ID)
+-- КРЕСТИК (Увеличен размер до 24х24)
 local closeBtn = Instance.new("ImageButton")
-closeBtn.Size = UDim2.new(0, 16, 0, 16)
-closeBtn.Position = UDim2.new(1, -35, 0, 27)
+closeBtn.Size = UDim2.new(0, 24, 0, 24)
+closeBtn.Position = UDim2.new(1, -40, 0, 23)
 closeBtn.BackgroundTransparency = 1
 closeBtn.Image = "rbxthumb://type=Asset&id=78940278565096&w=150&h=150"
 closeBtn.ZIndex = 10
@@ -150,20 +150,20 @@ closeBtn.Parent = modal
 -- БАЛАНС РОБУКСОВ (ТЕКСТ)
 local balanceText = Instance.new("TextLabel")
 balanceText.AnchorPoint = Vector2.new(1, 0)
-balanceText.Size = UDim2.new(0, 100, 0, 30)
+balanceText.Size = UDim2.new(0, 150, 0, 30)
 balanceText.Position = UDim2.new(1, -45, 0, 20)
 balanceText.Text = "623"
 balanceText.TextColor3 = Color3.fromRGB(255, 255, 255)
-balanceText.TextSize = 18
+balanceText.TextSize = 20
 balanceText.Font = Enum.Font.GothamMedium
 balanceText.TextXAlignment = Enum.TextXAlignment.Right
 balanceText.BackgroundTransparency = 1
 balanceText.ZIndex = 5
 balanceText.Parent = modal
 
--- РОБУКСЫ БАЛАНС (ИКОНКА - rbxthumb)
+-- РОБУКСЫ БАЛАНС (Увеличено до 24х24)
 local balanceIcon = Instance.new("ImageLabel")
-balanceIcon.Size = UDim2.new(0, 20, 0, 20)
+balanceIcon.Size = UDim2.new(0, 24, 0, 24)
 balanceIcon.BackgroundTransparency = 1
 balanceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=150&h=150"
 balanceIcon.ZIndex = 10
@@ -179,29 +179,30 @@ promptContainer.Parent = modal
 
 local itemName = Instance.new("TextLabel", promptContainer)
 itemName.Size = UDim2.new(0, 300, 0, 25)
-itemName.Position = UDim2.new(0, 105, 0, 80)
+-- Выравнивание как в оригинале
+itemName.Position = UDim2.new(0.5, -100, 0, 80)
 itemName.Text = "Loading..."
 itemName.TextColor3 = Color3.fromRGB(255, 255, 255)
-itemName.TextSize = 18
+itemName.TextSize = 20
 itemName.Font = Enum.Font.GothamBold
 itemName.TextXAlignment = Enum.TextXAlignment.Left
 itemName.BackgroundTransparency = 1
 itemName.ZIndex = 5
 
--- РОБУКСЫ ЦЕНА (ИКОНКА - rbxthumb)
+-- РОБУКСЫ ЦЕНА (Увеличено до 24х24)
 local priceIcon = Instance.new("ImageLabel", promptContainer)
-priceIcon.Size = UDim2.new(0, 18, 0, 18)
-priceIcon.Position = UDim2.new(0, 105, 0, 111)
+priceIcon.Size = UDim2.new(0, 24, 0, 24)
+priceIcon.Position = UDim2.new(0.5, -100, 0, 110)
 priceIcon.BackgroundTransparency = 1
 priceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=150&h=150"
 priceIcon.ZIndex = 10
 
 local itemPrice = Instance.new("TextLabel", promptContainer)
 itemPrice.Size = UDim2.new(0, 100, 0, 25)
-itemPrice.Position = UDim2.new(0, 130, 0, 107)
+itemPrice.Position = UDim2.new(0.5, -70, 0, 109)
 itemPrice.Text = "..."
 itemPrice.TextColor3 = Color3.fromRGB(255, 255, 255)
-itemPrice.TextSize = 18
+itemPrice.TextSize = 20
 itemPrice.Font = Enum.Font.GothamMedium
 itemPrice.TextXAlignment = Enum.TextXAlignment.Left
 itemPrice.BackgroundTransparency = 1
@@ -249,21 +250,21 @@ successContainer.Visible = false
 successContainer.ZIndex = 3
 successContainer.Parent = modal
 
--- ГАЛОЧКА (rbxthumb)
+-- ГАЛОЧКА (Увеличена до 72х72, как в оригинале)
 local checkIcon = Instance.new("ImageLabel", successContainer)
-checkIcon.Size = UDim2.new(0, 50, 0, 50)
+checkIcon.Size = UDim2.new(0, 72, 0, 72)
 checkIcon.AnchorPoint = Vector2.new(0.5, 0)
-checkIcon.Position = UDim2.new(0.5, 0, 0, 60)
+checkIcon.Position = UDim2.new(0.5, 0, 0, 45)
 checkIcon.BackgroundTransparency = 1
 checkIcon.Image = "rbxthumb://type=Asset&id=110759125205910&w=150&h=150"
 checkIcon.ZIndex = 10
 
 local successMsg = Instance.new("TextLabel", successContainer)
 successMsg.Size = UDim2.new(1, -40, 0, 25)
-successMsg.Position = UDim2.new(0, 20, 0, 120)
+successMsg.Position = UDim2.new(0, 20, 0, 130)
 successMsg.Text = "You have successfully bought ..."
 successMsg.TextColor3 = Color3.fromRGB(210, 210, 210)
-successMsg.TextSize = 16
+successMsg.TextSize = 18
 successMsg.Font = Enum.Font.Gotham
 successMsg.TextXAlignment = Enum.TextXAlignment.Center
 successMsg.BackgroundTransparency = 1
@@ -288,8 +289,9 @@ applyBtn.MouseButton1Click:Connect(function()
 	if customBalance == "" then customBalance = "623" end
 	balanceText.Text = customBalance
 	
+	-- Идеальное выравнивание иконки робуксов левее текста (динамическое)
 	local textWidth = balanceText.TextBounds.X
-	balanceIcon.Position = UDim2.new(1, -textWidth - 70, 0, 25)
+	balanceIcon.Position = UDim2.new(1, -textWidth - 75, 0, 23)
 	
 	setupFrame.Visible = false
 end)
@@ -402,3 +404,5 @@ oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
 
 	return oldNamecall(self, ...)
 end)
+
+

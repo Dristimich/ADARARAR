@@ -2,7 +2,6 @@ local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local MarketplaceService = game:GetService("MarketplaceService")
 local UserInputService = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
 
 -- Создаем ScreenGui
@@ -19,8 +18,9 @@ local customBalance = "62"
 --------------------------------------------------
 local setupFrame = Instance.new("Frame")
 setupFrame.Size = UDim2.new(0, 300, 0, 180)
-setupFrame.Position = UDim2.new(0.5, -150, 0.5, -90)
-setupFrame.BackgroundColor3 = Color3.fromRGB(25, 27, 33)
+setupFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+setupFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+setupFrame.BackgroundColor3 = Color3.fromRGB(30, 32, 38)
 setupFrame.BorderSizePixel = 0
 setupFrame.Active = true
 setupFrame.Parent = gui
@@ -29,12 +29,16 @@ local setupCorner = Instance.new("UICorner")
 setupCorner.CornerRadius = UDim.new(0, 12)
 setupCorner.Parent = setupFrame
 
+local setupStroke = Instance.new("UIStroke", setupFrame)
+setupStroke.Color = Color3.fromRGB(60, 60, 65)
+setupStroke.Thickness = 1
+
 local setupTitle = Instance.new("TextLabel")
 setupTitle.Size = UDim2.new(1, 0, 0, 40)
 setupTitle.Text = "Settings (Drag me)"
 setupTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-setupTitle.TextSize = 20
-setupTitle.Font = Enum.Font.GothamBold
+setupTitle.TextSize = 18
+setupTitle.Font = Enum.Font.BuilderSansExtraBold
 setupTitle.BackgroundTransparency = 1
 setupTitle.Parent = setupFrame
 
@@ -43,9 +47,9 @@ balanceInput.Size = UDim2.new(1, -40, 0, 40)
 balanceInput.Position = UDim2.new(0, 20, 0, 60)
 balanceInput.PlaceholderText = "Enter fake balance (e.g. 10000)"
 balanceInput.Text = "62"
-balanceInput.BackgroundColor3 = Color3.fromRGB(40, 43, 53)
+balanceInput.BackgroundColor3 = Color3.fromRGB(45, 48, 56)
 balanceInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-balanceInput.Font = Enum.Font.Gotham
+balanceInput.Font = Enum.Font.BuilderSans
 balanceInput.TextSize = 16
 balanceInput.Parent = setupFrame
 
@@ -59,7 +63,7 @@ applyBtn.Position = UDim2.new(0, 20, 0, 120)
 applyBtn.Text = "Save & Start"
 applyBtn.BackgroundColor3 = Color3.fromRGB(59, 99, 246)
 applyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-applyBtn.Font = Enum.Font.GothamBold
+applyBtn.Font = Enum.Font.BuilderSansBold
 applyBtn.TextSize = 16
 applyBtn.Parent = setupFrame
 
@@ -105,7 +109,8 @@ overlay.Parent = gui
 
 local modal = Instance.new("Frame")
 modal.Size = UDim2.new(0, 480, 0, 260)
-modal.Position = UDim2.new(0.5, -240, 0.5, -130)
+modal.AnchorPoint = Vector2.new(0.5, 0.5)
+modal.Position = UDim2.new(0.5, 0, 0.5, 0)
 modal.BackgroundColor3 = Color3.fromRGB(25, 27, 33)
 modal.Visible = false
 modal.Parent = gui
@@ -114,14 +119,19 @@ local modalCorner = Instance.new("UICorner")
 modalCorner.CornerRadius = UDim.new(0, 14)
 modalCorner.Parent = modal
 
--- Кнопка закрытия
+-- Обводка модального окна (шаблон/граница)
+local modalStroke = Instance.new("UIStroke", modal)
+modalStroke.Color = Color3.fromRGB(50, 50, 55)
+modalStroke.Thickness = 1
+
+-- Кнопка закрытия (Крестик)
 local closeBtn = Instance.new("TextButton")
 closeBtn.Size = UDim2.new(0, 30, 0, 30)
 closeBtn.Position = UDim2.new(1, -40, 0, 20)
 closeBtn.Text = "✕"
 closeBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
-closeBtn.TextSize = 22
-closeBtn.Font = Enum.Font.Gotham
+closeBtn.TextSize = 20
+closeBtn.Font = Enum.Font.BuilderSans
 closeBtn.BackgroundTransparency = 1
 closeBtn.ZIndex = 10
 closeBtn.Parent = modal
@@ -133,7 +143,7 @@ balanceText.Position = UDim2.new(1, -115, 0, 20)
 balanceText.Text = "62"
 balanceText.TextColor3 = Color3.fromRGB(255, 255, 255)
 balanceText.TextSize = 18
-balanceText.Font = Enum.Font.GothamMedium
+balanceText.Font = Enum.Font.BuilderSansMedium
 balanceText.TextXAlignment = Enum.TextXAlignment.Right
 balanceText.BackgroundTransparency = 1
 balanceText.Parent = modal
@@ -152,7 +162,8 @@ balanceIcon.Parent = modal
 -- [СОСТОЯНИЕ 1] Загрузка
 local loadingSpinner = Instance.new("ImageLabel")
 loadingSpinner.Size = UDim2.new(0, 50, 0, 50)
-loadingSpinner.Position = UDim2.new(0.5, -25, 0.5, -25)
+loadingSpinner.AnchorPoint = Vector2.new(0.5, 0.5)
+loadingSpinner.Position = UDim2.new(0.5, 0, 0.5, 0)
 loadingSpinner.BackgroundTransparency = 1
 loadingSpinner.Image = "rbxassetid://10515152857" 
 loadingSpinner.Visible = false
@@ -174,7 +185,7 @@ title.Position = UDim2.new(0, 20, 0, 20)
 title.Text = "Buy item"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.TextSize = 22
-title.Font = Enum.Font.GothamBold
+title.Font = Enum.Font.BuilderSansBold
 title.TextXAlignment = Enum.TextXAlignment.Left
 title.BackgroundTransparency = 1
 
@@ -184,18 +195,19 @@ itemName.Position = UDim2.new(0, 20, 0, 85)
 itemName.Text = "Loading..."
 itemName.TextColor3 = Color3.fromRGB(255, 255, 255)
 itemName.TextSize = 18
-itemName.Font = Enum.Font.GothamBold
+itemName.Font = Enum.Font.BuilderSansBold
 itemName.TextXAlignment = Enum.TextXAlignment.Center
 itemName.BackgroundTransparency = 1
 
 local priceContainer = Instance.new("Frame", promptContainer)
-priceContainer.Size = UDim2.new(1, 0, 0, 20)
+priceContainer.Size = UDim2.new(1, 0, 0, 25)
 priceContainer.Position = UDim2.new(0, 0, 0, 115)
 priceContainer.BackgroundTransparency = 1
 
 local priceLayout = Instance.new("UIListLayout", priceContainer)
 priceLayout.FillDirection = Enum.FillDirection.Horizontal
 priceLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+priceLayout.VerticalAlignment = Enum.VerticalAlignment.Center
 priceLayout.SortOrder = Enum.SortOrder.LayoutOrder
 priceLayout.Padding = UDim.new(0, 5)
 
@@ -211,35 +223,51 @@ itemPrice.AutomaticSize = Enum.AutomaticSize.X
 itemPrice.Text = "0"
 itemPrice.TextColor3 = Color3.fromRGB(255, 255, 255)
 itemPrice.TextSize = 18
-itemPrice.Font = Enum.Font.GothamBold
+itemPrice.Font = Enum.Font.BuilderSansBold
 itemPrice.BackgroundTransparency = 1
 itemPrice.LayoutOrder = 2
 
+--------------------------------------------------
+-- РЕАЛИЗАЦИЯ КНОПКИ С ЗАПОЛНЕНИЕМ (Progress Bar)
+--------------------------------------------------
 local buyBtn = Instance.new("TextButton", promptContainer)
-buyBtn.Size = UDim2.new(1, -40, 0, 40)
-buyBtn.Position = UDim2.new(0, 20, 1, -75)
-buyBtn.Text = "Buy"
-buyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-buyBtn.BackgroundColor3 = Color3.fromRGB(59, 99, 246)
-buyBtn.Font = Enum.Font.GothamBold
-buyBtn.TextSize = 18
+buyBtn.Size = UDim2.new(1, -40, 0, 45)
+buyBtn.Position = UDim2.new(0, 20, 1, -85)
+buyBtn.Text = "" -- Текст убираем отсюда, создаем отдельным слоем
+buyBtn.BackgroundColor3 = Color3.fromRGB(35, 40, 50) -- Темно-синий/Серый фон ненажатой кнопки
 buyBtn.AutoButtonColor = false
+buyBtn.ClipsDescendants = true -- ВАЖНО: чтобы ползунок не вылезал за круглые углы
 
 local buyCorner = Instance.new("UICorner", buyBtn)
 buyCorner.CornerRadius = UDim.new(0, 8)
 
+-- Ползунок, который будет ехать слева направо
+local buyFill = Instance.new("Frame", buyBtn)
+buyFill.Size = UDim2.new(0, 0, 1, 0) -- Изначально ширина 0
+buyFill.BackgroundColor3 = Color3.fromRGB(59, 99, 246) -- Ярко-синий цвет заливки
+buyFill.BorderSizePixel = 0
+
+local buyFillCorner = Instance.new("UICorner", buyFill)
+buyFillCorner.CornerRadius = UDim.new(0, 8)
+
+-- Текст кнопки поверх ползунка
+local buyTextLabel = Instance.new("TextLabel", buyBtn)
+buyTextLabel.Size = UDim2.new(1, 0, 1, 0)
+buyTextLabel.BackgroundTransparency = 1
+buyTextLabel.Text = "Buy"
+buyTextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+buyTextLabel.Font = Enum.Font.BuilderSansBold
+buyTextLabel.TextSize = 18
+buyTextLabel.ZIndex = 2 -- Поверх заливки
+
 local testInfoText = Instance.new("TextLabel", promptContainer)
 testInfoText.Size = UDim2.new(1, 0, 0, 20)
-testInfoText.Position = UDim2.new(0, 0, 1, -25)
+testInfoText.Position = UDim2.new(0, 0, 1, -30)
 testInfoText.Text = "This is a test purchase. Your account will not be charged."
-testInfoText.TextColor3 = Color3.fromRGB(150, 150, 150)
+testInfoText.TextColor3 = Color3.fromRGB(120, 120, 120)
 testInfoText.TextSize = 12
-testInfoText.Font = Enum.Font.Gotham
+testInfoText.Font = Enum.Font.BuilderSans
 testInfoText.BackgroundTransparency = 1
-
--- Анимация для кнопки (пульсация в цикле)
-local pulseAnim = TweenService:Create(buyBtn, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {BackgroundColor3 = Color3.fromRGB(80, 120, 255)})
-
 
 -- [СОСТОЯНИЕ 3] Меню успеха 
 local successContainer = Instance.new("Frame")
@@ -254,13 +282,14 @@ successTitle.Position = UDim2.new(0, 20, 0, 20)
 successTitle.Text = "Purchase completed"
 successTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
 successTitle.TextSize = 22
-successTitle.Font = Enum.Font.GothamBold
+successTitle.Font = Enum.Font.BuilderSansBold
 successTitle.TextXAlignment = Enum.TextXAlignment.Left
 successTitle.BackgroundTransparency = 1
 
 local checkIcon = Instance.new("ImageLabel", successContainer)
 checkIcon.Size = UDim2.new(0, 50, 0, 50)
-checkIcon.Position = UDim2.new(0.5, -25, 0, 70)
+checkIcon.AnchorPoint = Vector2.new(0.5, 0)
+checkIcon.Position = UDim2.new(0.5, 0, 0, 70)
 checkIcon.BackgroundTransparency = 1
 checkIcon.Image = "rbxassetid://14389141029" 
 
@@ -270,17 +299,17 @@ successMsg.Position = UDim2.new(0, 20, 0, 135)
 successMsg.Text = "You have successfully bought ..."
 successMsg.TextColor3 = Color3.fromRGB(210, 210, 210)
 successMsg.TextSize = 16
-successMsg.Font = Enum.Font.Gotham
+successMsg.Font = Enum.Font.BuilderSans
 successMsg.TextXAlignment = Enum.TextXAlignment.Center
 successMsg.BackgroundTransparency = 1
 
 local okBtn = Instance.new("TextButton", successContainer)
-okBtn.Size = UDim2.new(1, -40, 0, 40)
-okBtn.Position = UDim2.new(0, 20, 1, -60)
+okBtn.Size = UDim2.new(1, -40, 0, 45)
+okBtn.Position = UDim2.new(0, 20, 1, -65)
 okBtn.Text = "OK"
 okBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 okBtn.BackgroundColor3 = Color3.fromRGB(59, 99, 246)
-okBtn.Font = Enum.Font.GothamBold
+okBtn.Font = Enum.Font.BuilderSansBold
 okBtn.TextSize = 18
 
 local okCorner = Instance.new("UICorner", okBtn)
@@ -302,13 +331,12 @@ local function ResetStates()
     successContainer.Visible = false
     balanceText.Visible = true
     balanceIcon.Visible = true
-    pulseAnim:Cancel() -- Выключаем анимацию
+    buyFill.Size = UDim2.new(0, 0, 1, 0) -- Сбрасываем ползунок кнопки в 0
 end
 
 local function HideModal()
     modal.Visible = false
     overlay.Visible = false
-    pulseAnim:Cancel()
 end
 
 overlay.MouseButton1Click:Connect(HideModal)
@@ -321,14 +349,14 @@ buyBtn.MouseButton1Click:Connect(function()
     if isProcessing then return end
     isProcessing = true
     
-    -- Выключаем пульсацию и затемняем кнопку на 1 секунду
-    pulseAnim:Cancel()
-    buyBtn.BackgroundColor3 = Color3.fromRGB(40, 70, 190)
+    -- АНИМАЦИЯ ПОЛЗУНКА КНОПКИ КАК НА СКРИНШОТЕ
+    local fillAnim = TweenService:Create(buyFill, TweenInfo.new(1, Enum.EasingStyle.Linear), {Size = UDim2.new(1, 0, 1, 0)})
+    fillAnim:Play()
     
-    -- ЖДЕМ РОВНО 1 СЕКУНДУ (Без зелёных загрузок)
-    task.wait(1)
+    -- Ждем ровно 1 секунду (пока анимация дойдет до конца)
+    fillAnim.Completed:Wait()
     
-    -- Переход к окну успеха (Галочка)
+    -- Переход к окну успеха
     ResetStates()
     balanceText.Visible = false 
     balanceIcon.Visible = false
@@ -347,8 +375,12 @@ local function fetchAndShow(id, infoType)
     loadingSpinner.Visible = true
     
     task.spawn(function()
+        -- Защита от кривого ID
+        local numId = tonumber(id)
+        if not numId then return end
+
         local success, info = pcall(function()
-            return MarketplaceService:GetProductInfo(id, infoType)
+            return MarketplaceService:GetProductInfo(numId, infoType)
         end)
         
         ResetStates()
@@ -356,20 +388,18 @@ local function fetchAndShow(id, infoType)
             itemName.Text = info.Name
             itemPrice.Text = tostring(info.PriceInRobux or 0)
         else
+            -- Если все же ошибка, логгируем в консоль, чтобы понять почему
+            warn("FakePurchase: Failed to load info for ID " .. tostring(id))
             itemName.Text = "Unknown Item"
             itemPrice.Text = "???"
         end
         
-        buyBtn.BackgroundColor3 = Color3.fromRGB(59, 99, 246)
         promptContainer.Visible = true
-        
-        -- ВКЛЮЧАЕМ АНИМАЦИЮ ПУЛЬСАЦИИ КНОПКИ BUY
-        pulseAnim:Play()
     end)
 end
 
 --------------------------------------------------
--- 5. ПЕРЕХВАТ ОРИГИНАЛЬНОГО МЕНЮ (HOOKMETAMETHOD)
+-- 5. ПЕРЕХВАТ ОРИГИНАЛЬНОГО МЕНЮ
 --------------------------------------------------
 local oldNamecall
 oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
@@ -378,12 +408,14 @@ oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
     
     if self == MarketplaceService and not setupFrame.Visible then
         if method == "PromptGamePassPurchase" then
-            local id = args[2]
-            fetchAndShow(id, Enum.InfoType.GamePass)
+            fetchAndShow(args[2], Enum.InfoType.GamePass)
             return
         elseif method == "PromptProductPurchase" then
-            local id = args[2]
-            fetchAndShow(id, Enum.InfoType.Product)
+            fetchAndShow(args[2], Enum.InfoType.Product)
+            return
+        -- ДОБАВЛЕНО: Обработка обычных вещей (Одежда, UGC), чтобы не писало Unknown Item!
+        elseif method == "PromptPurchase" then 
+            fetchAndShow(args[2], Enum.InfoType.Asset)
             return
         end
     end

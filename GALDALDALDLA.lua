@@ -1,6 +1,7 @@
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local MarketplaceService = game:GetService("MarketplaceService")
+local UserInputService = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 
 -- Создаем ScreenGui
@@ -10,17 +11,17 @@ gui.ResetOnSpawn = false
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 gui.Parent = player:WaitForChild("PlayerGui")
 
--- Переменная для кастомного баланса
 local customBalance = "62"
 
 --------------------------------------------------
--- 1. СТАРТОВОЕ МЕНЮ (НАСТРОЙКА БАЛАНСА)
+-- 1. СТАРТОВОЕ МЕНЮ (ПЕРЕТАСКИВАЕМОЕ)
 --------------------------------------------------
 local setupFrame = Instance.new("Frame")
 setupFrame.Size = UDim2.new(0, 300, 0, 180)
 setupFrame.Position = UDim2.new(0.5, -150, 0.5, -90)
 setupFrame.BackgroundColor3 = Color3.fromRGB(25, 27, 33)
 setupFrame.BorderSizePixel = 0
+setupFrame.Active = true
 setupFrame.Parent = gui
 
 local setupCorner = Instance.new("UICorner")
@@ -29,7 +30,7 @@ setupCorner.Parent = setupFrame
 
 local setupTitle = Instance.new("TextLabel")
 setupTitle.Size = UDim2.new(1, 0, 0, 40)
-setupTitle.Text = "Settings"
+setupTitle.Text = "Settings (Drag me)"
 setupTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
 setupTitle.TextSize = 20
 setupTitle.Font = Enum.Font.GothamBold
@@ -65,6 +66,30 @@ local applyCorner = Instance.new("UICorner")
 applyCorner.CornerRadius = UDim.new(0, 8)
 applyCorner.Parent = applyBtn
 
+-- Функция перетаскивания (Drag)
+local dragging, dragInput, dragStart, startPos
+setupFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = setupFrame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then dragging = false end
+        end)
+    end
+end)
+setupFrame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - dragStart
+        setupFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end)
+
 --------------------------------------------------
 -- 2. ГЛАВНОЕ ФЕЙК-МЕНЮ (КАК НА 1 СКРИНШОТЕ)
 --------------------------------------------------
@@ -78,7 +103,7 @@ overlay.Visible = false
 overlay.Parent = gui
 
 local modal = Instance.new("Frame")
-modal.Size = UDim2.new(0, 480, 0, 260) -- Размер как на 1 скрине
+modal.Size = UDim2.new(0, 480, 0, 260)
 modal.Position = UDim2.new(0.5, -240, 0.5, -130)
 modal.BackgroundColor3 = Color3.fromRGB(25, 27, 33)
 modal.Visible = false
@@ -88,7 +113,6 @@ local modalCorner = Instance.new("UICorner")
 modalCorner.CornerRadius = UDim.new(0, 14)
 modalCorner.Parent = modal
 
--- Заголовок "Buy item"
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(0, 200, 0, 30)
 title.Position = UDim2.new(0, 20, 0, 20)
@@ -110,7 +134,6 @@ closeBtn.Font = Enum.Font.Gotham
 closeBtn.BackgroundTransparency = 1
 closeBtn.Parent = modal
 
--- Фейк баланс (будет обновляться из стартового меню)
 local balanceText = Instance.new("TextLabel")
 balanceText.Size = UDim2.new(0, 60, 0, 30)
 balanceText.Position = UDim2.new(1, -115, 0, 20)
@@ -129,7 +152,6 @@ balanceIcon.BackgroundTransparency = 1
 balanceIcon.Image = "rbxassetid://13087340654"
 balanceIcon.Parent = modal
 
--- Данные предмета (название и цена)
 local itemName = Instance.new("TextLabel")
 itemName.Size = UDim2.new(0, 300, 0, 25)
 itemName.Position = UDim2.new(0, 105, 0, 95)
@@ -160,14 +182,13 @@ itemPrice.BackgroundTransparency = 1
 itemPrice.Parent = modal
 
 --------------------------------------------------
--- 3. КНОПКА С АНИМАЦИЕЙ ЗАЛИВКИ (Как на скринах 2 и 3)
+-- 3. КНОПКА С АНИМАЦИЕЙ ЗАЛИВКИ
 --------------------------------------------------
--- Базовый контейнер кнопки (он становится темным при клике)
 local buyBtnBase = Instance.new("TextButton")
 buyBtnBase.Size = UDim2.new(1, -40, 0, 48)
 buyBtnBase.Position = UDim2.new(0, 20, 1, -68)
-buyBtnBase.Text = "" -- Текст вынесен отдельно
-buyBtnBase.BackgroundColor3 = Color3.fromRGB(59, 99, 246) -- Исходный ярко-синий
+buyBtnBase.Text = "" 
+buyBtnBase.BackgroundColor3 = Color3.fromRGB(59, 99, 246)
 buyBtnBase.AutoButtonColor = false
 buyBtnBase.Parent = modal
 
@@ -175,11 +196,10 @@ local baseCorner = Instance.new("UICorner")
 baseCorner.CornerRadius = UDim.new(0, 10)
 baseCorner.Parent = buyBtnBase
 
--- Ползунок заливки (светло-синий), который движется слева направо
 local progressFill = Instance.new("Frame")
-progressFill.Size = UDim2.new(0, 0, 1, 0) -- Ширина изначально 0
+progressFill.Size = UDim2.new(0, 0, 1, 0)
 progressFill.Position = UDim2.new(0, 0, 0, 0)
-progressFill.BackgroundColor3 = Color3.fromRGB(59, 99, 246) -- Цвет заливки
+progressFill.BackgroundColor3 = Color3.fromRGB(59, 99, 246)
 progressFill.BorderSizePixel = 0
 progressFill.Visible = false
 progressFill.Parent = buyBtnBase
@@ -188,7 +208,6 @@ local fillCorner = Instance.new("UICorner")
 fillCorner.CornerRadius = UDim.new(0, 10)
 fillCorner.Parent = progressFill
 
--- Текст кнопки поверх всего
 local buyTextLabel = Instance.new("TextLabel")
 buyTextLabel.Size = UDim2.new(1, 0, 1, 0)
 buyTextLabel.Text = "Buy"
@@ -200,24 +219,19 @@ buyTextLabel.ZIndex = 2
 buyTextLabel.Parent = buyBtnBase
 
 --------------------------------------------------
--- ЛОГИКА СКРИПТА
+-- 4. ЛОГИКА И АНИМАЦИЯ (3 СЕКУНДЫ)
 --------------------------------------------------
-
--- 1. Настройка баланса и запуск
 applyBtn.MouseButton1Click:Connect(function()
     customBalance = balanceInput.Text
     if customBalance == "" then customBalance = "62" end
     balanceText.Text = customBalance
-    
-    setupFrame.Visible = false -- Прячем меню настроек
+    setupFrame.Visible = false
 end)
 
--- Открытие / Закрытие окна
 local function ShowModal(name, price)
     itemName.Text = name or "Loading..."
     itemPrice.Text = price and tostring(price) or "..."
     
-    -- Сброс кнопки
     buyBtnBase.BackgroundColor3 = Color3.fromRGB(59, 99, 246)
     progressFill.Size = UDim2.new(0, 0, 1, 0)
     progressFill.Visible = false
@@ -235,36 +249,29 @@ end
 overlay.MouseButton1Click:Connect(HideModal)
 closeBtn.MouseButton1Click:Connect(HideModal)
 
--- 2. Анимация кнопки Buy (Заливка как на скрине)
 local isProcessing = false
 
 buyBtnBase.MouseButton1Click:Connect(function()
     if isProcessing then return end
     isProcessing = true
     
-    -- Делаем фон кнопки тёмно-синим
     buyBtnBase.BackgroundColor3 = Color3.fromRGB(36, 59, 146)
-    
-    -- Показываем ползунок и настраиваем анимацию
     progressFill.BackgroundColor3 = Color3.fromRGB(59, 99, 246)
     progressFill.Visible = true
     
-    local tween = TweenService:Create(progressFill, TweenInfo.new(1.2, Enum.EasingStyle.Linear), {Size = UDim2.new(1, 0, 1, 0)})
+    -- Анимация теперь ровно 3 секунды
+    local tween = TweenService:Create(progressFill, TweenInfo.new(3.0, Enum.EasingStyle.Linear), {Size = UDim2.new(1, 0, 1, 0)})
     tween:Play()
-    
-    -- Ждем конца анимации
     tween.Completed:Wait()
     
-    -- Действие после "покупки"
     buyTextLabel.Text = "Purchased!"
-    progressFill.BackgroundColor3 = Color3.fromRGB(34, 197, 94) -- Окрашиваем в зеленый для эффекта (можешь убрать, если не нужно)
+    progressFill.BackgroundColor3 = Color3.fromRGB(34, 197, 94)
     
     task.wait(1)
     HideModal()
     isProcessing = false
 end)
 
--- 3. Перехват реальных геймпасов
 local function fetchAndShow(id, infoType)
     ShowModal("Loading...", "...") 
     task.spawn(function()
@@ -281,15 +288,25 @@ local function fetchAndShow(id, infoType)
     end)
 end
 
--- Хуки на покупку
-MarketplaceService.PromptGamePassPurchaseRequested:Connect(function(plr, gamePassId)
-    if plr == player and not setupFrame.Visible then
-        fetchAndShow(gamePassId, Enum.InfoType.GamePass)
+--------------------------------------------------
+-- 5. ПЕРЕХВАТ ОРИГИНАЛЬНОГО МЕНЮ (HOOKMETAMETHOD)
+--------------------------------------------------
+local oldNamecall
+oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
+    local method = getnamecallmethod()
+    local args = {...}
+    
+    if self == MarketplaceService and not setupFrame.Visible then
+        if method == "PromptGamePassPurchase" then
+            local id = args[2]
+            fetchAndShow(id, Enum.InfoType.GamePass)
+            return -- ВОТ ЭТО БЛОКИРУЕТ ОРИГИНАЛЬНОЕ МЕНЮ
+        elseif method == "PromptProductPurchase" then
+            local id = args[2]
+            fetchAndShow(id, Enum.InfoType.Product)
+            return -- ВОТ ЭТО БЛОКИРУЕТ ОРИГИНАЛЬНОЕ МЕНЮ
+        end
     end
-end)
-
-MarketplaceService.PromptProductPurchaseRequested:Connect(function(plr, productId)
-    if plr == player and not setupFrame.Visible then
-        fetchAndShow(productId, Enum.InfoType.Product)
-    end
+    
+    return oldNamecall(self, ...)
 end)

@@ -2,6 +2,7 @@ local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local MarketplaceService = game:GetService("MarketplaceService")
 local UserInputService = game:GetService("UserInputService")
+local ContentProvider = game:GetService("ContentProvider")
 
 local player = Players.LocalPlayer
 
@@ -118,7 +119,7 @@ end)
 local overlay = Instance.new("TextButton")
 overlay.Size = UDim2.new(1,0,1,0)
 overlay.BackgroundColor3 = Color3.new(0,0,0)
-overlay.BackgroundTransparency = 0.4
+overlay.BackgroundTransparency = 1
 overlay.Text = ""
 overlay.AutoButtonColor = false
 overlay.Visible = false
@@ -160,13 +161,14 @@ title.TextXAlignment = Enum.TextXAlignment.Left
 title.ZIndex = 3
 title.Parent = modal
 
--- CLOSE BUTTON
+-- CLOSE
 
 local closeBtn = Instance.new("ImageButton")
 closeBtn.Size = UDim2.fromOffset(24,24)
 closeBtn.Position = UDim2.new(1,-40,0,24)
 closeBtn.BackgroundTransparency = 1
-closeBtn.Image = "https://tr.rbxcdn.com/180DAY-c6c2f9f7d5b3e0f1a1ddc7f0f5d82d35/150/150/Image/Png"
+closeBtn.Image = "rbxassetid://78940278565096"
+closeBtn.ScaleType = Enum.ScaleType.Fit
 closeBtn.ZIndex = 3
 closeBtn.Parent = modal
 
@@ -189,7 +191,8 @@ balanceLayout.Parent = balanceFrame
 local balanceIcon = Instance.new("ImageLabel")
 balanceIcon.Size = UDim2.fromOffset(20,20)
 balanceIcon.BackgroundTransparency = 1
-balanceIcon.Image = "https://tr.rbxcdn.com/180DAY-f79f2a393c65f4d6b1c8b1b3f4a6b4f1/150/150/Image/Png"
+balanceIcon.Image = "rbxassetid://70493384532723"
+balanceIcon.ScaleType = Enum.ScaleType.Fit
 balanceIcon.ZIndex = 3
 balanceIcon.Parent = balanceFrame
 
@@ -212,6 +215,8 @@ promptContainer.BackgroundTransparency = 1
 promptContainer.ZIndex = 3
 promptContainer.Parent = modal
 
+-- ITEM
+
 local itemName = Instance.new("TextLabel")
 itemName.Size = UDim2.new(0,300,0,30)
 itemName.Position = UDim2.new(0,90,0,100)
@@ -223,6 +228,8 @@ itemName.TextXAlignment = Enum.TextXAlignment.Left
 itemName.Text = "Loading..."
 itemName.ZIndex = 3
 itemName.Parent = promptContainer
+
+-- PRICE
 
 local priceFrame = Instance.new("Frame")
 priceFrame.Size = UDim2.new(0,120,0,25)
@@ -241,7 +248,8 @@ priceLayout.Parent = priceFrame
 local priceIcon = Instance.new("ImageLabel")
 priceIcon.Size = UDim2.fromOffset(20,20)
 priceIcon.BackgroundTransparency = 1
-priceIcon.Image = "https://tr.rbxcdn.com/180DAY-f79f2a393c65f4d6b1c8b1b3f4a6b4f1/150/150/Image/Png"
+priceIcon.Image = "rbxassetid://70493384532723"
+priceIcon.ScaleType = Enum.ScaleType.Fit
 priceIcon.ZIndex = 3
 priceIcon.Parent = priceFrame
 
@@ -306,7 +314,8 @@ local checkIcon = Instance.new("ImageLabel")
 checkIcon.Size = UDim2.fromOffset(70,70)
 checkIcon.Position = UDim2.new(0.5,-35,0,55)
 checkIcon.BackgroundTransparency = 1
-checkIcon.Image = "https://tr.rbxcdn.com/180DAY-0d4a2b61cc8dbdcdf9fd7a9549ac4690/150/150/Image/Png"
+checkIcon.Image = "rbxassetid://110759125205910"
+checkIcon.ScaleType = Enum.ScaleType.Fit
 checkIcon.ZIndex = 3
 checkIcon.Parent = successContainer
 
@@ -337,6 +346,15 @@ local okCorner = Instance.new("UICorner")
 okCorner.CornerRadius = UDim.new(0,14)
 okCorner.Parent = okBtn
 
+-- PRELOAD
+
+ContentProvider:PreloadAsync({
+	closeBtn,
+	balanceIcon,
+	priceIcon,
+	checkIcon
+})
+
 -- SHOW
 
 local function ShowModal()
@@ -346,9 +364,15 @@ local function ShowModal()
 	overlay.BackgroundTransparency = 1
 	modal.BackgroundTransparency = 1
 
+	modal.Size = UDim2.fromOffset(540,285)
+	modal.Position = UDim2.new(0.5,-270,0.5,-142)
+
 	TweenService:Create(
 		overlay,
-		TweenInfo.new(0.15),
+		TweenInfo.new(
+			0.12,
+			Enum.EasingStyle.Linear
+		),
 		{
 			BackgroundTransparency = 0.4
 		}
@@ -356,9 +380,15 @@ local function ShowModal()
 
 	TweenService:Create(
 		modal,
-		TweenInfo.new(0.15),
+		TweenInfo.new(
+			0.16,
+			Enum.EasingStyle.Quint,
+			Enum.EasingDirection.Out
+		),
 		{
-			BackgroundTransparency = 0
+			BackgroundTransparency = 0,
+			Size = UDim2.fromOffset(560,300),
+			Position = UDim2.new(0.5,-280,0.5,-150)
 		}
 	):Play()
 end

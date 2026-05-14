@@ -129,8 +129,8 @@ overlay.Parent = gui
 -- MODAL
 
 local modal = Instance.new("Frame")
-modal.Size = UDim2.fromOffset(560,300)
-modal.Position = UDim2.new(0.5,-280,0.5,-150)
+modal.Size = UDim2.fromOffset(500,270)
+modal.Position = UDim2.new(0.5,-250,0.5,-135)
 modal.BackgroundColor3 = Color3.fromRGB(17,19,28)
 modal.BorderSizePixel = 0
 modal.Visible = false
@@ -139,8 +139,8 @@ modal.ZIndex = 2
 modal.Parent = gui
 
 local constraint = Instance.new("UISizeConstraint")
-constraint.MaxSize = Vector2.new(560,300)
-constraint.MinSize = Vector2.new(560,300)
+constraint.MaxSize = Vector2.new(500,270)
+constraint.MinSize = Vector2.new(500,270)
 constraint.Parent = modal
 
 local modalCorner = Instance.new("UICorner")
@@ -151,11 +151,11 @@ modalCorner.Parent = modal
 
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(0,250,0,30)
-title.Position = UDim2.new(0,28,0,24)
+title.Position = UDim2.new(0,22,0,18)
 title.BackgroundTransparency = 1
 title.Font = Enum.Font.GothamBold
 title.Text = "Buy item"
-title.TextSize = 26
+title.TextSize = 22
 title.TextColor3 = Color3.new(1,1,1)
 title.TextXAlignment = Enum.TextXAlignment.Left
 title.ZIndex = 3
@@ -164,8 +164,8 @@ title.Parent = modal
 -- CLOSE BUTTON
 
 local closeBtn = Instance.new("ImageButton")
-closeBtn.Size = UDim2.fromOffset(24,24)
-closeBtn.Position = UDim2.new(1,-40,0,24)
+closeBtn.Size = UDim2.fromOffset(22,22)
+closeBtn.Position = UDim2.new(1,-34,0,20)
 closeBtn.BackgroundTransparency = 1
 closeBtn.Image = "rbxthumb://type=Asset&id=78940278565096&w=420&h=420"
 closeBtn.ScaleType = Enum.ScaleType.Fit
@@ -175,8 +175,8 @@ closeBtn.Parent = modal
 -- BALANCE
 
 local balanceFrame = Instance.new("Frame")
-balanceFrame.Size = UDim2.fromOffset(150,26)
-balanceFrame.Position = UDim2.new(1,-120,0,24)
+balanceFrame.Size = UDim2.fromOffset(165,24)
+balanceFrame.Position = UDim2.new(1,-150,0,20)
 balanceFrame.BackgroundTransparency = 1
 balanceFrame.ZIndex = 3
 balanceFrame.Parent = modal
@@ -185,11 +185,11 @@ local balanceLayout = Instance.new("UIListLayout")
 balanceLayout.FillDirection = Enum.FillDirection.Horizontal
 balanceLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
 balanceLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-balanceLayout.Padding = UDim.new(0,4)
+balanceLayout.Padding = UDim.new(0,3)
 balanceLayout.Parent = balanceFrame
 
 local balanceIcon = Instance.new("ImageLabel")
-balanceIcon.Size = UDim2.fromOffset(18,18)
+balanceIcon.Size = UDim2.fromOffset(16,16)
 balanceIcon.BackgroundTransparency = 1
 balanceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=420&h=420"
 balanceIcon.ScaleType = Enum.ScaleType.Fit
@@ -201,7 +201,7 @@ balanceText.AutomaticSize = Enum.AutomaticSize.X
 balanceText.Size = UDim2.new(0,0,1,0)
 balanceText.BackgroundTransparency = 1
 balanceText.Font = Enum.Font.GothamMedium
-balanceText.TextSize = 17
+balanceText.TextSize = 15
 balanceText.TextColor3 = Color3.new(1,1,1)
 balanceText.Text = customBalance
 balanceText.TextXAlignment = Enum.TextXAlignment.Left
@@ -220,10 +220,10 @@ promptContainer.Parent = modal
 
 local itemName = Instance.new("TextLabel")
 itemName.Size = UDim2.new(0,300,0,30)
-itemName.Position = UDim2.new(0,78,0,84)
+itemName.Position = UDim2.new(0,62,0,76)
 itemName.BackgroundTransparency = 1
 itemName.Font = Enum.Font.GothamBold
-itemName.TextSize = 17
+itemName.TextSize = 16
 itemName.TextColor3 = Color3.new(1,1,1)
 itemName.TextXAlignment = Enum.TextXAlignment.Left
 itemName.Text = "Loading..."
@@ -233,8 +233,8 @@ itemName.Parent = promptContainer
 -- PRICE
 
 local priceFrame = Instance.new("Frame")
-priceFrame.Size = UDim2.fromOffset(120,22)
-priceFrame.Position = UDim2.new(0,78,0,118)
+priceFrame.Size = UDim2.fromOffset(100,20)
+priceFrame.Position = UDim2.new(0,62,0,104)
 priceFrame.BackgroundTransparency = 1
 priceFrame.ZIndex = 3
 priceFrame.Parent = promptContainer
@@ -243,11 +243,11 @@ local priceLayout = Instance.new("UIListLayout")
 priceLayout.FillDirection = Enum.FillDirection.Horizontal
 priceLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
 priceLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-priceLayout.Padding = UDim.new(0,4)
+priceLayout.Padding = UDim.new(0,3)
 priceLayout.Parent = priceFrame
 
 local priceIcon = Instance.new("ImageLabel")
-priceIcon.Size = UDim2.fromOffset(18,18)
+priceIcon.Size = UDim2.fromOffset(16,16)
 priceIcon.BackgroundTransparency = 1
 priceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=420&h=420"
 priceIcon.ScaleType = Enum.ScaleType.Fit
@@ -259,7 +259,7 @@ itemPrice.AutomaticSize = Enum.AutomaticSize.X
 itemPrice.Size = UDim2.new(0,0,1,0)
 itemPrice.BackgroundTransparency = 1
 itemPrice.Font = Enum.Font.GothamMedium
-itemPrice.TextSize = 17
+itemPrice.TextSize = 15
 itemPrice.TextColor3 = Color3.new(1,1,1)
 itemPrice.Text = "5"
 itemPrice.TextXAlignment = Enum.TextXAlignment.Left
@@ -269,8 +269,8 @@ itemPrice.Parent = priceFrame
 -- BUY BUTTON
 
 local buyBtn = Instance.new("TextButton")
-buyBtn.Size = UDim2.new(1,-40,0,42)
-buyBtn.Position = UDim2.new(0,20,1,-58)
+buyBtn.Size = UDim2.new(1,-36,0,40)
+buyBtn.Position = UDim2.new(0,18,1,-52)
 buyBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
 buyBtn.Text = ""
 buyBtn.AutoButtonColor = false
@@ -279,7 +279,7 @@ buyBtn.ZIndex = 3
 buyBtn.Parent = promptContainer
 
 local buyCorner = Instance.new("UICorner")
-buyCorner.CornerRadius = UDim.new(0,10)
+buyCorner.CornerRadius = UDim.new(0,9)
 buyCorner.Parent = buyBtn
 
 local progressFill = Instance.new("Frame")
@@ -290,14 +290,14 @@ progressFill.ZIndex = 4
 progressFill.Parent = buyBtn
 
 local fillCorner = Instance.new("UICorner")
-fillCorner.CornerRadius = UDim.new(0,10)
+fillCorner.CornerRadius = UDim.new(0,9)
 fillCorner.Parent = progressFill
 
 local buyText = Instance.new("TextLabel")
 buyText.Size = UDim2.new(1,0,1,0)
 buyText.BackgroundTransparency = 1
 buyText.Font = Enum.Font.GothamMedium
-buyText.TextSize = 18
+buyText.TextSize = 17
 buyText.Text = "Buy"
 buyText.TextColor3 = Color3.new(1,1,1)
 buyText.ZIndex = 5
@@ -313,8 +313,8 @@ successContainer.ZIndex = 3
 successContainer.Parent = modal
 
 local checkIcon = Instance.new("ImageLabel")
-checkIcon.Size = UDim2.fromOffset(68,68)
-checkIcon.Position = UDim2.new(0.5,-34,0,50)
+checkIcon.Size = UDim2.fromOffset(62,62)
+checkIcon.Position = UDim2.new(0.5,-31,0,44)
 checkIcon.BackgroundTransparency = 1
 checkIcon.Image = "rbxthumb://type=Asset&id=110759125205910&w=420&h=420"
 checkIcon.ScaleType = Enum.ScaleType.Fit
@@ -322,11 +322,11 @@ checkIcon.ZIndex = 4
 checkIcon.Parent = successContainer
 
 local successMsg = Instance.new("TextLabel")
-successMsg.Size = UDim2.new(1,-100,0,30)
-successMsg.Position = UDim2.new(0,50,0,135)
+successMsg.Size = UDim2.new(1,-80,0,26)
+successMsg.Position = UDim2.new(0,40,0,125)
 successMsg.BackgroundTransparency = 1
 successMsg.Font = Enum.Font.Gotham
-successMsg.TextSize = 15
+successMsg.TextSize = 14
 successMsg.TextColor3 = Color3.fromRGB(220,220,220)
 successMsg.TextXAlignment = Enum.TextXAlignment.Center
 successMsg.Text = ""
@@ -334,18 +334,18 @@ successMsg.ZIndex = 3
 successMsg.Parent = successContainer
 
 local okBtn = Instance.new("TextButton")
-okBtn.Size = UDim2.new(1,-40,0,42)
-okBtn.Position = UDim2.new(0,20,1,-58)
+okBtn.Size = UDim2.new(1,-36,0,40)
+okBtn.Position = UDim2.new(0,18,1,-52)
 okBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
 okBtn.Font = Enum.Font.GothamMedium
 okBtn.Text = "OK"
-okBtn.TextSize = 18
+okBtn.TextSize = 17
 okBtn.TextColor3 = Color3.new(1,1,1)
 okBtn.ZIndex = 3
 okBtn.Parent = successContainer
 
 local okCorner = Instance.new("UICorner")
-okCorner.CornerRadius = UDim.new(0,10)
+okCorner.CornerRadius = UDim.new(0,9)
 okCorner.Parent = okBtn
 
 -- PRELOAD
@@ -366,8 +366,8 @@ local function ShowModal()
 	overlay.BackgroundTransparency = 1
 	modal.BackgroundTransparency = 1
 
-	modal.Size = UDim2.fromOffset(540,285)
-	modal.Position = UDim2.new(0.5,-270,0.5,-142)
+	modal.Size = UDim2.fromOffset(480,255)
+	modal.Position = UDim2.new(0.5,-240,0.5,-127)
 
 	TweenService:Create(
 		overlay,
@@ -389,8 +389,8 @@ local function ShowModal()
 		),
 		{
 			BackgroundTransparency = 0,
-			Size = UDim2.fromOffset(560,300),
-			Position = UDim2.new(0.5,-280,0.5,-150)
+			Size = UDim2.fromOffset(500,270),
+			Position = UDim2.new(0.5,-250,0.5,-135)
 		}
 	):Play()
 end

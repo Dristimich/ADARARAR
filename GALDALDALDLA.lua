@@ -19,14 +19,109 @@ gui.IgnoreGuiInset = true
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 gui.Parent = player.PlayerGui
 
-local customBalance = "6767"
+local customBalance = "2,147,483,647"
+
+-- SETTINGS
+
+local setupFrame = Instance.new("Frame")
+setupFrame.Size = UDim2.fromOffset(300,180)
+setupFrame.Position = UDim2.new(0.5,-150,0.5,-90)
+setupFrame.BackgroundColor3 = Color3.fromRGB(25,27,33)
+setupFrame.BorderSizePixel = 0
+setupFrame.Active = true
+setupFrame.ZIndex = 50
+setupFrame.Parent = gui
+
+local setupCorner = Instance.new("UICorner")
+setupCorner.CornerRadius = UDim.new(0,12)
+setupCorner.Parent = setupFrame
+
+local setupTitle = Instance.new("TextLabel")
+setupTitle.Size = UDim2.new(1,0,0,40)
+setupTitle.BackgroundTransparency = 1
+setupTitle.Text = "Settings (Drag me)"
+setupTitle.Font = Enum.Font.GothamBold
+setupTitle.TextSize = 20
+setupTitle.TextColor3 = Color3.new(1,1,1)
+setupTitle.Parent = setupFrame
+
+local balanceInput = Instance.new("TextBox")
+balanceInput.Size = UDim2.new(1,-40,0,40)
+balanceInput.Position = UDim2.new(0,20,0,60)
+balanceInput.BackgroundColor3 = Color3.fromRGB(40,43,53)
+balanceInput.Text = customBalance
+balanceInput.PlaceholderText = "Enter fake balance"
+balanceInput.Font = Enum.Font.Gotham
+balanceInput.TextSize = 16
+balanceInput.TextColor3 = Color3.new(1,1,1)
+balanceInput.Parent = setupFrame
+
+local inputCorner = Instance.new("UICorner")
+inputCorner.CornerRadius = UDim.new(0,8)
+inputCorner.Parent = balanceInput
+
+local applyBtn = Instance.new("TextButton")
+applyBtn.Size = UDim2.new(1,-40,0,40)
+applyBtn.Position = UDim2.new(0,20,0,120)
+applyBtn.BackgroundColor3 = Color3.fromRGB(59,99,246)
+applyBtn.Text = "Save & Start"
+applyBtn.Font = Enum.Font.GothamBold
+applyBtn.TextSize = 16
+applyBtn.TextColor3 = Color3.new(1,1,1)
+applyBtn.Parent = setupFrame
+
+local applyCorner = Instance.new("UICorner")
+applyCorner.CornerRadius = UDim.new(0,8)
+applyCorner.Parent = applyBtn
+
+-- DRAG
+
+local dragging
+local dragInput
+local dragStart
+local startPos
+
+setupFrame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		dragStart = input.Position
+		startPos = setupFrame.Position
+
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then
+				dragging = false
+			end
+		end)
+	end
+end)
+
+setupFrame.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement then
+		dragInput = input
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if input == dragInput and dragging then
+		local delta = input.Position - dragStart
+
+		setupFrame.Position = UDim2.new(
+			startPos.X.Scale,
+			startPos.X.Offset + delta.X,
+			startPos.Y.Scale,
+			startPos.Y.Offset + delta.Y
+		)
+	end
+end)
 
 -- OVERLAY
 
-local overlay = Instance.new("Frame")
+local overlay = Instance.new("TextButton")
 overlay.Size = UDim2.new(1,0,1,0)
 overlay.BackgroundColor3 = Color3.new(0,0,0)
 overlay.BackgroundTransparency = 1
+overlay.Text = ""
+overlay.AutoButtonColor = false
 overlay.Visible = false
 overlay.ZIndex = 1
 overlay.Parent = gui
@@ -34,49 +129,54 @@ overlay.Parent = gui
 -- MODAL
 
 local modal = Instance.new("Frame")
-modal.Size = UDim2.fromOffset(1100, 580)
-modal.Position = UDim2.new(0.5,-550,0.5,-290)
-modal.BackgroundColor3 = Color3.fromRGB(8,10,20)
+modal.Size = UDim2.fromOffset(560,300)
+modal.Position = UDim2.new(0.5,-280,0.5,-150)
+modal.BackgroundColor3 = Color3.fromRGB(17,19,28)
 modal.BorderSizePixel = 0
 modal.Visible = false
 modal.ClipsDescendants = true
 modal.ZIndex = 2
 modal.Parent = gui
 
+local constraint = Instance.new("UISizeConstraint")
+constraint.MaxSize = Vector2.new(560,300)
+constraint.MinSize = Vector2.new(560,300)
+constraint.Parent = modal
+
 local modalCorner = Instance.new("UICorner")
-modalCorner.CornerRadius = UDim.new(0,30)
+modalCorner.CornerRadius = UDim.new(0,20)
 modalCorner.Parent = modal
 
 -- TITLE
 
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(0,300,0,60)
-title.Position = UDim2.new(0,35,0,35)
+title.Size = UDim2.new(0,250,0,30)
+title.Position = UDim2.new(0,28,0,24)
 title.BackgroundTransparency = 1
 title.Font = Enum.Font.GothamBold
 title.Text = "Buy item"
-title.TextSize = 38
+title.TextSize = 26
 title.TextColor3 = Color3.new(1,1,1)
 title.TextXAlignment = Enum.TextXAlignment.Left
 title.ZIndex = 3
 title.Parent = modal
 
--- CLOSE BUTTON
+-- CLOSE BUTTON (FIXED)
 
 local closeBtn = Instance.new("ImageButton")
-closeBtn.Size = UDim2.fromOffset(44,44)
-closeBtn.Position = UDim2.new(1,-72,0,34)
+closeBtn.Size = UDim2.fromOffset(26,26)
+closeBtn.Position = UDim2.new(1,-42,0,22)
 closeBtn.BackgroundTransparency = 1
 closeBtn.Image = "rbxthumb://type=Asset&id=78940278565096&w=420&h=420"
 closeBtn.ScaleType = Enum.ScaleType.Fit
 closeBtn.ZIndex = 4
 closeBtn.Parent = modal
 
--- BALANCE
+-- BALANCE (FIXED)
 
 local balanceFrame = Instance.new("Frame")
-balanceFrame.Size = UDim2.new(0,240,0,40)
-balanceFrame.Position = UDim2.new(1,-320,0,38)
+balanceFrame.Size = UDim2.new(0,200,0,32)
+balanceFrame.Position = UDim2.new(1,-240,0,20)
 balanceFrame.BackgroundTransparency = 1
 balanceFrame.ZIndex = 3
 balanceFrame.Parent = modal
@@ -85,11 +185,11 @@ local balanceLayout = Instance.new("UIListLayout")
 balanceLayout.FillDirection = Enum.FillDirection.Horizontal
 balanceLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
 balanceLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-balanceLayout.Padding = UDim.new(0,10)
+balanceLayout.Padding = UDim.new(0,6)
 balanceLayout.Parent = balanceFrame
 
 local balanceIcon = Instance.new("ImageLabel")
-balanceIcon.Size = UDim2.fromOffset(34,34)
+balanceIcon.Size = UDim2.fromOffset(18,18)
 balanceIcon.BackgroundTransparency = 1
 balanceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=420&h=420"
 balanceIcon.ScaleType = Enum.ScaleType.Fit
@@ -101,13 +201,13 @@ balanceText.AutomaticSize = Enum.AutomaticSize.X
 balanceText.Size = UDim2.new(0,0,1,0)
 balanceText.BackgroundTransparency = 1
 balanceText.Font = Enum.Font.GothamMedium
-balanceText.TextSize = 28
+balanceText.TextSize = 18
 balanceText.TextColor3 = Color3.new(1,1,1)
 balanceText.Text = customBalance
 balanceText.ZIndex = 4
 balanceText.Parent = balanceFrame
 
--- CONTENT
+-- PROMPT
 
 local promptContainer = Instance.new("Frame")
 promptContainer.Size = UDim2.new(1,0,1,0)
@@ -118,35 +218,35 @@ promptContainer.Parent = modal
 -- ITEM NAME
 
 local itemName = Instance.new("TextLabel")
-itemName.Size = UDim2.new(0,600,0,50)
-itemName.Position = UDim2.new(0,165,0,220)
+itemName.Size = UDim2.new(0,300,0,30)
+itemName.Position = UDim2.new(0,78,0,86)
 itemName.BackgroundTransparency = 1
 itemName.Font = Enum.Font.GothamBold
-itemName.TextSize = 36
+itemName.TextSize = 17
 itemName.TextColor3 = Color3.new(1,1,1)
 itemName.TextXAlignment = Enum.TextXAlignment.Left
-itemName.Text = "Cash 20000"
-itemName.ZIndex = 4
+itemName.Text = "Loading..."
+itemName.ZIndex = 3
 itemName.Parent = promptContainer
 
 -- PRICE
 
 local priceFrame = Instance.new("Frame")
-priceFrame.Size = UDim2.new(0,220,0,50)
-priceFrame.Position = UDim2.new(0,165,0,295)
+priceFrame.Size = UDim2.new(0,150,0,28)
+priceFrame.Position = UDim2.new(0,78,0,116)
 priceFrame.BackgroundTransparency = 1
-priceFrame.ZIndex = 4
+priceFrame.ZIndex = 3
 priceFrame.Parent = promptContainer
 
 local priceLayout = Instance.new("UIListLayout")
 priceLayout.FillDirection = Enum.FillDirection.Horizontal
 priceLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
 priceLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-priceLayout.Padding = UDim.new(0,12)
+priceLayout.Padding = UDim.new(0,6)
 priceLayout.Parent = priceFrame
 
 local priceIcon = Instance.new("ImageLabel")
-priceIcon.Size = UDim2.fromOffset(34,34)
+priceIcon.Size = UDim2.fromOffset(18,18)
 priceIcon.BackgroundTransparency = 1
 priceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=420&h=420"
 priceIcon.ScaleType = Enum.ScaleType.Fit
@@ -158,17 +258,17 @@ itemPrice.AutomaticSize = Enum.AutomaticSize.X
 itemPrice.Size = UDim2.new(0,0,1,0)
 itemPrice.BackgroundTransparency = 1
 itemPrice.Font = Enum.Font.GothamMedium
-itemPrice.TextSize = 34
+itemPrice.TextSize = 17
 itemPrice.TextColor3 = Color3.new(1,1,1)
-itemPrice.Text = "199"
-itemPrice.ZIndex = 4
+itemPrice.Text = "5"
+itemPrice.ZIndex = 3
 itemPrice.Parent = priceFrame
 
 -- BUY BUTTON
 
 local buyBtn = Instance.new("TextButton")
-buyBtn.Size = UDim2.new(1,-80,0,80)
-buyBtn.Position = UDim2.new(0,40,1,-110)
+buyBtn.Size = UDim2.new(1,-40,0,40)
+buyBtn.Position = UDim2.new(0,20,1,-60)
 buyBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
 buyBtn.Text = ""
 buyBtn.AutoButtonColor = false
@@ -177,25 +277,25 @@ buyBtn.ZIndex = 3
 buyBtn.Parent = promptContainer
 
 local buyCorner = Instance.new("UICorner")
-buyCorner.CornerRadius = UDim.new(0,22)
+buyCorner.CornerRadius = UDim.new(0,10)
 buyCorner.Parent = buyBtn
 
 local progressFill = Instance.new("Frame")
 progressFill.Size = UDim2.new(0,0,1,0)
-progressFill.BackgroundColor3 = Color3.fromRGB(46,67,170)
+progressFill.BackgroundColor3 = Color3.fromRGB(53,79,197)
 progressFill.BorderSizePixel = 0
 progressFill.ZIndex = 4
 progressFill.Parent = buyBtn
 
 local fillCorner = Instance.new("UICorner")
-fillCorner.CornerRadius = UDim.new(0,22)
+fillCorner.CornerRadius = UDim.new(0,10)
 fillCorner.Parent = progressFill
 
 local buyText = Instance.new("TextLabel")
 buyText.Size = UDim2.new(1,0,1,0)
 buyText.BackgroundTransparency = 1
 buyText.Font = Enum.Font.GothamMedium
-buyText.TextSize = 34
+buyText.TextSize = 18
 buyText.Text = "Buy"
 buyText.TextColor3 = Color3.new(1,1,1)
 buyText.ZIndex = 5
@@ -211,8 +311,8 @@ successContainer.ZIndex = 3
 successContainer.Parent = modal
 
 local checkIcon = Instance.new("ImageLabel")
-checkIcon.Size = UDim2.fromOffset(110,110)
-checkIcon.Position = UDim2.new(0.5,-55,0,70)
+checkIcon.Size = UDim2.fromOffset(72,72)
+checkIcon.Position = UDim2.new(0.5,-36,0,40)
 checkIcon.BackgroundTransparency = 1
 checkIcon.Image = "rbxthumb://type=Asset&id=110759125205910&w=420&h=420"
 checkIcon.ScaleType = Enum.ScaleType.Fit
@@ -220,31 +320,33 @@ checkIcon.ZIndex = 4
 checkIcon.Parent = successContainer
 
 local successMsg = Instance.new("TextLabel")
-successMsg.Size = UDim2.new(1,-100,0,40)
-successMsg.Position = UDim2.new(0,50,0,220)
+successMsg.Size = UDim2.new(1,-100,0,30)
+successMsg.Position = UDim2.new(0,50,0,135)
 successMsg.BackgroundTransparency = 1
 successMsg.Font = Enum.Font.Gotham
-successMsg.TextSize = 24
+successMsg.TextSize = 15
 successMsg.TextColor3 = Color3.fromRGB(220,220,220)
 successMsg.TextXAlignment = Enum.TextXAlignment.Center
 successMsg.Text = ""
-successMsg.ZIndex = 4
+successMsg.ZIndex = 3
 successMsg.Parent = successContainer
 
 local okBtn = Instance.new("TextButton")
-okBtn.Size = UDim2.new(1,-80,0,80)
-okBtn.Position = UDim2.new(0,40,1,-110)
+okBtn.Size = UDim2.new(1,-40,0,40)
+okBtn.Position = UDim2.new(0,20,1,-60)
 okBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
 okBtn.Font = Enum.Font.GothamMedium
 okBtn.Text = "OK"
-okBtn.TextSize = 34
+okBtn.TextSize = 18
 okBtn.TextColor3 = Color3.new(1,1,1)
-okBtn.ZIndex = 4
+okBtn.ZIndex = 3
 okBtn.Parent = successContainer
 
 local okCorner = Instance.new("UICorner")
-okCorner.CornerRadius = UDim.new(0,22)
+okCorner.CornerRadius = UDim.new(0,10)
 okCorner.Parent = okBtn
+
+-- PRELOAD
 
 ContentProvider:PreloadAsync({
 	closeBtn,
@@ -262,14 +364,17 @@ local function ShowModal()
 	overlay.BackgroundTransparency = 1
 	modal.BackgroundTransparency = 1
 
-	modal.Size = UDim2.fromOffset(1040, 540)
-	modal.Position = UDim2.new(0.5,-520,0.5,-270)
+	modal.Size = UDim2.fromOffset(540,285)
+	modal.Position = UDim2.new(0.5,-270,0.5,-142)
 
 	TweenService:Create(
 		overlay,
-		TweenInfo.new(0.12, Enum.EasingStyle.Linear),
+		TweenInfo.new(
+			0.12,
+			Enum.EasingStyle.Linear
+		),
 		{
-			BackgroundTransparency = 0.35
+			BackgroundTransparency = 0.4
 		}
 	):Play()
 
@@ -282,8 +387,8 @@ local function ShowModal()
 		),
 		{
 			BackgroundTransparency = 0,
-			Size = UDim2.fromOffset(1100,580),
-			Position = UDim2.new(0.5,-550,0.5,-290)
+			Size = UDim2.fromOffset(560,300),
+			Position = UDim2.new(0.5,-280,0.5,-150)
 		}
 	):Play()
 end
@@ -291,10 +396,24 @@ end
 local function HideModal()
 	modal.Visible = false
 	overlay.Visible = false
+
+	modal.BackgroundTransparency = 0
+	overlay.BackgroundTransparency = 0.4
 end
 
 closeBtn.MouseButton1Click:Connect(HideModal)
 okBtn.MouseButton1Click:Connect(HideModal)
+
+applyBtn.MouseButton1Click:Connect(function()
+	customBalance = balanceInput.Text
+
+	if customBalance == "" then
+		customBalance = "2,147,483,647"
+	end
+
+	balanceText.Text = customBalance
+	setupFrame.Visible = false
+end)
 
 local canBuy = false
 local currentTween
@@ -351,7 +470,7 @@ local function fetchAndShow(id, infoType)
 	itemPrice.Text = "..."
 
 	buyBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
-	progressFill.BackgroundColor3 = Color3.fromRGB(46,67,170)
+	progressFill.BackgroundColor3 = Color3.fromRGB(53,79,197)
 
 	buyText.TextTransparency = 0
 
@@ -406,21 +525,23 @@ oldNamecall = hookmetamethod(game,"__namecall",function(self,...)
 	local method = getnamecallmethod()
 	local args = {...}
 
-	local id = tonumber(args[2])
+	if self == MarketplaceService and not setupFrame.Visible then
+		local id = tonumber(args[2])
 
-	if self == MarketplaceService and id then
-		if method == "PromptGamePassPurchase" then
-			fetchAndShow(id,Enum.InfoType.GamePass)
-			return
-		elseif method == "PromptProductPurchase" then
-			fetchAndShow(id,Enum.InfoType.Product)
-			return
-		elseif method == "PromptPurchase" then
-			fetchAndShow(id,Enum.InfoType.Asset)
-			return
-		elseif method == "PromptBundlePurchase" then
-			fetchAndShow(id,Enum.InfoType.Bundle)
-			return
+		if id then
+			if method == "PromptGamePassPurchase" then
+				fetchAndShow(id,Enum.InfoType.GamePass)
+				return
+			elseif method == "PromptProductPurchase" then
+				fetchAndShow(id,Enum.InfoType.Product)
+				return
+			elseif method == "PromptPurchase" then
+				fetchAndShow(id,Enum.InfoType.Asset)
+				return
+			elseif method == "PromptBundlePurchase" then
+				fetchAndShow(id,Enum.InfoType.Bundle)
+				return
+			end
 		end
 	end
 

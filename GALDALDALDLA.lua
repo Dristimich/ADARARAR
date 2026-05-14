@@ -167,7 +167,7 @@ local closeBtn = Instance.new("ImageButton")
 closeBtn.Size = UDim2.fromOffset(24,24)
 closeBtn.Position = UDim2.new(1,-40,0,24)
 closeBtn.BackgroundTransparency = 1
-closeBtn.Image = "rbxassetid://78940278565096"
+closeBtn.Image = "rbxthumb://type=Asset&id=78940278565096&w=150&h=150"
 closeBtn.ScaleType = Enum.ScaleType.Fit
 closeBtn.ZIndex = 3
 closeBtn.Parent = modal
@@ -191,7 +191,7 @@ balanceLayout.Parent = balanceFrame
 local balanceIcon = Instance.new("ImageLabel")
 balanceIcon.Size = UDim2.fromOffset(20,20)
 balanceIcon.BackgroundTransparency = 1
-balanceIcon.Image = "rbxassetid://70493384532723"
+balanceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=150&h=150"
 balanceIcon.ScaleType = Enum.ScaleType.Fit
 balanceIcon.ZIndex = 3
 balanceIcon.Parent = balanceFrame
@@ -248,7 +248,7 @@ priceLayout.Parent = priceFrame
 local priceIcon = Instance.new("ImageLabel")
 priceIcon.Size = UDim2.fromOffset(20,20)
 priceIcon.BackgroundTransparency = 1
-priceIcon.Image = "rbxassetid://70493384532723"
+priceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=150&h=150"
 priceIcon.ScaleType = Enum.ScaleType.Fit
 priceIcon.ZIndex = 3
 priceIcon.Parent = priceFrame
@@ -314,7 +314,7 @@ local checkIcon = Instance.new("ImageLabel")
 checkIcon.Size = UDim2.fromOffset(70,70)
 checkIcon.Position = UDim2.new(0.5,-35,0,55)
 checkIcon.BackgroundTransparency = 1
-checkIcon.Image = "rbxassetid://110759125205910"
+checkIcon.Image = "rbxthumb://type=Asset&id=110759125205910&w=150&h=150"
 checkIcon.ScaleType = Enum.ScaleType.Fit
 checkIcon.ZIndex = 3
 checkIcon.Parent = successContainer

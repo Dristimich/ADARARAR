@@ -1,5 +1,4 @@
-Смотрю оба скриншота внимательно и выравниваю 1 в 1:
-lualocal Players = game:GetService("Players")
+local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local MarketplaceService = game:GetService("MarketplaceService")
 local UserInputService = game:GetService("UserInputService")
@@ -22,7 +21,6 @@ gui.Parent = player.PlayerGui
 
 local customBalance = "76"
 
--- SETTINGS
 local setupFrame = Instance.new("Frame")
 setupFrame.Size = UDim2.fromOffset(300,180)
 setupFrame.Position = UDim2.new(0.5,-150,0.5,-90)
@@ -74,7 +72,6 @@ local applyCorner = Instance.new("UICorner")
 applyCorner.CornerRadius = UDim.new(0,8)
 applyCorner.Parent = applyBtn
 
--- DRAG
 local dragging, dragInput, dragStart, startPos
 
 setupFrame.InputBegan:Connect(function(input)
@@ -106,7 +103,6 @@ UserInputService.InputChanged:Connect(function(input)
 	end
 end)
 
--- OVERLAY
 local overlay = Instance.new("TextButton")
 overlay.Size = UDim2.new(1,0,1,0)
 overlay.BackgroundColor3 = Color3.new(0,0,0)
@@ -117,7 +113,6 @@ overlay.Visible = false
 overlay.ZIndex = 1
 overlay.Parent = gui
 
--- MODAL — точный размер как в оригинале
 local modal = Instance.new("Frame")
 modal.Size = UDim2.fromOffset(435,185)
 modal.Position = UDim2.new(0.5,-217,0.5,-92)
@@ -137,7 +132,6 @@ local modalCorner = Instance.new("UICorner")
 modalCorner.CornerRadius = UDim.new(0,18)
 modalCorner.Parent = modal
 
--- TITLE — крупный жирный, левый верхний
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(0,220,0,34)
 title.Position = UDim2.new(0,16,0,14)
@@ -150,7 +144,6 @@ title.TextXAlignment = Enum.TextXAlignment.Left
 title.ZIndex = 3
 title.Parent = modal
 
--- CLOSE BUTTON — X в правом верхнем углу
 local closeBtn = Instance.new("ImageButton")
 closeBtn.Size = UDim2.fromOffset(24,24)
 closeBtn.Position = UDim2.new(1,-32,0,16)
@@ -160,7 +153,6 @@ closeBtn.ScaleType = Enum.ScaleType.Fit
 closeBtn.ZIndex = 4
 closeBtn.Parent = modal
 
--- BALANCE — слева от X
 local balanceFrame = Instance.new("Frame")
 balanceFrame.AutomaticSize = Enum.AutomaticSize.X
 balanceFrame.Size = UDim2.new(0,0,0,24)
@@ -196,14 +188,12 @@ balanceText.Text = customBalance
 balanceText.ZIndex = 4
 balanceText.Parent = balanceFrame
 
--- PROMPT CONTAINER
 local promptContainer = Instance.new("Frame")
 promptContainer.Size = UDim2.new(1,0,1,0)
 promptContainer.BackgroundTransparency = 1
 promptContainer.ZIndex = 3
 promptContainer.Parent = modal
 
--- ITEM ICON — большой квадрат слева, как в оригинале
 local itemIcon = Instance.new("ImageLabel")
 itemIcon.Size = UDim2.fromOffset(64,64)
 itemIcon.Position = UDim2.new(0,14,0,52)
@@ -213,7 +203,6 @@ itemIcon.ScaleType = Enum.ScaleType.Fit
 itemIcon.ZIndex = 3
 itemIcon.Parent = promptContainer
 
--- ITEM NAME — справа от иконки, выровнено по верху иконки
 local itemName = Instance.new("TextLabel")
 itemName.Size = UDim2.new(0,280,0,28)
 itemName.Position = UDim2.new(0,88,0,55)
@@ -226,7 +215,6 @@ itemName.Text = "Loading..."
 itemName.ZIndex = 3
 itemName.Parent = promptContainer
 
--- PRICE — под названием, левее
 local priceFrame = Instance.new("Frame")
 priceFrame.AutomaticSize = Enum.AutomaticSize.X
 priceFrame.Size = UDim2.new(0,0,0,22)
@@ -261,7 +249,6 @@ itemPrice.Text = "5"
 itemPrice.ZIndex = 4
 itemPrice.Parent = priceFrame
 
--- BUY BUTTON — полная ширина с отступом 14px с каждой стороны
 local buyBtn = Instance.new("TextButton")
 buyBtn.Size = UDim2.new(1,-28,0,44)
 buyBtn.Position = UDim2.new(0,14,1,-56)
@@ -297,7 +284,6 @@ buyText.TextColor3 = Color3.new(1,1,1)
 buyText.ZIndex = 5
 buyText.Parent = buyBtn
 
--- SUCCESS
 local successContainer = Instance.new("Frame")
 successContainer.Size = UDim2.new(1,0,1,0)
 successContainer.BackgroundTransparency = 1
@@ -343,7 +329,6 @@ okCorner.Parent = okBtn
 
 ContentProvider:PreloadAsync({closeBtn, balanceIcon, priceIcon, checkIcon})
 
--- SHOW / HIDE
 local function ShowModal()
 	overlay.Visible = true
 	modal.Visible = true
@@ -351,9 +336,7 @@ local function ShowModal()
 	modal.BackgroundTransparency = 1
 	modal.Size = UDim2.fromOffset(420,175)
 	modal.Position = UDim2.new(0.5,-210,0.5,-87)
-	TweenService:Create(overlay, TweenInfo.new(0.12, Enum.EasingStyle.Linear), {
-		BackgroundTransparency = 0.4
-	}):Play()
+	TweenService:Create(overlay, TweenInfo.new(0.12, Enum.EasingStyle.Linear), {BackgroundTransparency = 0.4}):Play()
 	TweenService:Create(modal, TweenInfo.new(0.16, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
 		BackgroundTransparency = 0,
 		Size = UDim2.fromOffset(435,185),
@@ -423,10 +406,10 @@ local function fetchAndShow(id, infoType)
 	progressFill.Size = UDim2.new(0,0,1,0)
 	ShowModal()
 	task.spawn(function()
-		local success, result = pcall(function()
+		local ok2, result = pcall(function()
 			return MarketplaceService:GetProductInfo(id, infoType)
 		end)
-		if success and result then
+		if ok2 and result then
 			itemName.Text = result.Name or "Unknown Item"
 			itemPrice.Text = tostring(result.PriceInRobux or 0)
 		end
@@ -445,11 +428,18 @@ local function fetchAndShow(id, infoType)
 	end)
 end
 
+-- HOOK — безопасная проверка через typeof
 local oldNamecall
 
-local ok = pcall(function()
+local hasHook = typeof(hookmetamethod) == "function"
+local hasGetMethod = typeof(getnamecallmethod) == "function"
+
+if hasHook and hasGetMethod then
 	oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
-		local method = getnamecallmethod()
+		local ok3, method = pcall(getnamecallmethod)
+		if not ok3 then
+			return oldNamecall(self, ...)
+		end
 		local args = {...}
 		if self == MarketplaceService and not setupFrame.Visible then
 			local id = tonumber(args[2])
@@ -471,33 +461,6 @@ local ok = pcall(function()
 		end
 		return oldNamecall(self, ...)
 	end)
-end)
-
-if not ok then
-	-- Fallback если executor не поддерживает hookmetamethod
-	MarketplaceService.PromptGamePassPurchaseFinished:Connect(function() end)
-	
-	local oldPromptGamePass = MarketplaceService.PromptGamePassPurchase
-	local oldPromptProduct = MarketplaceService.PromptProductPurchase
-	local oldPromptPurchase = MarketplaceService.PromptPurchase
-	
-	-- Тест кнопка для проверки
-	local testBtn = Instance.new("TextButton")
-	testBtn.Size = UDim2.fromOffset(120,40)
-	testBtn.Position = UDim2.new(0,10,0,10)
-	testBtn.BackgroundColor3 = Color3.fromRGB(59,99,246)
-	testBtn.Text = "Test GUI"
-	testBtn.Font = Enum.Font.GothamBold
-	testBtn.TextSize = 14
-	testBtn.TextColor3 = Color3.new(1,1,1)
-	testBtn.ZIndex = 100
-	testBtn.Parent = gui
-	
-	local tc = Instance.new("UICorner")
-	tc.CornerRadius = UDim.new(0,8)
-	tc.Parent = testBtn
-	
-	testBtn.MouseButton1Click:Connect(function()
-		fetchAndShow(480738082, Enum.InfoType.Asset)
-	end)
+else
+	warn("hookmetamethod/getnamecallmethod недоступны на этом executor")
 end

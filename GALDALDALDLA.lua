@@ -93,10 +93,12 @@ balanceLayout.Padding = UDim.new(0,2)
 balanceLayout.Parent = balanceFrame
 
 local balanceIcon = Instance.new("ImageLabel")
-balanceIcon.Size = UDim2.fromOffset(17,17)
+balanceIcon.Size = UDim2.fromOffset(15,15)
 balanceIcon.BackgroundTransparency = 1
 balanceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=420&h=420"
-balanceIcon.ScaleType = Enum.ScaleType.Stretch
+balanceIcon.ScaleType = Enum.ScaleType.Crop
+balanceIcon.ImageRectOffset = Vector2.new(12,12)
+balanceIcon.ImageRectSize = Vector2.new(96,96)
 balanceIcon.ZIndex = 4
 balanceIcon.Parent = balanceFrame
 
@@ -119,7 +121,7 @@ promptContainer.BackgroundTransparency = 1
 promptContainer.ZIndex = 3
 promptContainer.Parent = modal
 
--- ITEM
+-- ITEM NAME
 
 local itemName = Instance.new("TextLabel")
 itemName.Size = UDim2.new(0,300,0,30)
@@ -151,10 +153,12 @@ priceLayout.Padding = UDim.new(0,2)
 priceLayout.Parent = priceFrame
 
 local priceIcon = Instance.new("ImageLabel")
-priceIcon.Size = UDim2.fromOffset(17,17)
+priceIcon.Size = UDim2.fromOffset(15,15)
 priceIcon.BackgroundTransparency = 1
 priceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=420&h=420"
-priceIcon.ScaleType = Enum.ScaleType.Stretch
+priceIcon.ScaleType = Enum.ScaleType.Crop
+priceIcon.ImageRectOffset = Vector2.new(12,12)
+priceIcon.ImageRectSize = Vector2.new(96,96)
 priceIcon.ZIndex = 4
 priceIcon.Parent = priceFrame
 
@@ -173,7 +177,7 @@ itemPrice.Parent = priceFrame
 
 local buyBtn = Instance.new("TextButton")
 buyBtn.Size = UDim2.new(1,-32,0,38)
-buyBtn.Position = UDim2.new(0,8,1,-50)
+buyBtn.Position = UDim2.new(0,8,1,-54)
 buyBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
 buyBtn.Text = ""
 buyBtn.AutoButtonColor = false
@@ -239,7 +243,7 @@ successMsg.Parent = successContainer
 
 local okBtn = Instance.new("TextButton")
 okBtn.Size = UDim2.new(1,-16,0,34)
-okBtn.Position = UDim2.new(0,8,1,-50)
+okBtn.Position = UDim2.new(0,8,1,-54)
 okBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
 okBtn.Font = Enum.Font.GothamMedium
 okBtn.Text = "OK"

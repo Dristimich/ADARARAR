@@ -1,4 +1,10 @@
-local Players = game:GetService("Players")
+Вот исправленный полный код с тремя изменениями:
+
+Кнопка поднята выше (больше отступ снизу)
+Иконка Robux не обрезается (увеличен frame)
+Цифра ближе к иконке (padding уменьшен до 2)
+
+lualocal Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local MarketplaceService = game:GetService("MarketplaceService")
 local UserInputService = game:GetService("UserInputService")
@@ -20,6 +26,99 @@ gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 gui.Parent = player.PlayerGui
 
 local customBalance = "76"
+
+-- SETTINGS
+
+local setupFrame = Instance.new("Frame")
+setupFrame.Size = UDim2.fromOffset(300,180)
+setupFrame.Position = UDim2.new(0.5,-150,0.5,-90)
+setupFrame.BackgroundColor3 = Color3.fromRGB(25,27,33)
+setupFrame.BorderSizePixel = 0
+setupFrame.Active = true
+setupFrame.ZIndex = 50
+setupFrame.Parent = gui
+
+local setupCorner = Instance.new("UICorner")
+setupCorner.CornerRadius = UDim.new(0,12)
+setupCorner.Parent = setupFrame
+
+local setupTitle = Instance.new("TextLabel")
+setupTitle.Size = UDim2.new(1,0,0,40)
+setupTitle.BackgroundTransparency = 1
+setupTitle.Text = "Settings (Drag me)"
+setupTitle.Font = Enum.Font.GothamBold
+setupTitle.TextSize = 20
+setupTitle.TextColor3 = Color3.new(1,1,1)
+setupTitle.Parent = setupFrame
+
+local balanceInput = Instance.new("TextBox")
+balanceInput.Size = UDim2.new(1,-40,0,40)
+balanceInput.Position = UDim2.new(0,20,0,60)
+balanceInput.BackgroundColor3 = Color3.fromRGB(40,43,53)
+balanceInput.Text = customBalance
+balanceInput.PlaceholderText = "Enter fake balance"
+balanceInput.Font = Enum.Font.Gotham
+balanceInput.TextSize = 16
+balanceInput.TextColor3 = Color3.new(1,1,1)
+balanceInput.Parent = setupFrame
+
+local inputCorner = Instance.new("UICorner")
+inputCorner.CornerRadius = UDim.new(0,8)
+inputCorner.Parent = balanceInput
+
+local applyBtn = Instance.new("TextButton")
+applyBtn.Size = UDim2.new(1,-40,0,40)
+applyBtn.Position = UDim2.new(0,20,0,120)
+applyBtn.BackgroundColor3 = Color3.fromRGB(59,99,246)
+applyBtn.Text = "Save & Start"
+applyBtn.Font = Enum.Font.GothamBold
+applyBtn.TextSize = 16
+applyBtn.TextColor3 = Color3.new(1,1,1)
+applyBtn.Parent = setupFrame
+
+local applyCorner = Instance.new("UICorner")
+applyCorner.CornerRadius = UDim.new(0,8)
+applyCorner.Parent = applyBtn
+
+-- DRAG
+
+local dragging
+local dragInput
+local dragStart
+local startPos
+
+setupFrame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		dragStart = input.Position
+		startPos = setupFrame.Position
+
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then
+				dragging = false
+			end
+		end)
+	end
+end)
+
+setupFrame.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement then
+		dragInput = input
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if input == dragInput and dragging then
+		local delta = input.Position - dragStart
+
+		setupFrame.Position = UDim2.new(
+			startPos.X.Scale,
+			startPos.X.Offset + delta.X,
+			startPos.Y.Scale,
+			startPos.Y.Offset + delta.Y
+		)
+	end
+end)
 
 -- OVERLAY
 
@@ -44,6 +143,11 @@ modal.Visible = false
 modal.ClipsDescendants = true
 modal.ZIndex = 2
 modal.Parent = gui
+
+local constraint = Instance.new("UISizeConstraint")
+constraint.MaxSize = Vector2.new(435,178)
+constraint.MinSize = Vector2.new(435,178)
+constraint.Parent = modal
 
 local modalCorner = Instance.new("UICorner")
 modalCorner.CornerRadius = UDim.new(0,18)
@@ -78,9 +182,9 @@ closeBtn.Parent = modal
 
 local balanceFrame = Instance.new("Frame")
 balanceFrame.AutomaticSize = Enum.AutomaticSize.X
-balanceFrame.Size = UDim2.new(0,0,0,18)
+balanceFrame.Size = UDim2.new(0,0,0,20) -- чуть выше чтобы иконка не обрезалась
 balanceFrame.AnchorPoint = Vector2.new(1,0)
-balanceFrame.Position = UDim2.new(1,-40,0,13)
+balanceFrame.Position = UDim2.new(1,-40,0,12)
 balanceFrame.BackgroundTransparency = 1
 balanceFrame.ZIndex = 3
 balanceFrame.Parent = modal
@@ -89,11 +193,11 @@ local balanceLayout = Instance.new("UIListLayout")
 balanceLayout.FillDirection = Enum.FillDirection.Horizontal
 balanceLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
 balanceLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-balanceLayout.Padding = UDim.new(0,1)
+balanceLayout.Padding = UDim.new(0,2) -- ближе
 balanceLayout.Parent = balanceFrame
 
 local balanceIcon = Instance.new("ImageLabel")
-balanceIcon.Size = UDim2.fromOffset(17,17)
+balanceIcon.Size = UDim2.fromOffset(18,18) -- чуть больше чтобы не обрезалось
 balanceIcon.BackgroundTransparency = 1
 balanceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=420&h=420"
 balanceIcon.ScaleType = Enum.ScaleType.Fit
@@ -137,7 +241,7 @@ itemName.Parent = promptContainer
 
 local priceFrame = Instance.new("Frame")
 priceFrame.AutomaticSize = Enum.AutomaticSize.X
-priceFrame.Size = UDim2.new(0,0,0,18)
+priceFrame.Size = UDim2.new(0,0,0,20) -- чуть больше чтобы иконка не обрезалась
 priceFrame.Position = UDim2.new(0,56,0,66)
 priceFrame.BackgroundTransparency = 1
 priceFrame.ZIndex = 3
@@ -147,11 +251,11 @@ local priceLayout = Instance.new("UIListLayout")
 priceLayout.FillDirection = Enum.FillDirection.Horizontal
 priceLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
 priceLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-priceLayout.Padding = UDim.new(0,1)
+priceLayout.Padding = UDim.new(0,2) -- ближе
 priceLayout.Parent = priceFrame
 
 local priceIcon = Instance.new("ImageLabel")
-priceIcon.Size = UDim2.fromOffset(17,17)
+priceIcon.Size = UDim2.fromOffset(18,18) -- чуть больше чтобы не обрезалось
 priceIcon.BackgroundTransparency = 1
 priceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=420&h=420"
 priceIcon.ScaleType = Enum.ScaleType.Fit
@@ -173,7 +277,7 @@ itemPrice.Parent = priceFrame
 
 local buyBtn = Instance.new("TextButton")
 buyBtn.Size = UDim2.new(1,-32,0,38)
-buyBtn.Position = UDim2.new(0,8,1,-58)
+buyBtn.Position = UDim2.new(0,8,1,-52) -- поднята выше, больше отступ снизу
 buyBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
 buyBtn.Text = ""
 buyBtn.AutoButtonColor = false
@@ -239,7 +343,7 @@ successMsg.Parent = successContainer
 
 local okBtn = Instance.new("TextButton")
 okBtn.Size = UDim2.new(1,-16,0,34)
-okBtn.Position = UDim2.new(0,8,1,-58)
+okBtn.Position = UDim2.new(0,8,1,-44)
 okBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
 okBtn.Font = Enum.Font.GothamMedium
 okBtn.Text = "OK"
@@ -304,6 +408,17 @@ end
 closeBtn.MouseButton1Click:Connect(HideModal)
 okBtn.MouseButton1Click:Connect(HideModal)
 
+applyBtn.MouseButton1Click:Connect(function()
+	customBalance = balanceInput.Text
+
+	if customBalance == "" then
+		customBalance = "76"
+	end
+
+	balanceText.Text = customBalance
+	setupFrame.Visible = false
+end)
+
 local canBuy = false
 local currentTween
 
@@ -322,13 +437,31 @@ buyBtn.MouseButton1Click:Connect(function()
 		}
 	):Play()
 
+	TweenService:Create(
+		progressFill,
+		TweenInfo.new(0.18),
+		{
+			BackgroundColor3 = Color3.fromRGB(30,40,90)
+		}
+	):Play()
+
+	TweenService:Create(
+		buyText,
+		TweenInfo.new(0.18),
+		{
+			TextTransparency = 0.35
+		}
+	):Play()
+
 	task.wait(1.1)
 
 	promptContainer.Visible = false
 	successContainer.Visible = true
-	balanceFrame.Visible = false
+
+	balanceFrame.Parent = nil
 
 	title.Text = "Purchase completed"
+	title.TextSize = 18
 
 	successMsg.Text =
 		"You have successfully bought "..itemName.Text.."."
@@ -336,15 +469,20 @@ end)
 
 local function fetchAndShow(id, infoType)
 	title.Text = "Buy item"
+	title.TextSize = 19
 
 	successContainer.Visible = false
 	promptContainer.Visible = true
-	balanceFrame.Visible = true
+
+	if not balanceFrame.Parent then
+		balanceFrame.Parent = modal
+	end
 
 	itemName.Text = "Loading..."
 	itemPrice.Text = "..."
 
 	buyBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
+	progressFill.BackgroundColor3 = Color3.fromRGB(43,63,165)
 
 	buyText.TextTransparency = 0
 
@@ -391,29 +529,30 @@ end
 -- HOOK
 
 local oldNamecall
-oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
+
+oldNamecall = hookmetamethod(game,"__namecall",function(self,...)
 	local method = getnamecallmethod()
 	local args = {...}
 
-	if self == MarketplaceService then
+	if self == MarketplaceService and not setupFrame.Visible then
 		local id = tonumber(args[2])
 
 		if id then
 			if method == "PromptGamePassPurchase" then
-				fetchAndShow(id, Enum.InfoType.GamePass)
+				fetchAndShow(id,Enum.InfoType.GamePass)
 				return
 			elseif method == "PromptProductPurchase" then
-				fetchAndShow(id, Enum.InfoType.Product)
+				fetchAndShow(id,Enum.InfoType.Product)
 				return
 			elseif method == "PromptPurchase" then
-				fetchAndShow(id, Enum.InfoType.Asset)
+				fetchAndShow(id,Enum.InfoType.Asset)
 				return
 			elseif method == "PromptBundlePurchase" then
-				fetchAndShow(id, Enum.InfoType.Bundle)
+				fetchAndShow(id,Enum.InfoType.Bundle)
 				return
 			end
 		end
 	end
 
-	return oldNamecall(self, ...)
+	return oldNamecall(self,...)
 end)

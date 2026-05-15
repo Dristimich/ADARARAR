@@ -129,8 +129,8 @@ overlay.Parent = gui
 -- MODAL
 
 local modal = Instance.new("Frame")
-modal.Size = UDim2.fromOffset(455,190)
-modal.Position = UDim2.new(0.5,-227,0.5,-95)
+modal.Size = UDim2.fromOffset(435,178)
+modal.Position = UDim2.new(0.5,-217,0.5,-89)
 modal.BackgroundColor3 = Color3.fromRGB(17,19,28)
 modal.BorderSizePixel = 0
 modal.Visible = false
@@ -139,8 +139,8 @@ modal.ZIndex = 2
 modal.Parent = gui
 
 local constraint = Instance.new("UISizeConstraint")
-constraint.MaxSize = Vector2.new(455,190)
-constraint.MinSize = Vector2.new(455,190)
+constraint.MaxSize = Vector2.new(435,178)
+constraint.MinSize = Vector2.new(435,178)
 constraint.Parent = modal
 
 local modalCorner = Instance.new("UICorner")
@@ -151,7 +151,7 @@ modalCorner.Parent = modal
 
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(0,250,0,30)
-title.Position = UDim2.new(0,18,0,16)
+title.Position = UDim2.new(0,16,0,12)
 title.BackgroundTransparency = 1
 title.Font = Enum.Font.GothamBold
 title.Text = "Buy item"
@@ -165,7 +165,7 @@ title.Parent = modal
 
 local closeBtn = Instance.new("ImageButton")
 closeBtn.Size = UDim2.fromOffset(20,20)
-closeBtn.Position = UDim2.new(1,-30,0,18)
+closeBtn.Position = UDim2.new(1,-26,0,13)
 closeBtn.BackgroundTransparency = 1
 closeBtn.Image = "rbxthumb://type=Asset&id=78940278565096&w=420&h=420"
 closeBtn.ScaleType = Enum.ScaleType.Fit
@@ -178,7 +178,7 @@ local balanceFrame = Instance.new("Frame")
 balanceFrame.AutomaticSize = Enum.AutomaticSize.X
 balanceFrame.Size = UDim2.new(0,0,0,18)
 balanceFrame.AnchorPoint = Vector2.new(1,0)
-balanceFrame.Position = UDim2.new(1,-42,0,18)
+balanceFrame.Position = UDim2.new(1,-40,0,13)
 balanceFrame.BackgroundTransparency = 1
 balanceFrame.ZIndex = 3
 balanceFrame.Parent = modal
@@ -191,7 +191,7 @@ balanceLayout.Padding = UDim.new(0,4)
 balanceLayout.Parent = balanceFrame
 
 local balanceIcon = Instance.new("ImageLabel")
-balanceIcon.Size = UDim2.fromOffset(15,15)
+balanceIcon.Size = UDim2.fromOffset(16,16)
 balanceIcon.BackgroundTransparency = 1
 balanceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=420&h=420"
 balanceIcon.ScaleType = Enum.ScaleType.Fit
@@ -221,7 +221,7 @@ promptContainer.Parent = modal
 
 local itemName = Instance.new("TextLabel")
 itemName.Size = UDim2.new(0,300,0,30)
-itemName.Position = UDim2.new(0,56,0,52)
+itemName.Position = UDim2.new(0,56,0,46)
 itemName.BackgroundTransparency = 1
 itemName.Font = Enum.Font.GothamBold
 itemName.TextSize = 14
@@ -236,7 +236,7 @@ itemName.Parent = promptContainer
 local priceFrame = Instance.new("Frame")
 priceFrame.AutomaticSize = Enum.AutomaticSize.X
 priceFrame.Size = UDim2.new(0,0,0,18)
-priceFrame.Position = UDim2.new(0,56,0,72)
+priceFrame.Position = UDim2.new(0,56,0,66)
 priceFrame.BackgroundTransparency = 1
 priceFrame.ZIndex = 3
 priceFrame.Parent = promptContainer
@@ -249,7 +249,7 @@ priceLayout.Padding = UDim.new(0,4)
 priceLayout.Parent = priceFrame
 
 local priceIcon = Instance.new("ImageLabel")
-priceIcon.Size = UDim2.fromOffset(15,15)
+priceIcon.Size = UDim2.fromOffset(16,16)
 priceIcon.BackgroundTransparency = 1
 priceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=420&h=420"
 priceIcon.ScaleType = Enum.ScaleType.Fit
@@ -271,7 +271,7 @@ itemPrice.Parent = priceFrame
 
 local buyBtn = Instance.new("TextButton")
 buyBtn.Size = UDim2.new(1,-32,0,38)
-buyBtn.Position = UDim2.new(0,8,1,-52)
+buyBtn.Position = UDim2.new(0,8,1,-44)
 buyBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
 buyBtn.Text = ""
 buyBtn.AutoButtonColor = false
@@ -337,7 +337,7 @@ successMsg.Parent = successContainer
 
 local okBtn = Instance.new("TextButton")
 okBtn.Size = UDim2.new(1,-16,0,34)
-okBtn.Position = UDim2.new(0,8,1,-52)
+okBtn.Position = UDim2.new(0,8,1,-44)
 okBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
 okBtn.Font = Enum.Font.GothamMedium
 okBtn.Text = "OK"
@@ -368,8 +368,8 @@ local function ShowModal()
 	overlay.BackgroundTransparency = 1
 	modal.BackgroundTransparency = 1
 
-	modal.Size = UDim2.fromOffset(435,180)
-	modal.Position = UDim2.new(0.5,-217,0.5,-90)
+	modal.Size = UDim2.fromOffset(420,168)
+	modal.Position = UDim2.new(0.5,-210,0.5,-84)
 
 	TweenService:Create(
 		overlay,
@@ -388,8 +388,8 @@ local function ShowModal()
 		),
 		{
 			BackgroundTransparency = 0,
-			Size = UDim2.fromOffset(455,190),
-			Position = UDim2.new(0.5,-227,0.5,-95)
+			Size = UDim2.fromOffset(435,178),
+			Position = UDim2.new(0.5,-217,0.5,-89)
 		}
 	):Play()
 end

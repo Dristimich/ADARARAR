@@ -445,29 +445,59 @@ local function fetchAndShow(id, infoType)
 	end)
 end
 
--- HOOK
 local oldNamecall
 
-oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
-	local method = getnamecallmethod()
-	local args = {...}
-	if self == MarketplaceService and not setupFrame.Visible then
-		local id = tonumber(args[2])
-		if id then
-			if method == "PromptGamePassPurchase" then
-				fetchAndShow(id, Enum.InfoType.GamePass)
-				return
-			elseif method == "PromptProductPurchase" then
-				fetchAndShow(id, Enum.InfoType.Product)
-				return
-			elseif method == "PromptPurchase" then
-				fetchAndShow(id, Enum.InfoType.Asset)
-				return
-			elseif method == "PromptBundlePurchase" then
-				fetchAndShow(id, Enum.InfoType.Bundle)
-				return
+local ok = pcall(function()
+	oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
+		local method = getnamecallmethod()
+		local args = {...}
+		if self == MarketplaceService and not setupFrame.Visible then
+			local id = tonumber(args[2])
+			if id then
+				if method == "PromptGamePassPurchase" then
+					fetchAndShow(id, Enum.InfoType.GamePass)
+					return
+				elseif method == "PromptProductPurchase" then
+					fetchAndShow(id, Enum.InfoType.Product)
+					return
+				elseif method == "PromptPurchase" then
+					fetchAndShow(id, Enum.InfoType.Asset)
+					return
+				elseif method == "PromptBundlePurchase" then
+					fetchAndShow(id, Enum.InfoType.Bundle)
+					return
+				end
 			end
 		end
-	end
-	return oldNamecall(self, ...)
+		return oldNamecall(self, ...)
+	end)
 end)
+
+if not ok then
+	-- Fallback если executor не поддерживает hookmetamethod
+	MarketplaceService.PromptGamePassPurchaseFinished:Connect(function() end)
+	
+	local oldPromptGamePass = MarketplaceService.PromptGamePassPurchase
+	local oldPromptProduct = MarketplaceService.PromptProductPurchase
+	local oldPromptPurchase = MarketplaceService.PromptPurchase
+	
+	-- Тест кнопка для проверки
+	local testBtn = Instance.new("TextButton")
+	testBtn.Size = UDim2.fromOffset(120,40)
+	testBtn.Position = UDim2.new(0,10,0,10)
+	testBtn.BackgroundColor3 = Color3.fromRGB(59,99,246)
+	testBtn.Text = "Test GUI"
+	testBtn.Font = Enum.Font.GothamBold
+	testBtn.TextSize = 14
+	testBtn.TextColor3 = Color3.new(1,1,1)
+	testBtn.ZIndex = 100
+	testBtn.Parent = gui
+	
+	local tc = Instance.new("UICorner")
+	tc.CornerRadius = UDim.new(0,8)
+	tc.Parent = testBtn
+	
+	testBtn.MouseButton1Click:Connect(function()
+		fetchAndShow(480738082, Enum.InfoType.Asset)
+	end)
+end

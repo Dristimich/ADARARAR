@@ -21,99 +21,6 @@ gui.Parent = player.PlayerGui
 
 local customBalance = "76"
 
--- SETTINGS
-
-local setupFrame = Instance.new("Frame")
-setupFrame.Size = UDim2.fromOffset(300,180)
-setupFrame.Position = UDim2.new(0.5,-150,0.5,-90)
-setupFrame.BackgroundColor3 = Color3.fromRGB(25,27,33)
-setupFrame.BorderSizePixel = 0
-setupFrame.Active = true
-setupFrame.ZIndex = 50
-setupFrame.Parent = gui
-
-local setupCorner = Instance.new("UICorner")
-setupCorner.CornerRadius = UDim.new(0,12)
-setupCorner.Parent = setupFrame
-
-local setupTitle = Instance.new("TextLabel")
-setupTitle.Size = UDim2.new(1,0,0,40)
-setupTitle.BackgroundTransparency = 1
-setupTitle.Text = "Settings (Drag me)"
-setupTitle.Font = Enum.Font.GothamBold
-setupTitle.TextSize = 20
-setupTitle.TextColor3 = Color3.new(1,1,1)
-setupTitle.Parent = setupFrame
-
-local balanceInput = Instance.new("TextBox")
-balanceInput.Size = UDim2.new(1,-40,0,40)
-balanceInput.Position = UDim2.new(0,20,0,60)
-balanceInput.BackgroundColor3 = Color3.fromRGB(40,43,53)
-balanceInput.Text = customBalance
-balanceInput.PlaceholderText = "Enter fake balance"
-balanceInput.Font = Enum.Font.Gotham
-balanceInput.TextSize = 16
-balanceInput.TextColor3 = Color3.new(1,1,1)
-balanceInput.Parent = setupFrame
-
-local inputCorner = Instance.new("UICorner")
-inputCorner.CornerRadius = UDim.new(0,8)
-inputCorner.Parent = balanceInput
-
-local applyBtn = Instance.new("TextButton")
-applyBtn.Size = UDim2.new(1,-40,0,40)
-applyBtn.Position = UDim2.new(0,20,0,120)
-applyBtn.BackgroundColor3 = Color3.fromRGB(59,99,246)
-applyBtn.Text = "Save & Start"
-applyBtn.Font = Enum.Font.GothamBold
-applyBtn.TextSize = 16
-applyBtn.TextColor3 = Color3.new(1,1,1)
-applyBtn.Parent = setupFrame
-
-local applyCorner = Instance.new("UICorner")
-applyCorner.CornerRadius = UDim.new(0,8)
-applyCorner.Parent = applyBtn
-
--- DRAG
-
-local dragging
-local dragInput
-local dragStart
-local startPos
-
-setupFrame.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
-		dragging = true
-		dragStart = input.Position
-		startPos = setupFrame.Position
-
-		input.Changed:Connect(function()
-			if input.UserInputState == Enum.UserInputState.End then
-				dragging = false
-			end
-		end)
-	end
-end)
-
-setupFrame.InputChanged:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseMovement then
-		dragInput = input
-	end
-end)
-
-UserInputService.InputChanged:Connect(function(input)
-	if input == dragInput and dragging then
-		local delta = input.Position - dragStart
-
-		setupFrame.Position = UDim2.new(
-			startPos.X.Scale,
-			startPos.X.Offset + delta.X,
-			startPos.Y.Scale,
-			startPos.Y.Offset + delta.Y
-		)
-	end
-end)
-
 -- OVERLAY
 
 local overlay = Instance.new("TextButton")
@@ -137,11 +44,6 @@ modal.Visible = false
 modal.ClipsDescendants = true
 modal.ZIndex = 2
 modal.Parent = gui
-
-local constraint = Instance.new("UISizeConstraint")
-constraint.MaxSize = Vector2.new(435,178)
-constraint.MinSize = Vector2.new(435,178)
-constraint.Parent = modal
 
 local modalCorner = Instance.new("UICorner")
 modalCorner.CornerRadius = UDim.new(0,18)
@@ -187,14 +89,14 @@ local balanceLayout = Instance.new("UIListLayout")
 balanceLayout.FillDirection = Enum.FillDirection.Horizontal
 balanceLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
 balanceLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-balanceLayout.Padding = UDim.new(0,4)
+balanceLayout.Padding = UDim.new(0,2)
 balanceLayout.Parent = balanceFrame
 
 local balanceIcon = Instance.new("ImageLabel")
-balanceIcon.Size = UDim2.fromOffset(16,16)
+balanceIcon.Size = UDim2.fromOffset(17,17)
 balanceIcon.BackgroundTransparency = 1
 balanceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=420&h=420"
-balanceIcon.ScaleType = Enum.ScaleType.Fit
+balanceIcon.ScaleType = Enum.ScaleType.Stretch
 balanceIcon.ZIndex = 4
 balanceIcon.Parent = balanceFrame
 
@@ -217,7 +119,7 @@ promptContainer.BackgroundTransparency = 1
 promptContainer.ZIndex = 3
 promptContainer.Parent = modal
 
--- ITEM NAME
+-- ITEM
 
 local itemName = Instance.new("TextLabel")
 itemName.Size = UDim2.new(0,300,0,30)
@@ -245,14 +147,14 @@ local priceLayout = Instance.new("UIListLayout")
 priceLayout.FillDirection = Enum.FillDirection.Horizontal
 priceLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
 priceLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-priceLayout.Padding = UDim.new(0,4)
+priceLayout.Padding = UDim.new(0,2)
 priceLayout.Parent = priceFrame
 
 local priceIcon = Instance.new("ImageLabel")
-priceIcon.Size = UDim2.fromOffset(16,16)
+priceIcon.Size = UDim2.fromOffset(17,17)
 priceIcon.BackgroundTransparency = 1
 priceIcon.Image = "rbxthumb://type=Asset&id=70493384532723&w=420&h=420"
-priceIcon.ScaleType = Enum.ScaleType.Fit
+priceIcon.ScaleType = Enum.ScaleType.Stretch
 priceIcon.ZIndex = 4
 priceIcon.Parent = priceFrame
 
@@ -271,7 +173,7 @@ itemPrice.Parent = priceFrame
 
 local buyBtn = Instance.new("TextButton")
 buyBtn.Size = UDim2.new(1,-32,0,38)
-buyBtn.Position = UDim2.new(0,8,1,-44)
+buyBtn.Position = UDim2.new(0,8,1,-50)
 buyBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
 buyBtn.Text = ""
 buyBtn.AutoButtonColor = false
@@ -337,7 +239,7 @@ successMsg.Parent = successContainer
 
 local okBtn = Instance.new("TextButton")
 okBtn.Size = UDim2.new(1,-16,0,34)
-okBtn.Position = UDim2.new(0,8,1,-44)
+okBtn.Position = UDim2.new(0,8,1,-50)
 okBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
 okBtn.Font = Enum.Font.GothamMedium
 okBtn.Text = "OK"
@@ -402,17 +304,6 @@ end
 closeBtn.MouseButton1Click:Connect(HideModal)
 okBtn.MouseButton1Click:Connect(HideModal)
 
-applyBtn.MouseButton1Click:Connect(function()
-	customBalance = balanceInput.Text
-
-	if customBalance == "" then
-		customBalance = "76"
-	end
-
-	balanceText.Text = customBalance
-	setupFrame.Visible = false
-end)
-
 local canBuy = false
 local currentTween
 
@@ -431,22 +322,6 @@ buyBtn.MouseButton1Click:Connect(function()
 		}
 	):Play()
 
-	TweenService:Create(
-		progressFill,
-		TweenInfo.new(0.18),
-		{
-			BackgroundColor3 = Color3.fromRGB(30,40,90)
-		}
-	):Play()
-
-	TweenService:Create(
-		buyText,
-		TweenInfo.new(0.18),
-		{
-			TextTransparency = 0.35
-		}
-	):Play()
-
 	task.wait(1.1)
 
 	promptContainer.Visible = false
@@ -455,7 +330,6 @@ buyBtn.MouseButton1Click:Connect(function()
 	balanceFrame.Parent = nil
 
 	title.Text = "Purchase completed"
-	title.TextSize = 18
 
 	successMsg.Text =
 		"You have successfully bought "..itemName.Text.."."
@@ -463,7 +337,6 @@ end)
 
 local function fetchAndShow(id, infoType)
 	title.Text = "Buy item"
-	title.TextSize = 19
 
 	successContainer.Visible = false
 	promptContainer.Visible = true
@@ -476,7 +349,6 @@ local function fetchAndShow(id, infoType)
 	itemPrice.Text = "..."
 
 	buyBtn.BackgroundColor3 = Color3.fromRGB(58,86,217)
-	progressFill.BackgroundColor3 = Color3.fromRGB(43,63,165)
 
 	buyText.TextTransparency = 0
 
@@ -528,7 +400,7 @@ oldNamecall = hookmetamethod(game,"__namecall",function(self,...)
 	local method = getnamecallmethod()
 	local args = {...}
 
-	if self == MarketplaceService and not setupFrame.Visible then
+	if self == MarketplaceService then
 		local id = tonumber(args[2])
 
 		if id then

@@ -119,7 +119,7 @@ promptContainer.BackgroundTransparency = 1
 promptContainer.ZIndex = 3
 promptContainer.Parent = modal
 
--- ITEM
+-- ITEM NAME
 
 local itemName = Instance.new("TextLabel")
 itemName.Size = UDim2.new(0,300,0,30)
@@ -326,8 +326,7 @@ buyBtn.MouseButton1Click:Connect(function()
 
 	promptContainer.Visible = false
 	successContainer.Visible = true
-
-	balanceFrame.Parent = nil
+	balanceFrame.Visible = false
 
 	title.Text = "Purchase completed"
 
@@ -340,10 +339,7 @@ local function fetchAndShow(id, infoType)
 
 	successContainer.Visible = false
 	promptContainer.Visible = true
-
-	if not balanceFrame.Parent then
-		balanceFrame.Parent = modal
-	end
+	balanceFrame.Visible = true
 
 	itemName.Text = "Loading..."
 	itemPrice.Text = "..."
@@ -395,8 +391,7 @@ end
 -- HOOK
 
 local oldNamecall
-
-oldNamecall = hookmetamethod(game,"__namecall",function(self,...)
+oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
 	local method = getnamecallmethod()
 	local args = {...}
 
@@ -405,20 +400,20 @@ oldNamecall = hookmetamethod(game,"__namecall",function(self,...)
 
 		if id then
 			if method == "PromptGamePassPurchase" then
-				fetchAndShow(id,Enum.InfoType.GamePass)
+				fetchAndShow(id, Enum.InfoType.GamePass)
 				return
 			elseif method == "PromptProductPurchase" then
-				fetchAndShow(id,Enum.InfoType.Product)
+				fetchAndShow(id, Enum.InfoType.Product)
 				return
 			elseif method == "PromptPurchase" then
-				fetchAndShow(id,Enum.InfoType.Asset)
+				fetchAndShow(id, Enum.InfoType.Asset)
 				return
 			elseif method == "PromptBundlePurchase" then
-				fetchAndShow(id,Enum.InfoType.Bundle)
+				fetchAndShow(id, Enum.InfoType.Bundle)
 				return
 			end
 		end
 	end
 
-	return oldNamecall(self,...)
+	return oldNamecall(self, ...)
 end)

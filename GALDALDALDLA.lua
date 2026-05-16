@@ -21,7 +21,7 @@ local customBalance = "76"
 local amountToAdd   = "20000"
 local amountToSet   = "0"
 local doSetEnabled  = false
-local currentItemPrice = 0  -- цена текущего предмета для списания
+local currentItemPrice = 0
 
 -- ===============================================
 --              ОКНО НАСТРОЕК
@@ -165,22 +165,18 @@ UserInputService.InputChanged:Connect(function(inp)
 end)
 
 -- ===============================================
---          МОДАЛЬНОЕ ОКНО ПОКУПКИ
+--          МОДАЛЬНОЕ ОКНО
 -- ===============================================
 
 local overlay=Instance.new("TextButton")
-overlay.Size=UDim2.new(1,0,1,0)
-overlay.BackgroundColor3=Color3.new(0,0,0)
-overlay.BackgroundTransparency=1; overlay.Text=""
-overlay.AutoButtonColor=false; overlay.Visible=false
-overlay.ZIndex=1; overlay.Parent=gui
+overlay.Size=UDim2.new(1,0,1,0); overlay.BackgroundColor3=Color3.new(0,0,0)
+overlay.BackgroundTransparency=1; overlay.Text=""; overlay.AutoButtonColor=false
+overlay.Visible=false; overlay.ZIndex=1; overlay.Parent=gui
 
 local modal=Instance.new("Frame")
-modal.Size=UDim2.fromOffset(435,185)
-modal.Position=UDim2.new(0.5,-217,0.5,-92)
-modal.BackgroundColor3=Color3.fromRGB(17,19,28)
-modal.BorderSizePixel=0; modal.Visible=false
-modal.ClipsDescendants=true; modal.ZIndex=2; modal.Parent=gui
+modal.Size=UDim2.fromOffset(435,185); modal.Position=UDim2.new(0.5,-217,0.5,-92)
+modal.BackgroundColor3=Color3.fromRGB(17,19,28); modal.BorderSizePixel=0
+modal.Visible=false; modal.ClipsDescendants=true; modal.ZIndex=2; modal.Parent=gui
 
 local mc=Instance.new("UISizeConstraint")
 mc.MaxSize=Vector2.new(435,185); mc.MinSize=Vector2.new(435,185); mc.Parent=modal
@@ -199,16 +195,13 @@ closeBtn.Image="rbxthumb://type=Asset&id=78940278565096&w=420&h=420"
 closeBtn.ScaleType=Enum.ScaleType.Fit; closeBtn.ZIndex=4; closeBtn.Parent=modal
 
 local balanceFrame=Instance.new("Frame")
-balanceFrame.AutomaticSize=Enum.AutomaticSize.X
-balanceFrame.Size=UDim2.new(0,0,0,24); balanceFrame.AnchorPoint=Vector2.new(1,0)
-balanceFrame.Position=UDim2.new(1,-62,0,18); balanceFrame.BackgroundTransparency=1
-balanceFrame.ZIndex=3; balanceFrame.Parent=modal
+balanceFrame.AutomaticSize=Enum.AutomaticSize.X; balanceFrame.Size=UDim2.new(0,0,0,24)
+balanceFrame.AnchorPoint=Vector2.new(1,0); balanceFrame.Position=UDim2.new(1,-62,0,18)
+balanceFrame.BackgroundTransparency=1; balanceFrame.ZIndex=3; balanceFrame.Parent=modal
 
 local bfl=Instance.new("UIListLayout")
-bfl.FillDirection=Enum.FillDirection.Horizontal
-bfl.HorizontalAlignment=Enum.HorizontalAlignment.Left
-bfl.VerticalAlignment=Enum.VerticalAlignment.Center
-bfl.Padding=UDim.new(0,5); bfl.Parent=balanceFrame
+bfl.FillDirection=Enum.FillDirection.Horizontal; bfl.HorizontalAlignment=Enum.HorizontalAlignment.Left
+bfl.VerticalAlignment=Enum.VerticalAlignment.Center; bfl.Padding=UDim.new(0,5); bfl.Parent=balanceFrame
 
 local balanceIcon=Instance.new("ImageLabel")
 balanceIcon.Size=UDim2.fromOffset(20,20); balanceIcon.BackgroundTransparency=1
@@ -242,10 +235,8 @@ priceFrame.Position=UDim2.new(0,88,0,83); priceFrame.BackgroundTransparency=1
 priceFrame.ZIndex=3; priceFrame.Parent=promptContainer
 
 local pfl=Instance.new("UIListLayout")
-pfl.FillDirection=Enum.FillDirection.Horizontal
-pfl.HorizontalAlignment=Enum.HorizontalAlignment.Left
-pfl.VerticalAlignment=Enum.VerticalAlignment.Center
-pfl.Padding=UDim.new(0,5); pfl.Parent=priceFrame
+pfl.FillDirection=Enum.FillDirection.Horizontal; pfl.HorizontalAlignment=Enum.HorizontalAlignment.Left
+pfl.VerticalAlignment=Enum.VerticalAlignment.Center; pfl.Padding=UDim.new(0,5); pfl.Parent=priceFrame
 
 local priceIcon=Instance.new("ImageLabel")
 priceIcon.Size=UDim2.fromOffset(20,20); priceIcon.BackgroundTransparency=1
@@ -266,8 +257,7 @@ buyBtn.ZIndex=3; buyBtn.Parent=promptContainer
 Instance.new("UICorner",buyBtn).CornerRadius=UDim.new(0,10)
 
 local progressFill=Instance.new("Frame")
-progressFill.Size=UDim2.new(0,0,1,0)
-progressFill.BackgroundColor3=Color3.fromRGB(43,63,165)
+progressFill.Size=UDim2.new(0,0,1,0); progressFill.BackgroundColor3=Color3.fromRGB(43,63,165)
 progressFill.BorderSizePixel=0; progressFill.ZIndex=4; progressFill.Parent=buyBtn
 Instance.new("UICorner",progressFill).CornerRadius=UDim.new(0,9)
 
@@ -310,13 +300,10 @@ ContentProvider:PreloadAsync({closeBtn,balanceIcon,priceIcon,checkIcon})
 local function ShowModal()
     overlay.Visible=true; modal.Visible=true
     overlay.BackgroundTransparency=1; modal.BackgroundTransparency=1
-    modal.Size=UDim2.fromOffset(420,175)
-    modal.Position=UDim2.new(0.5,-210,0.5,-87)
+    modal.Size=UDim2.fromOffset(420,175); modal.Position=UDim2.new(0.5,-210,0.5,-87)
     TweenService:Create(overlay,TweenInfo.new(0.12,Enum.EasingStyle.Linear),{BackgroundTransparency=0.4}):Play()
     TweenService:Create(modal,TweenInfo.new(0.16,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{
-        BackgroundTransparency=0,
-        Size=UDim2.fromOffset(435,185),
-        Position=UDim2.new(0.5,-217,0.5,-92)
+        BackgroundTransparency=0, Size=UDim2.fromOffset(435,185), Position=UDim2.new(0.5,-217,0.5,-92)
     }):Play()
 end
 
@@ -325,224 +312,153 @@ local function HideModal()
 end
 
 local function getAmountLabel()
-    local ok,res = pcall(function()
-        return player.PlayerGui
-            :WaitForChild("Lobby",5)
-            :WaitForChild("CurrenciesFrame",5)
-            :WaitForChild("CoinAmount",5)
-            :WaitForChild("AmountLabel",5)
+    local ok,res=pcall(function()
+        return player.PlayerGui:WaitForChild("Lobby",5):WaitForChild("CurrenciesFrame",5):WaitForChild("CoinAmount",5):WaitForChild("AmountLabel",5)
     end)
     if ok and res then return res end
-    warn("[PurchasePro] AmountLabel не найден")
-    return nil
+    warn("[PurchasePro] AmountLabel не найден"); return nil
 end
 
 local function setCoins(val)
-    local lbl = getAmountLabel()
-    if lbl then lbl.Text = tostring(val) end
+    local lbl=getAmountLabel()
+    if lbl then lbl.Text=tostring(val) end
 end
 
 local function addCoins(val)
-    val = tonumber(val)
-    if not val or val == 0 then return end
-    local lbl = getAmountLabel()
-    if not lbl then return end
-    local clean = lbl.Text:gsub("[^%d%-]","")
-    local cur = tonumber(clean) or 0
-    lbl.Text = tostring(cur + val)
+    val=tonumber(val); if not val or val==0 then return end
+    local lbl=getAmountLabel(); if not lbl then return end
+    local cur=tonumber(lbl.Text:gsub("[^%d%-]","")) or 0
+    lbl.Text=tostring(cur+val)
 end
 
--- [НОВОЕ] Списываем робуксы с фейкового баланса
 local function spendRobux(amount)
-    amount = tonumber(amount) or 0
-    if amount <= 0 then return end
-    local cur = tonumber(customBalance) or 0
-    local newBal = math.max(0, cur - amount)
-    customBalance = tostring(newBal)
-    balanceText.Text = customBalance
+    amount=tonumber(amount) or 0
+    if amount<=0 then return end
+    local cur=tonumber(customBalance) or 0
+    customBalance=tostring(math.max(0,cur-amount))
+    balanceText.Text=customBalance
 end
 
 -- ===============================================
--- Клонирование SuccessNotification из LocalScript
--- ===============================================
-local function tryCloneFromScript()
-    local ok, result = pcall(function()
-        local mf = player.PlayerGui:WaitForChild("MainFrames", 3)
-        local notifs = mf:WaitForChild("Notifications", 3)
-        local handler = notifs:WaitForChild("NotificationHandler", 3)
-
-        if typeof(getsenv) == "function" then
-            local env = getsenv(handler)
-            if env then
-                for k, v in pairs(env) do
-                    if typeof(v) == "Instance" and v:IsA("Frame") and v.Name == "SuccessNotification" then
-                        return v:Clone()
-                    end
-                end
-            end
-        end
-
-        if typeof(getscriptchildren) == "function" then
-            for _, child in pairs(getscriptchildren(handler)) do
-                if child:IsA("Frame") and child.Name == "SuccessNotification" then
-                    return child:Clone()
-                end
-            end
-        end
-
-        for _, child in pairs(handler:GetChildren()) do
-            if child:IsA("Frame") and child.Name == "SuccessNotification" then
-                return child:Clone()
-            end
-        end
-
-        return nil
-    end)
-
-    if ok and result then return result end
-    return nil
-end
-
--- ===============================================
--- [ИСПРАВЛЕНО] Уведомление — резкое появление
--- и резкое исчезновение, висит ровно 5 секунд
+-- УВЕДОМЛЕНИЕ — резкое, без анимации, 5 секунд
+-- Вставляем прямо в Notifications
+-- Размер подстраиваем под AbsoluteSize контейнера
 -- ===============================================
 local function showGameNotification()
     task.spawn(function()
+        -- Задержка перед показом
+        task.wait(1 + math.random()*0.4)
+
         local pgui = player.PlayerGui
         local mainFrames = pgui:FindFirstChild("MainFrames")
         if not mainFrames then warn("[PurchasePro] MainFrames не найден"); return end
         local notifContainer = mainFrames:FindFirstChild("Notifications")
         if not notifContainer then warn("[PurchasePro] Notifications не найден"); return end
 
-        task.wait(1 + math.random() * 0.4)
+        -- Берём реальный AbsoluteSize контейнера чтобы подогнать размер
+        local containerAbsSize = notifContainer.AbsoluteSize
+        -- Высота уведомления = примерно 1/6 высоты контейнера или минимум 28px
+        local notifHeight = math.max(28, math.floor(containerAbsSize.Y / 6))
 
-        local cloned = tryCloneFromScript()
+        -- Создаём Frame
+        local notifFrame = Instance.new("Frame")
+        notifFrame.Name = "SuccessNotification"
+        -- Точные свойства из скриншота
+        notifFrame.BackgroundColor3 = Color3.fromRGB(255,255,255)
+        notifFrame.BackgroundTransparency = 1   -- прозрачный фон
+        notifFrame.BorderColor3 = Color3.fromRGB(27,42,53)
+        notifFrame.BorderMode = Enum.BorderMode.Outline
+        notifFrame.BorderSizePixel = 1
+        -- Размер: полная ширина контейнера, высота рассчитана
+        notifFrame.Size = UDim2.new(1, 0, 0, notifHeight)
+        notifFrame.ZIndex = 1
+        notifFrame.Visible = true               -- сразу видимый (резко)
+        notifFrame.Parent = notifContainer
 
-        if cloned then
-            -- Клон получен — меняем текст, показываем резко
-            local lbl = cloned:FindFirstChildWhichIsA("TextLabel")
-            if lbl then
-                lbl.Text = "Thank you for your support!"
-                -- Резко видимый
-                lbl.TextTransparency = 0
-                local stroke = lbl:FindFirstChildWhichIsA("UIStroke")
-                if stroke then stroke.Transparency = 0 end
-            end
-            cloned.Visible = true
-            cloned.Parent = notifContainer
+        -- TextLabel
+        local notifLabel = Instance.new("TextLabel")
+        notifLabel.Name = "TextLabel"
+        notifLabel.Size = UDim2.new(1,0,1,0)
+        notifLabel.Position = UDim2.new(0,0,0,0)
+        notifLabel.BackgroundTransparency = 1
+        notifLabel.Text = "Thank you for your support!"
+        notifLabel.TextColor3 = Color3.fromRGB(255,255,255)
+        notifLabel.TextScaled = true            -- из скриншота
+        notifLabel.TextWrapped = true
+        notifLabel.TextXAlignment = Enum.TextXAlignment.Center
+        notifLabel.TextTransparency = 0         -- сразу видимый (резко)
+        notifLabel.Font = Enum.Font.GothamBold
+        notifLabel.ZIndex = 1
+        notifLabel.Parent = notifFrame
 
-            -- Висим ровно 5 секунд
-            task.wait(5)
+        -- UIStroke на тексте (зелёный, из скриншота)
+        local stroke = Instance.new("UIStroke")
+        stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
+        stroke.Color = Color3.fromRGB(0,177,0)
+        stroke.LineJoinMode = Enum.LineJoinMode.Round
+        stroke.Thickness = 0.663
+        stroke.Transparency = 0                 -- сразу видимый (резко)
+        stroke.Parent = notifLabel
 
-            -- Резко скрываем
-            if cloned and cloned.Parent then
-                cloned:Destroy()
-            end
+        -- Ждём ровно 5 секунд
+        task.wait(5)
 
-        else
-            -- Строим вручную по данным со скриншотов
-            warn("[PurchasePro] Клон не удался, строим вручную")
-
-            local notifFrame = Instance.new("Frame")
-            notifFrame.Name = "SuccessNotification"
-            notifFrame.BackgroundColor3 = Color3.fromRGB(255,255,255)
-            notifFrame.BackgroundTransparency = 1
-            notifFrame.BorderColor3 = Color3.fromRGB(27,42,53)
-            notifFrame.BorderMode = Enum.BorderMode.Outline
-            notifFrame.BorderSizePixel = 1
-            notifFrame.Size = UDim2.new(1, 0, 0, 23)
-            notifFrame.ZIndex = 1
-            notifFrame.Visible = true
-            notifFrame.Parent = notifContainer
-
-            local notifLabel = Instance.new("TextLabel")
-            notifLabel.Name = "TextLabel"
-            notifLabel.Size = UDim2.new(1, 0, 1, 0)
-            notifLabel.Position = UDim2.new(0, 0, 0, 0)
-            notifLabel.BackgroundTransparency = 1
-            notifLabel.Text = "Thank you for your support!"
-            notifLabel.TextColor3 = Color3.fromRGB(255,255,255)
-            notifLabel.TextScaled = true
-            notifLabel.TextSize = 14
-            notifLabel.TextWrapped = true
-            notifLabel.TextXAlignment = Enum.TextXAlignment.Center
-            -- Резко видимый
-            notifLabel.TextTransparency = 0
-            notifLabel.Font = Enum.Font.GothamBold
-            notifLabel.ZIndex = 1
-            notifLabel.Parent = notifFrame
-
-            local textStroke = Instance.new("UIStroke")
-            textStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
-            textStroke.Color = Color3.fromRGB(0,177,0)
-            textStroke.LineJoinMode = Enum.LineJoinMode.Round
-            textStroke.Thickness = 0.663
-            textStroke.Transparency = 0
-            textStroke.Parent = notifLabel
-
-            -- Висим ровно 5 секунд
-            task.wait(5)
-
-            -- Резко удаляем
-            if notifFrame and notifFrame.Parent then
-                notifFrame:Destroy()
-            end
+        -- Резко удаляем без анимации
+        if notifFrame and notifFrame.Parent then
+            notifFrame:Destroy()
         end
     end)
 end
 
 -- ===============================================
--- Сохранение + Set при Save
+-- Сохранение
 -- ===============================================
 applyBtn.MouseButton1Click:Connect(function()
-    customBalance = balanceInput.Text ~= "" and balanceInput.Text or "76"
-    amountToAdd   = addInput.Text
-    amountToSet   = setInput.Text
-    balanceText.Text = customBalance
+    customBalance=balanceInput.Text~="" and balanceInput.Text or "76"
+    amountToAdd=addInput.Text
+    amountToSet=setInput.Text
+    balanceText.Text=customBalance
 
     if doSetEnabled then
-        local setVal = tonumber(amountToSet)
-        if setVal ~= nil then setCoins(setVal) end
+        local sv=tonumber(amountToSet)
+        if sv~=nil then setCoins(sv) end
     end
 
-    setupFrame.Visible = false
+    setupFrame.Visible=false
 end)
 
 closeBtn.MouseButton1Click:Connect(HideModal)
 okBtn.MouseButton1Click:Connect(HideModal)
 
 -- ===============================================
---           ЛОГИКА КНОПКИ BUY
+--           ЛОГИКА BUY
 -- ===============================================
 
-local canBuy = false
+local canBuy=false
 local currentTween
 
 buyBtn.MouseButton1Click:Connect(function()
     if not canBuy then return end
-    canBuy = false
+    canBuy=false
 
-    TweenService:Create(buyBtn,       TweenInfo.new(0.18), {BackgroundColor3=Color3.fromRGB(39,52,120)}):Play()
-    TweenService:Create(progressFill, TweenInfo.new(0.18), {BackgroundColor3=Color3.fromRGB(30,40,90)}):Play()
-    TweenService:Create(buyText,      TweenInfo.new(0.18), {TextTransparency=0.35}):Play()
-
+    TweenService:Create(buyBtn,TweenInfo.new(0.18),{BackgroundColor3=Color3.fromRGB(39,52,120)}):Play()
+    TweenService:Create(progressFill,TweenInfo.new(0.18),{BackgroundColor3=Color3.fromRGB(30,40,90)}):Play()
+    TweenService:Create(buyText,TweenInfo.new(0.18),{TextTransparency=0.35}):Play()
     task.wait(1.1)
 
-    promptContainer.Visible = false
-    successContainer.Visible = true
-    balanceFrame.Parent = nil
-    title.Text = "Purchase completed"
-    title.TextSize = 20
-    successMsg.Text = "You have successfully bought " .. itemName.Text .. "."
+    promptContainer.Visible=false
+    successContainer.Visible=true
+    balanceFrame.Parent=nil
+    title.Text="Purchase completed"; title.TextSize=20
+    successMsg.Text="You have successfully bought "..itemName.Text.."."
 
-    -- [НОВОЕ] Списываем робуксы с фейкового баланса
+    -- Списываем робуксы
     spendRobux(currentItemPrice)
 
     -- Добавляем монеты
-    local addVal = tonumber(amountToAdd) or 0
-    task.spawn(function() addCoins(addVal) end)
+    task.spawn(function() addCoins(tonumber(amountToAdd) or 0) end)
 
+    -- Уведомление
     showGameNotification()
 end)
 
@@ -550,88 +466,71 @@ end)
 --                    ХУК
 -- ===============================================
 
-local function fetchAndShow(id, infoType)
+local function fetchAndShow(id,infoType)
     title.Text="Buy item"; title.TextSize=24
     successContainer.Visible=false; promptContainer.Visible=true
     if not balanceFrame.Parent then balanceFrame.Parent=modal end
     itemName.Text="Loading..."; itemPrice.Text="..."
-    itemIcon.Image=""
-    -- Сбрасываем цену
-    currentItemPrice = 0
+    itemIcon.Image=""; currentItemPrice=0
     buyBtn.BackgroundColor3=Color3.fromRGB(58,86,217)
     progressFill.BackgroundColor3=Color3.fromRGB(43,63,165)
-    buyText.TextTransparency=0
-    progressFill.Visible=true
+    buyText.TextTransparency=0; progressFill.Visible=true
     progressFill.Size=UDim2.new(0,0,1,0)
     ShowModal()
 
     task.spawn(function()
-        local ok, info = pcall(function()
-            return MarketplaceService:GetProductInfo(id, infoType)
-        end)
+        local ok,info=pcall(function() return MarketplaceService:GetProductInfo(id,infoType) end)
         if ok and info then
-            itemName.Text = info.Name or "Unknown Item"
-            local price = info.PriceInRobux or 0
-            itemPrice.Text = tostring(price)
-            -- [НОВОЕ] Сохраняем цену для списания
-            currentItemPrice = price
+            itemName.Text=info.Name or "Unknown Item"
+            local price=info.PriceInRobux or 0
+            itemPrice.Text=tostring(price)
+            currentItemPrice=price
 
-            if infoType == Enum.InfoType.Product then
-                local iconId = info.IconImageAssetId
-                if iconId and iconId ~= 0 then
-                    itemIcon.Image = "rbxthumb://type=Asset&id="..tostring(iconId).."&w=150&h=150"
-                else
-                    itemIcon.Image = ""
-                end
-            elseif infoType == Enum.InfoType.GamePass then
-                itemIcon.Image = "rbxthumb://type=GamePass&id="..tostring(id).."&w=150&h=150"
-            elseif infoType == Enum.InfoType.Bundle then
-                itemIcon.Image = "rbxthumb://type=BundleThumbnail&id="..tostring(id).."&w=150&h=150"
+            if infoType==Enum.InfoType.Product then
+                local iconId=info.IconImageAssetId
+                itemIcon.Image=(iconId and iconId~=0) and "rbxthumb://type=Asset&id="..iconId.."&w=150&h=150" or ""
+            elseif infoType==Enum.InfoType.GamePass then
+                itemIcon.Image="rbxthumb://type=GamePass&id="..id.."&w=150&h=150"
+            elseif infoType==Enum.InfoType.Bundle then
+                itemIcon.Image="rbxthumb://type=BundleThumbnail&id="..id.."&w=150&h=150"
             else
-                itemIcon.Image = "rbxthumb://type=Asset&id="..tostring(id).."&w=150&h=150"
+                itemIcon.Image="rbxthumb://type=Asset&id="..id.."&w=150&h=150"
             end
         end
     end)
 
     if currentTween then currentTween:Cancel() end
-    currentTween = TweenService:Create(
-        progressFill,
-        TweenInfo.new(3,Enum.EasingStyle.Linear),
-        {Size=UDim2.new(1,0,1,0)}
-    )
+    currentTween=TweenService:Create(progressFill,TweenInfo.new(3,Enum.EasingStyle.Linear),{Size=UDim2.new(1,0,1,0)})
     currentTween:Play()
     task.spawn(function()
         currentTween.Completed:Wait()
-        if promptContainer.Visible then
-            progressFill.Visible=false
-            canBuy=true
-        end
+        if promptContainer.Visible then progressFill.Visible=false; canBuy=true end
     end)
 end
 
-local function fetchAndShowDelayed(id, infoType)
+local function fetchAndShowDelayed(id,infoType)
     task.spawn(function()
-        task.wait(0.8 + math.random() * 0.4)
-        fetchAndShow(id, infoType)
+        task.wait(0.8+math.random()*0.4)
+        fetchAndShow(id,infoType)
     end)
 end
 
 local oldNamecall
-local hasHook      = typeof(hookmetamethod)    == "function"
-local hasGetMethod = typeof(getnamecallmethod) == "function"
+local hasHook=typeof(hookmetamethod)=="function"
+local hasGetMethod=typeof(getnamecallmethod)=="function"
 
 if hasHook and hasGetMethod then
-    oldNamecall = hookmetamethod(game,"__namecall",function(self,...)
-        local ok,method = pcall(getnamecallmethod)
+    oldNamecall=hookmetamethod(game,"__namecall",function(self,...)
+        local ok,method=pcall(getnamecallmethod)
         if not ok then return oldNamecall(self,...) end
         local args={...}
         if self==MarketplaceService and not setupFrame.Visible then
             local id=tonumber(args[2])
             if id then
-                if     method=="PromptGamePassPurchase" then fetchAndShowDelayed(id,Enum.InfoType.GamePass);  return
-                elseif method=="PromptProductPurchase"  then fetchAndShowDelayed(id,Enum.InfoType.Product);   return
-                elseif method=="PromptPurchase"         then fetchAndShowDelayed(id,Enum.InfoType.Asset);     return
-                elseif method=="PromptBundlePurchase"   then fetchAndShowDelayed(id,Enum.InfoType.Bundle);    return
+                if method=="PromptGamePassPurchase" then fetchAndShowDelayed(id,Enum.InfoType.GamePass); return
+                elseif method=="PromptProductPurchase" then fetchAndShowDelayed(id,Enum.InfoType.Product); return
+                elseif method=="PromptPurchase" then fetchAndShowDelayed(id,Enum.InfoType.Asset); return
+                elseif method=="PromptBundlePurchase" then fetchAndShowDelayed(id,Enum.InfoType.Bundle); return
                 end
             end
         end

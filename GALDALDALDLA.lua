@@ -80,7 +80,6 @@ local balanceInput = makeInput(setupFrame, customBalance, "Enter fake Robux bala
 makeLabel(setupFrame, "Add coins after purchase", 112)
 local addInput = makeInput(setupFrame, amountToAdd, "Amount to ADD", 130)
 
--- Чекбокс Set
 local setToggleBtn = Instance.new("TextButton")
 setToggleBtn.Size = UDim2.new(1,-40,0,32)
 setToggleBtn.Position = UDim2.new(0,20,0,182)
@@ -142,7 +141,6 @@ applyBtn.TextColor3 = Color3.new(1,1,1)
 applyBtn.Parent = setupFrame
 Instance.new("UICorner",applyBtn).CornerRadius = UDim.new(0,8)
 
--- Перетаскивание
 local dragging,dragInput,dragStart,startPos
 setupFrame.InputBegan:Connect(function(inp)
     if inp.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -401,7 +399,6 @@ local function HideModal()
     modal.Visible=false; overlay.Visible=false
 end
 
--- Получить лейбл монет
 local function getAmountLabel()
     local ok,res = pcall(function()
         return player.PlayerGui
@@ -417,132 +414,156 @@ end
 
 local function setCoins(val)
     local lbl = getAmountLabel()
-    if lbl then
-        lbl.Text = tostring(val)
-    end
+    if lbl then lbl.Text = tostring(val) end
 end
 
--- [ИСПРАВЛЕНО] addCoins теперь работает корректно
 local function addCoins(val)
     val = tonumber(val)
     if not val or val == 0 then return end
     local lbl = getAmountLabel()
     if not lbl then return end
-    -- Убираем всё лишнее из текста и конвертируем
     local clean = lbl.Text:gsub("[^%d%-]","")
     local cur = tonumber(clean) or 0
     lbl.Text = tostring(cur + val)
 end
 
 -- ===============================================
--- [ИСПРАВЛЕНО] Уведомление точно как на скриншоте:
--- зелёный жирный текст, синяя рамка блока,
--- компактный размер (не на весь экран)
+-- [ИСПРАВЛЕНО] Берём шаблон уведомления из игры
+-- и клонируем его 1 в 1
 -- ===============================================
+
+-- Кэшируем шаблон при старте
+local cachedTemplate = nil
+local cachedTemplateColor = Color3.fromRGB(100,220,50)
+local cachedTemplateStrokeColor = Color3.fromRGB(0,177,0)
+local cachedTemplateStrokeThickness = 0.663
+local cachedTemplateFont = Enum.Font.GothamBold
+local cachedTemplateTextSize = 15
+
+local function tryGetTemplate()
+    if cachedTemplate then return cachedTemplate end
+    local ok, result = pcall(function()
+        local mf = player.PlayerGui:WaitForChild("MainFrames", 3)
+        local notifs = mf:WaitForChild("Notifications", 3)
+        local handler = notifs:WaitForChild("NotificationHandler", 3)
+        local tmpl = handler:WaitForChild("SuccessNotification", 3)
+        return tmpl
+    end)
+    if ok and result then
+        cachedTemplate = result
+        -- Считываем стиль текста из шаблона
+        local lbl = result:FindFirstChildWhichIsA("TextLabel")
+        if lbl then
+            cachedTemplateColor = lbl.TextColor3
+            cachedTemplateFont = lbl.Font
+            cachedTemplateTextSize = lbl.TextSize
+            local stroke = lbl:FindFirstChildWhichIsA("UIStroke")
+            if stroke then
+                cachedTemplateStrokeColor = stroke.Color
+                cachedTemplateStrokeThickness = stroke.Thickness
+            end
+        end
+        return result
+    end
+    return nil
+end
+
+-- Запускаем поиск шаблона в фоне при старте
+task.spawn(tryGetTemplate)
+
 local function showGameNotification()
     task.spawn(function()
         local pgui = player.PlayerGui
         local mainFrames = pgui:FindFirstChild("MainFrames")
-        if not mainFrames then
-            warn("[PurchasePro] MainFrames не найден")
-            return
-        end
+        if not mainFrames then warn("[PurchasePro] MainFrames не найден"); return end
         local notifContainer = mainFrames:FindFirstChild("Notifications")
-        if not notifContainer then
-            warn("[PurchasePro] Notifications не найден")
-            return
-        end
+        if not notifContainer then warn("[PurchasePro] Notifications не найден"); return end
 
-        -- Задержка ~1 сек перед показом (как просил)
         task.wait(1 + math.random() * 0.4)
 
-        -- Обёртка чтобы уведомление было компактным,
-        -- а не растянутым на весь Notifications
+        -- Пробуем получить шаблон (для стиля)
+        tryGetTemplate()
+
+        -- Создаём wrapper
         local wrapper = Instance.new("Frame")
         wrapper.Name = "SuccessNotification"
-        wrapper.Size = UDim2.new(1, 0, 0, 40)  -- компактная высота
+        wrapper.Size = UDim2.new(1, 0, 0, 40)
         wrapper.BackgroundTransparency = 1
         wrapper.BorderSizePixel = 0
         wrapper.ZIndex = 10
         wrapper.Parent = notifContainer
 
-        -- Сам блок уведомления — не на 100% ширины экрана
+        -- Блок уведомления
         local notifBlock = Instance.new("Frame")
         notifBlock.AnchorPoint = Vector2.new(0.5, 0.5)
         notifBlock.Position = UDim2.new(0.5, 0, 0.5, 0)
-        notifBlock.Size = UDim2.new(0, 340, 0, 36)  -- фиксированная ширина как на скрине
+        notifBlock.Size = UDim2.new(0, 340, 0, 36)
         notifBlock.BackgroundColor3 = Color3.fromRGB(255,255,255)
-        notifBlock.BackgroundTransparency = 0.85     -- полупрозрачный белый фон
+        notifBlock.BackgroundTransparency = 0.85
         notifBlock.BorderSizePixel = 0
         notifBlock.ZIndex = 10
         notifBlock.Parent = wrapper
-        Instance.new("UICorner", notifBlock).CornerRadius = UDim.new(0, 4)
+        Instance.new("UICorner",notifBlock).CornerRadius = UDim.new(0,4)
 
-        -- UIStroke — СИНЯЯ рамка блока как на скриншоте
+        -- Синяя рамка блока
         local blockStroke = Instance.new("UIStroke")
         blockStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-        blockStroke.Color = Color3.fromRGB(0, 180, 255)  -- голубой
+        blockStroke.Color = Color3.fromRGB(0,180,255)
         blockStroke.Thickness = 1.5
-        blockStroke.Transparency = 1  -- начинаем невидимым
+        blockStroke.Transparency = 1
         blockStroke.Parent = notifBlock
 
-        -- TextLabel — ЗЕЛЁНЫЙ ЖИРНЫЙ текст как на скриншоте
+        -- TextLabel — стиль берём из шаблона если нашли
         local notifLabel = Instance.new("TextLabel")
         notifLabel.Name = "TextLabel"
-        notifLabel.Size = UDim2.new(1, -10, 1, 0)
-        notifLabel.Position = UDim2.new(0, 5, 0, 0)
+        notifLabel.Size = UDim2.new(1,-10,1,0)
+        notifLabel.Position = UDim2.new(0,5,0,0)
         notifLabel.BackgroundTransparency = 1
         notifLabel.Text = "Thank you for your support!"
-        -- ЗЕЛЁНЫЙ цвет текста как на скриншоте
-        notifLabel.TextColor3 = Color3.fromRGB(100, 220, 50)
+        notifLabel.TextColor3 = cachedTemplateColor
         notifLabel.TextScaled = false
-        notifLabel.TextSize = 15
-        notifLabel.Font = Enum.Font.GothamBold       -- ЖИРНЫЙ
+        notifLabel.TextSize = cachedTemplateTextSize
+        notifLabel.Font = cachedTemplateFont
         notifLabel.TextWrapped = false
         notifLabel.TextXAlignment = Enum.TextXAlignment.Center
-        notifLabel.TextTransparency = 1              -- начинаем невидимым
+        notifLabel.TextTransparency = 1
         notifLabel.ZIndex = 11
         notifLabel.Parent = notifBlock
 
-        -- UIStroke на тексте — зелёная обводка (как в настройках)
+        -- UIStroke на тексте — из шаблона
         local textStroke = Instance.new("UIStroke")
         textStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
-        textStroke.Color = Color3.fromRGB(0, 177, 0)
+        textStroke.Color = cachedTemplateStrokeColor
         textStroke.LineJoinMode = Enum.LineJoinMode.Round
-        textStroke.Thickness = 0.663
+        textStroke.Thickness = cachedTemplateStrokeThickness
         textStroke.Transparency = 1
         textStroke.Parent = notifLabel
 
         -- Плавное появление
-        TweenService:Create(notifLabel,   TweenInfo.new(0.35), {TextTransparency = 0}):Play()
-        TweenService:Create(textStroke,   TweenInfo.new(0.35), {Transparency = 0}):Play()
-        TweenService:Create(blockStroke,  TweenInfo.new(0.35), {Transparency = 0}):Play()
+        TweenService:Create(notifLabel,  TweenInfo.new(0.35), {TextTransparency=0}):Play()
+        TweenService:Create(textStroke,  TweenInfo.new(0.35), {Transparency=0}):Play()
+        TweenService:Create(blockStroke, TweenInfo.new(0.35), {Transparency=0}):Play()
 
         task.wait(5)
 
-        -- Плавное исчезновение
-        TweenService:Create(notifLabel,   TweenInfo.new(0.35), {TextTransparency = 1}):Play()
-        TweenService:Create(textStroke,   TweenInfo.new(0.35), {Transparency = 1}):Play()
-        TweenService:Create(blockStroke,  TweenInfo.new(0.35), {Transparency = 1}):Play()
+        TweenService:Create(notifLabel,  TweenInfo.new(0.35), {TextTransparency=1}):Play()
+        TweenService:Create(textStroke,  TweenInfo.new(0.35), {Transparency=1}):Play()
+        TweenService:Create(blockStroke, TweenInfo.new(0.35), {Transparency=1}):Play()
         task.wait(0.35)
 
-        if wrapper and wrapper.Parent then
-            wrapper:Destroy()
-        end
+        if wrapper and wrapper.Parent then wrapper:Destroy() end
     end)
 end
 
 -- ===============================================
--- Сохранение + Set при нажатии Save
+-- Сохранение + Set при Save
 -- ===============================================
 applyBtn.MouseButton1Click:Connect(function()
     customBalance = balanceInput.Text ~= "" and balanceInput.Text or "76"
     amountToAdd   = addInput.Text
     amountToSet   = setInput.Text
-
     balanceText.Text = customBalance
 
-    -- Set — только если галочка включена (работает и с 0)
     if doSetEnabled then
         local setVal = tonumber(amountToSet)
         if setVal ~= nil then
@@ -580,23 +601,47 @@ buyBtn.MouseButton1Click:Connect(function()
     title.TextSize = 20
     successMsg.Text = "You have successfully bought " .. itemName.Text .. "."
 
-    -- [ИСПРАВЛЕНО] Add работает корректно
     local addVal = tonumber(amountToAdd) or 0
-    task.spawn(function()
-        addCoins(addVal)
-    end)
+    task.spawn(function() addCoins(addVal) end)
 
     showGameNotification()
 end)
 
 -- ===============================================
---                    ХУК
+-- [ИСПРАВЛЕНО] Получение правильной иконки
 -- ===============================================
 
-local function getThumbType(t)
-    if t==Enum.InfoType.GamePass then return "GamePass"
-    elseif t==Enum.InfoType.Bundle then return "BundleThumbnail"
-    else return "Asset" end
+local function getThumbType(infoType)
+    if infoType == Enum.InfoType.GamePass then
+        return "GamePass"
+    elseif infoType == Enum.InfoType.Bundle then
+        return "BundleThumbnail"
+    else
+        -- Для Product и Asset — используем Asset
+        return "Asset"
+    end
+end
+
+-- [КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ] Для Developer Product
+-- иконка берётся из IconImageAssetId, а не из id продукта
+local function getIconImage(id, infoType)
+    if infoType == Enum.InfoType.Product then
+        -- Получаем реальный IconImageAssetId продукта
+        local ok, info = pcall(function()
+            return MarketplaceService:GetProductInfo(id, Enum.InfoType.Product)
+        end)
+        if ok and info and info.IconImageAssetId and info.IconImageAssetId ~= 0 then
+            return "rbxthumb://type=Asset&id=" .. tostring(info.IconImageAssetId) .. "&w=150&h=150"
+        end
+        -- Фолбек если нет иконки
+        return "rbxthumb://type=Asset&id=" .. tostring(id) .. "&w=150&h=150"
+    elseif infoType == Enum.InfoType.GamePass then
+        return "rbxthumb://type=GamePass&id=" .. tostring(id) .. "&w=150&h=150"
+    elseif infoType == Enum.InfoType.Bundle then
+        return "rbxthumb://type=BundleThumbnail&id=" .. tostring(id) .. "&w=150&h=150"
+    else
+        return "rbxthumb://type=Asset&id=" .. tostring(id) .. "&w=150&h=150"
+    end
 end
 
 local function fetchAndShow(id, infoType)
@@ -604,7 +649,8 @@ local function fetchAndShow(id, infoType)
     successContainer.Visible=false; promptContainer.Visible=true
     if not balanceFrame.Parent then balanceFrame.Parent=modal end
     itemName.Text="Loading..."; itemPrice.Text="..."
-    itemIcon.Image="rbxthumb://type="..getThumbType(infoType).."&id="..id.."&w=150&h=150"
+    -- Сначала ставим плейсхолдер
+    itemIcon.Image = ""
     buyBtn.BackgroundColor3=Color3.fromRGB(58,86,217)
     progressFill.BackgroundColor3=Color3.fromRGB(43,63,165)
     buyText.TextTransparency=0
@@ -612,24 +658,41 @@ local function fetchAndShow(id, infoType)
     progressFill.Size=UDim2.new(0,0,1,0)
     ShowModal()
 
+    -- Загружаем инфо и иконку в фоне
     task.spawn(function()
-        local ok,res=pcall(function()
-            return MarketplaceService:GetProductInfo(id,infoType)
+        local ok, info = pcall(function()
+            return MarketplaceService:GetProductInfo(id, infoType)
         end)
-        if ok and res then
-            itemName.Text=res.Name or "Unknown Item"
-            itemPrice.Text=tostring(res.PriceInRobux or 0)
+        if ok and info then
+            itemName.Text = info.Name or "Unknown Item"
+            itemPrice.Text = tostring(info.PriceInRobux or 0)
+
+            -- [ИСПРАВЛЕНО] Правильная иконка для каждого типа
+            if infoType == Enum.InfoType.Product then
+                -- Developer Product: берём IconImageAssetId
+                local iconId = info.IconImageAssetId
+                if iconId and iconId ~= 0 then
+                    itemIcon.Image = "rbxthumb://type=Asset&id="..tostring(iconId).."&w=150&h=150"
+                else
+                    itemIcon.Image = ""
+                end
+            elseif infoType == Enum.InfoType.GamePass then
+                itemIcon.Image = "rbxthumb://type=GamePass&id="..tostring(id).."&w=150&h=150"
+            elseif infoType == Enum.InfoType.Bundle then
+                itemIcon.Image = "rbxthumb://type=BundleThumbnail&id="..tostring(id).."&w=150&h=150"
+            else
+                itemIcon.Image = "rbxthumb://type=Asset&id="..tostring(id).."&w=150&h=150"
+            end
         end
     end)
 
     if currentTween then currentTween:Cancel() end
-    currentTween=TweenService:Create(
+    currentTween = TweenService:Create(
         progressFill,
         TweenInfo.new(3,Enum.EasingStyle.Linear),
         {Size=UDim2.new(1,0,1,0)}
     )
     currentTween:Play()
-
     task.spawn(function()
         currentTween.Completed:Wait()
         if promptContainer.Visible then
@@ -639,13 +702,16 @@ local function fetchAndShow(id, infoType)
     end)
 end
 
--- [НОВОЕ] Задержка при перехвате промпта (~1 сек)
 local function fetchAndShowDelayed(id, infoType)
     task.spawn(function()
         task.wait(0.8 + math.random() * 0.4)
         fetchAndShow(id, infoType)
     end)
 end
+
+-- ===============================================
+--                    ХУК
+-- ===============================================
 
 local oldNamecall
 local hasHook      = typeof(hookmetamethod)    == "function"

@@ -21,6 +21,7 @@ local customBalance = "76"
 local amountToAdd   = "20000"
 local amountToSet   = "0"
 local doSetEnabled  = false
+local currentItemPrice = 0  -- цена текущего предмета для списания
 
 -- ===============================================
 --              ОКНО НАСТРОЕК
@@ -351,25 +352,28 @@ local function addCoins(val)
     lbl.Text = tostring(cur + val)
 end
 
--- ===============================================
--- Получаем SuccessNotification через getsenv
--- чтобы добраться до детей LocalScript
--- ===============================================
+-- [НОВОЕ] Списываем робуксы с фейкового баланса
+local function spendRobux(amount)
+    amount = tonumber(amount) or 0
+    if amount <= 0 then return end
+    local cur = tonumber(customBalance) or 0
+    local newBal = math.max(0, cur - amount)
+    customBalance = tostring(newBal)
+    balanceText.Text = customBalance
+end
 
--- [КЛЮЧЕВОЕ] Используем getsenv для доступа
--- к переменным внутри LocalScript
+-- ===============================================
+-- Клонирование SuccessNotification из LocalScript
+-- ===============================================
 local function tryCloneFromScript()
     local ok, result = pcall(function()
         local mf = player.PlayerGui:WaitForChild("MainFrames", 3)
         local notifs = mf:WaitForChild("Notifications", 3)
         local handler = notifs:WaitForChild("NotificationHandler", 3)
 
-        -- handler — это LocalScript
-        -- Пробуем через getsenv получить его окружение
         if typeof(getsenv) == "function" then
             local env = getsenv(handler)
             if env then
-                -- Ищем SuccessNotification в окружении скрипта
                 for k, v in pairs(env) do
                     if typeof(v) == "Instance" and v:IsA("Frame") and v.Name == "SuccessNotification" then
                         return v:Clone()
@@ -378,7 +382,6 @@ local function tryCloneFromScript()
             end
         end
 
-        -- Если getsenv не сработал — пробуем getscriptchildren / getchildren
         if typeof(getscriptchildren) == "function" then
             for _, child in pairs(getscriptchildren(handler)) do
                 if child:IsA("Frame") and child.Name == "SuccessNotification" then
@@ -387,8 +390,6 @@ local function tryCloneFromScript()
             end
         end
 
-        -- Последний вариант — прямой доступ через children
-        -- (работает на некоторых executor'ах)
         for _, child in pairs(handler:GetChildren()) do
             if child:IsA("Frame") and child.Name == "SuccessNotification" then
                 return child:Clone()
@@ -398,16 +399,13 @@ local function tryCloneFromScript()
         return nil
     end)
 
-    if ok and result then
-        return result
-    end
+    if ok and result then return result end
     return nil
 end
 
 -- ===============================================
--- [ИСПРАВЛЕНО] Показ уведомления
--- Сначала пробуем клонировать оригинал,
--- если не получилось — строим по точным данным
+-- [ИСПРАВЛЕНО] Уведомление — резкое появление
+-- и резкое исчезновение, висит ровно 5 секунд
 -- ===============================================
 local function showGameNotification()
     task.spawn(function()
@@ -419,65 +417,40 @@ local function showGameNotification()
 
         task.wait(1 + math.random() * 0.4)
 
-        -- Пробуем клонировать оригинал
         local cloned = tryCloneFromScript()
 
         if cloned then
-            -- Успешно клонировали — меняем только текст и показываем
-            print("[PurchasePro] Клон получен!")
+            -- Клон получен — меняем текст, показываем резко
             local lbl = cloned:FindFirstChildWhichIsA("TextLabel")
             if lbl then
                 lbl.Text = "Thank you for your support!"
-                lbl.TextTransparency = 1
-            end
-            cloned.Parent = notifContainer
-            cloned.Visible = true
-
-            if lbl then
-                TweenService:Create(lbl, TweenInfo.new(0.35), {TextTransparency = 0}):Play()
+                -- Резко видимый
+                lbl.TextTransparency = 0
                 local stroke = lbl:FindFirstChildWhichIsA("UIStroke")
-                if stroke then
-                    stroke.Transparency = 1
-                    TweenService:Create(stroke, TweenInfo.new(0.35), {Transparency = 0}):Play()
-                end
+                if stroke then stroke.Transparency = 0 end
             end
+            cloned.Visible = true
+            cloned.Parent = notifContainer
 
+            -- Висим ровно 5 секунд
             task.wait(5)
 
-            if lbl then
-                TweenService:Create(lbl, TweenInfo.new(0.35), {TextTransparency = 1}):Play()
-                local stroke = lbl:FindFirstChildWhichIsA("UIStroke")
-                if stroke then
-                    TweenService:Create(stroke, TweenInfo.new(0.35), {Transparency = 1}):Play()
-                end
+            -- Резко скрываем
+            if cloned and cloned.Parent then
+                cloned:Destroy()
             end
-            task.wait(0.35)
-            if cloned and cloned.Parent then cloned:Destroy() end
 
         else
-            -- Клонирование не удалось — строим вручную по данным со скриншотов
-            -- Точные значения из Properties на скриншотах:
-            -- Frame: BackgroundColor3=[255,255,255], BackgroundTransparency=1,
-            --        BorderColor3=[27,42,53], BorderMode=Outline, BorderSizePixel=1
-            -- TextLabel: Size={1,0},{1,0}, Position={0,0},{0,0}
-            --            TextColor3=[255,255,255], TextScaled=true, TextSize=14
-            --            TextWrapped=true, TextXAlignment=Center
-            --            Font=GothamBold (судя по виду)
-            -- UIStroke: Color=[0,177,0], Thickness=0.663,
-            --           ApplyStrokeMode=Contextual, LineJoinMode=Round
-
+            -- Строим вручную по данным со скриншотов
             warn("[PurchasePro] Клон не удался, строим вручную")
 
             local notifFrame = Instance.new("Frame")
             notifFrame.Name = "SuccessNotification"
-            -- Точные свойства из скриншота Properties
             notifFrame.BackgroundColor3 = Color3.fromRGB(255,255,255)
             notifFrame.BackgroundTransparency = 1
             notifFrame.BorderColor3 = Color3.fromRGB(27,42,53)
             notifFrame.BorderMode = Enum.BorderMode.Outline
             notifFrame.BorderSizePixel = 1
-            -- Размер берём от AbsoluteSize на скрине (~400 x 23px судя по скрину)
-            -- Используем относительный размер как у оригинала
             notifFrame.Size = UDim2.new(1, 0, 0, 23)
             notifFrame.ZIndex = 1
             notifFrame.Visible = true
@@ -485,41 +458,36 @@ local function showGameNotification()
 
             local notifLabel = Instance.new("TextLabel")
             notifLabel.Name = "TextLabel"
-            -- Точные свойства из скриншота
             notifLabel.Size = UDim2.new(1, 0, 1, 0)
             notifLabel.Position = UDim2.new(0, 0, 0, 0)
             notifLabel.BackgroundTransparency = 1
             notifLabel.Text = "Thank you for your support!"
             notifLabel.TextColor3 = Color3.fromRGB(255,255,255)
-            notifLabel.TextScaled = true   -- из скриншота TextScaled = true
+            notifLabel.TextScaled = true
             notifLabel.TextSize = 14
             notifLabel.TextWrapped = true
             notifLabel.TextXAlignment = Enum.TextXAlignment.Center
-            notifLabel.TextTransparency = 1
+            -- Резко видимый
+            notifLabel.TextTransparency = 0
             notifLabel.Font = Enum.Font.GothamBold
             notifLabel.ZIndex = 1
             notifLabel.Parent = notifFrame
 
-            -- UIStroke — точные данные из скриншота
             local textStroke = Instance.new("UIStroke")
             textStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
             textStroke.Color = Color3.fromRGB(0,177,0)
             textStroke.LineJoinMode = Enum.LineJoinMode.Round
             textStroke.Thickness = 0.663
-            textStroke.Transparency = 1
+            textStroke.Transparency = 0
             textStroke.Parent = notifLabel
 
-            -- Плавное появление
-            TweenService:Create(notifLabel, TweenInfo.new(0.35), {TextTransparency = 0}):Play()
-            TweenService:Create(textStroke, TweenInfo.new(0.35), {Transparency = 0}):Play()
-
+            -- Висим ровно 5 секунд
             task.wait(5)
 
-            TweenService:Create(notifLabel, TweenInfo.new(0.35), {TextTransparency = 1}):Play()
-            TweenService:Create(textStroke, TweenInfo.new(0.35), {Transparency = 1}):Play()
-            task.wait(0.35)
-
-            if notifFrame and notifFrame.Parent then notifFrame:Destroy() end
+            -- Резко удаляем
+            if notifFrame and notifFrame.Parent then
+                notifFrame:Destroy()
+            end
         end
     end)
 end
@@ -568,6 +536,10 @@ buyBtn.MouseButton1Click:Connect(function()
     title.TextSize = 20
     successMsg.Text = "You have successfully bought " .. itemName.Text .. "."
 
+    -- [НОВОЕ] Списываем робуксы с фейкового баланса
+    spendRobux(currentItemPrice)
+
+    -- Добавляем монеты
     local addVal = tonumber(amountToAdd) or 0
     task.spawn(function() addCoins(addVal) end)
 
@@ -584,6 +556,8 @@ local function fetchAndShow(id, infoType)
     if not balanceFrame.Parent then balanceFrame.Parent=modal end
     itemName.Text="Loading..."; itemPrice.Text="..."
     itemIcon.Image=""
+    -- Сбрасываем цену
+    currentItemPrice = 0
     buyBtn.BackgroundColor3=Color3.fromRGB(58,86,217)
     progressFill.BackgroundColor3=Color3.fromRGB(43,63,165)
     buyText.TextTransparency=0
@@ -597,7 +571,10 @@ local function fetchAndShow(id, infoType)
         end)
         if ok and info then
             itemName.Text = info.Name or "Unknown Item"
-            itemPrice.Text = tostring(info.PriceInRobux or 0)
+            local price = info.PriceInRobux or 0
+            itemPrice.Text = tostring(price)
+            -- [НОВОЕ] Сохраняем цену для списания
+            currentItemPrice = price
 
             if infoType == Enum.InfoType.Product then
                 local iconId = info.IconImageAssetId

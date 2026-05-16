@@ -352,82 +352,62 @@ local function addCoins(val)
 end
 
 -- ===============================================
--- Кэш данных шаблона уведомления
+-- Получаем SuccessNotification через getsenv
+-- чтобы добраться до детей LocalScript
 -- ===============================================
-local tmplData = {
-    -- Размер фрейма
-    frameSize        = UDim2.new(1, 0, 0, 36),     -- дефолт если не нашли
-    -- Фон фрейма
-    frameBgColor     = Color3.fromRGB(255,255,255),
-    frameBgTrans     = 1,
-    -- Цвет текста
-    textColor        = Color3.fromRGB(100,220,50),
-    textFont         = Enum.Font.GothamBold,
-    textSize         = 14,
-    textScaled       = false,
-    textWrapped      = true,
-    textXAlign       = Enum.TextXAlignment.Center,
-    -- UIStroke текста
-    strokeColor      = Color3.fromRGB(0,177,0),
-    strokeThickness  = 0.663,
-    strokeJoin       = Enum.LineJoinMode.Round,
-    strokeMode       = Enum.ApplyStrokeMode.Contextual,
-    -- Текст
-    notifText        = "Thank you for your support!",
-}
 
-local function tryGetTemplate()
-    local ok, tmpl = pcall(function()
-        local mf      = player.PlayerGui:WaitForChild("MainFrames",3)
-        local notifs  = mf:WaitForChild("Notifications",3)
-        local handler = notifs:WaitForChild("NotificationHandler",3)
-        return handler:WaitForChild("SuccessNotification",3)
+-- [КЛЮЧЕВОЕ] Используем getsenv для доступа
+-- к переменным внутри LocalScript
+local function tryCloneFromScript()
+    local ok, result = pcall(function()
+        local mf = player.PlayerGui:WaitForChild("MainFrames", 3)
+        local notifs = mf:WaitForChild("Notifications", 3)
+        local handler = notifs:WaitForChild("NotificationHandler", 3)
+
+        -- handler — это LocalScript
+        -- Пробуем через getsenv получить его окружение
+        if typeof(getsenv) == "function" then
+            local env = getsenv(handler)
+            if env then
+                -- Ищем SuccessNotification в окружении скрипта
+                for k, v in pairs(env) do
+                    if typeof(v) == "Instance" and v:IsA("Frame") and v.Name == "SuccessNotification" then
+                        return v:Clone()
+                    end
+                end
+            end
+        end
+
+        -- Если getsenv не сработал — пробуем getscriptchildren / getchildren
+        if typeof(getscriptchildren) == "function" then
+            for _, child in pairs(getscriptchildren(handler)) do
+                if child:IsA("Frame") and child.Name == "SuccessNotification" then
+                    return child:Clone()
+                end
+            end
+        end
+
+        -- Последний вариант — прямой доступ через children
+        -- (работает на некоторых executor'ах)
+        for _, child in pairs(handler:GetChildren()) do
+            if child:IsA("Frame") and child.Name == "SuccessNotification" then
+                return child:Clone()
+            end
+        end
+
+        return nil
     end)
 
-    if not ok or not tmpl then
-        warn("[PurchasePro] Шаблон SuccessNotification не найден, используем дефолт")
-        return
+    if ok and result then
+        return result
     end
-
-    -- [ИСПРАВЛЕНО] Берём размер самого фрейма
-    tmplData.frameSize    = tmpl.Size
-    tmplData.frameBgColor = tmpl.BackgroundColor3
-    tmplData.frameBgTrans = tmpl.BackgroundTransparency
-
-    -- Берём данные TextLabel
-    local lbl = tmpl:FindFirstChildWhichIsA("TextLabel")
-    if lbl then
-        tmplData.textColor   = lbl.TextColor3
-        tmplData.textFont    = lbl.Font
-        tmplData.textSize    = lbl.TextSize
-        tmplData.textScaled  = lbl.TextScaled
-        tmplData.textWrapped = lbl.TextWrapped
-        tmplData.textXAlign  = lbl.TextXAlignment
-        -- Текст тоже берём из шаблона
-        if lbl.Text and lbl.Text ~= "" then
-            tmplData.notifText = lbl.Text
-        end
-
-        -- UIStroke текста
-        local stroke = lbl:FindFirstChildWhichIsA("UIStroke")
-        if stroke then
-            tmplData.strokeColor     = stroke.Color
-            tmplData.strokeThickness = stroke.Thickness
-            tmplData.strokeJoin      = stroke.LineJoinMode
-            tmplData.strokeMode      = stroke.ApplyStrokeMode
-        end
-    end
-
-    print("[PurchasePro] Шаблон загружен. Текст:", tmplData.notifText, "| Размер:", tmplData.frameSize)
+    return nil
 end
 
--- Запускаем в фоне при старте
-task.spawn(tryGetTemplate)
-
 -- ===============================================
--- [ИСПРАВЛЕНО] Уведомление берёт ВСЁ из шаблона:
--- размер, цвет фона, стиль текста, обводку
--- Синей рамки вокруг блока НЕТ
+-- [ИСПРАВЛЕНО] Показ уведомления
+-- Сначала пробуем клонировать оригинал,
+-- если не получилось — строим по точным данным
 -- ===============================================
 local function showGameNotification()
     task.spawn(function()
@@ -439,57 +419,107 @@ local function showGameNotification()
 
         task.wait(1 + math.random() * 0.4)
 
-        -- Создаём фрейм с размером из шаблона
-        local notifFrame = Instance.new("Frame")
-        notifFrame.Name = "SuccessNotification"
-        notifFrame.Size = tmplData.frameSize              -- из шаблона!
-        notifFrame.BackgroundColor3 = tmplData.frameBgColor
-        notifFrame.BackgroundTransparency = tmplData.frameBgTrans
-        notifFrame.BorderSizePixel = 0
-        notifFrame.ZIndex = 10
-        notifFrame.Visible = true
-        notifFrame.Parent = notifContainer
+        -- Пробуем клонировать оригинал
+        local cloned = tryCloneFromScript()
 
-        -- TextLabel — всё из шаблона
-        local notifLabel = Instance.new("TextLabel")
-        notifLabel.Name = "TextLabel"
-        notifLabel.Size = UDim2.new(1, 0, 1, 0)
-        notifLabel.Position = UDim2.new(0, 0, 0, 0)
-        notifLabel.BackgroundTransparency = 1
-        notifLabel.Text = tmplData.notifText              -- из шаблона!
-        notifLabel.TextColor3 = tmplData.textColor        -- из шаблона!
-        notifLabel.Font = tmplData.textFont               -- из шаблона!
-        notifLabel.TextSize = tmplData.textSize           -- из шаблона!
-        notifLabel.TextScaled = tmplData.textScaled       -- из шаблона!
-        notifLabel.TextWrapped = tmplData.textWrapped     -- из шаблона!
-        notifLabel.TextXAlignment = tmplData.textXAlign   -- из шаблона!
-        notifLabel.TextTransparency = 1                   -- начинаем невидимым
-        notifLabel.ZIndex = 11
-        notifLabel.Parent = notifFrame
+        if cloned then
+            -- Успешно клонировали — меняем только текст и показываем
+            print("[PurchasePro] Клон получен!")
+            local lbl = cloned:FindFirstChildWhichIsA("TextLabel")
+            if lbl then
+                lbl.Text = "Thank you for your support!"
+                lbl.TextTransparency = 1
+            end
+            cloned.Parent = notifContainer
+            cloned.Visible = true
 
-        -- UIStroke на тексте — из шаблона
-        -- [ИСПРАВЛЕНО] Синей рамки вокруг блока НЕТ — только обводка текста
-        local textStroke = Instance.new("UIStroke")
-        textStroke.ApplyStrokeMode = tmplData.strokeMode
-        textStroke.Color = tmplData.strokeColor
-        textStroke.LineJoinMode = tmplData.strokeJoin
-        textStroke.Thickness = tmplData.strokeThickness
-        textStroke.Transparency = 1
-        textStroke.Parent = notifLabel
+            if lbl then
+                TweenService:Create(lbl, TweenInfo.new(0.35), {TextTransparency = 0}):Play()
+                local stroke = lbl:FindFirstChildWhichIsA("UIStroke")
+                if stroke then
+                    stroke.Transparency = 1
+                    TweenService:Create(stroke, TweenInfo.new(0.35), {Transparency = 0}):Play()
+                end
+            end
 
-        -- Плавное появление
-        TweenService:Create(notifLabel, TweenInfo.new(0.35), {TextTransparency = 0}):Play()
-        TweenService:Create(textStroke, TweenInfo.new(0.35), {Transparency = 0}):Play()
+            task.wait(5)
 
-        task.wait(5)
+            if lbl then
+                TweenService:Create(lbl, TweenInfo.new(0.35), {TextTransparency = 1}):Play()
+                local stroke = lbl:FindFirstChildWhichIsA("UIStroke")
+                if stroke then
+                    TweenService:Create(stroke, TweenInfo.new(0.35), {Transparency = 1}):Play()
+                end
+            end
+            task.wait(0.35)
+            if cloned and cloned.Parent then cloned:Destroy() end
 
-        -- Плавное исчезновение
-        TweenService:Create(notifLabel, TweenInfo.new(0.35), {TextTransparency = 1}):Play()
-        TweenService:Create(textStroke, TweenInfo.new(0.35), {Transparency = 1}):Play()
-        task.wait(0.35)
+        else
+            -- Клонирование не удалось — строим вручную по данным со скриншотов
+            -- Точные значения из Properties на скриншотах:
+            -- Frame: BackgroundColor3=[255,255,255], BackgroundTransparency=1,
+            --        BorderColor3=[27,42,53], BorderMode=Outline, BorderSizePixel=1
+            -- TextLabel: Size={1,0},{1,0}, Position={0,0},{0,0}
+            --            TextColor3=[255,255,255], TextScaled=true, TextSize=14
+            --            TextWrapped=true, TextXAlignment=Center
+            --            Font=GothamBold (судя по виду)
+            -- UIStroke: Color=[0,177,0], Thickness=0.663,
+            --           ApplyStrokeMode=Contextual, LineJoinMode=Round
 
-        if notifFrame and notifFrame.Parent then
-            notifFrame:Destroy()
+            warn("[PurchasePro] Клон не удался, строим вручную")
+
+            local notifFrame = Instance.new("Frame")
+            notifFrame.Name = "SuccessNotification"
+            -- Точные свойства из скриншота Properties
+            notifFrame.BackgroundColor3 = Color3.fromRGB(255,255,255)
+            notifFrame.BackgroundTransparency = 1
+            notifFrame.BorderColor3 = Color3.fromRGB(27,42,53)
+            notifFrame.BorderMode = Enum.BorderMode.Outline
+            notifFrame.BorderSizePixel = 1
+            -- Размер берём от AbsoluteSize на скрине (~400 x 23px судя по скрину)
+            -- Используем относительный размер как у оригинала
+            notifFrame.Size = UDim2.new(1, 0, 0, 23)
+            notifFrame.ZIndex = 1
+            notifFrame.Visible = true
+            notifFrame.Parent = notifContainer
+
+            local notifLabel = Instance.new("TextLabel")
+            notifLabel.Name = "TextLabel"
+            -- Точные свойства из скриншота
+            notifLabel.Size = UDim2.new(1, 0, 1, 0)
+            notifLabel.Position = UDim2.new(0, 0, 0, 0)
+            notifLabel.BackgroundTransparency = 1
+            notifLabel.Text = "Thank you for your support!"
+            notifLabel.TextColor3 = Color3.fromRGB(255,255,255)
+            notifLabel.TextScaled = true   -- из скриншота TextScaled = true
+            notifLabel.TextSize = 14
+            notifLabel.TextWrapped = true
+            notifLabel.TextXAlignment = Enum.TextXAlignment.Center
+            notifLabel.TextTransparency = 1
+            notifLabel.Font = Enum.Font.GothamBold
+            notifLabel.ZIndex = 1
+            notifLabel.Parent = notifFrame
+
+            -- UIStroke — точные данные из скриншота
+            local textStroke = Instance.new("UIStroke")
+            textStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
+            textStroke.Color = Color3.fromRGB(0,177,0)
+            textStroke.LineJoinMode = Enum.LineJoinMode.Round
+            textStroke.Thickness = 0.663
+            textStroke.Transparency = 1
+            textStroke.Parent = notifLabel
+
+            -- Плавное появление
+            TweenService:Create(notifLabel, TweenInfo.new(0.35), {TextTransparency = 0}):Play()
+            TweenService:Create(textStroke, TweenInfo.new(0.35), {Transparency = 0}):Play()
+
+            task.wait(5)
+
+            TweenService:Create(notifLabel, TweenInfo.new(0.35), {TextTransparency = 1}):Play()
+            TweenService:Create(textStroke, TweenInfo.new(0.35), {Transparency = 1}):Play()
+            task.wait(0.35)
+
+            if notifFrame and notifFrame.Parent then notifFrame:Destroy() end
         end
     end)
 end
@@ -505,9 +535,7 @@ applyBtn.MouseButton1Click:Connect(function()
 
     if doSetEnabled then
         local setVal = tonumber(amountToSet)
-        if setVal ~= nil then
-            setCoins(setVal)
-        end
+        if setVal ~= nil then setCoins(setVal) end
     end
 
     setupFrame.Visible = false

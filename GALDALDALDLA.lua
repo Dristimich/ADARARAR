@@ -23,6 +23,49 @@ local amountToSet   = "0"
 local doSetEnabled  = false
 local currentItemPrice = 0
 
+-- Кэш найденного шаблона
+local cachedNotifTemplate = nil
+
+-- ===============================================
+-- Ищем SuccessNotification через getinstances()
+-- ===============================================
+local function findSuccessNotification()
+    if cachedNotifTemplate then return cachedNotifTemplate end
+
+    -- Метод 1: getinstances() — возвращает ВСЕ инстансы в игре
+    if typeof(getinstances) == "function" then
+        local ok, instances = pcall(getinstances)
+        if ok and instances then
+            for _, inst in pairs(instances) do
+                if inst.Name == "SuccessNotification" and inst:IsA("Frame") then
+                    cachedNotifTemplate = inst
+                    print("[PurchasePro] Найден через getinstances()!")
+                    return inst
+                end
+            end
+        end
+    end
+
+    -- Метод 2: getnilinstances() — инстансы в nil workspace
+    if typeof(getnilinstances) == "function" then
+        local ok, instances = pcall(getnilinstances)
+        if ok and instances then
+            for _, inst in pairs(instances) do
+                if inst.Name == "SuccessNotification" and inst:IsA("Frame") then
+                    cachedNotifTemplate = inst
+                    print("[PurchasePro] Найден через getnilinstances()!")
+                    return inst
+                end
+            end
+        end
+    end
+
+    warn("[PurchasePro] SuccessNotification не найден ни одним методом")
+    return nil
+end
+
+task.spawn(findSuccessNotification)
+
 -- ===============================================
 --              ОКНО НАСТРОЕК
 -- ===============================================
@@ -125,7 +168,7 @@ setToggleBtn.MouseButton1Click:Connect(function()
     checkMark.Visible = doSetEnabled
     checkBox.BackgroundColor3 = doSetEnabled
         and Color3.fromRGB(35,38,58)
-        or  Color3.fromRGB(25,27,33)
+        or Color3.fromRGB(25,27,33)
 end)
 
 makeLabel(setupFrame, "Set coins to value (по галочке)", 226)
@@ -313,15 +356,15 @@ end
 
 local function getAmountLabel()
     local ok,res=pcall(function()
-        return player.PlayerGui:WaitForChild("Lobby",5):WaitForChild("CurrenciesFrame",5):WaitForChild("CoinAmount",5):WaitForChild("AmountLabel",5)
+        return player.PlayerGui:WaitForChild("Lobby",5):WaitForChild("CurrenciesFrame",5)
+            :WaitForChild("CoinAmount",5):WaitForChild("AmountLabel",5)
     end)
     if ok and res then return res end
     warn("[PurchasePro] AmountLabel не найден"); return nil
 end
 
 local function setCoins(val)
-    local lbl=getAmountLabel()
-    if lbl then lbl.Text=tostring(val) end
+    local lbl=getAmountLabel(); if lbl then lbl.Text=tostring(val) end
 end
 
 local function addCoins(val)
@@ -332,21 +375,18 @@ local function addCoins(val)
 end
 
 local function spendRobux(amount)
-    amount=tonumber(amount) or 0
-    if amount<=0 then return end
+    amount=tonumber(amount) or 0; if amount<=0 then return end
     local cur=tonumber(customBalance) or 0
     customBalance=tostring(math.max(0,cur-amount))
     balanceText.Text=customBalance
 end
 
 -- ===============================================
--- УВЕДОМЛЕНИЕ — резкое, без анимации, 5 секунд
--- Вставляем прямо в Notifications
--- Размер подстраиваем под AbsoluteSize контейнера
+-- УВЕДОМЛЕНИЕ — клонируем через getinstances
+-- резко появляется, резко исчезает, 5 секунд
 -- ===============================================
 local function showGameNotification()
     task.spawn(function()
-        -- Задержка перед показом
         task.wait(1 + math.random()*0.4)
 
         local pgui = player.PlayerGui
@@ -355,55 +395,65 @@ local function showGameNotification()
         local notifContainer = mainFrames:FindFirstChild("Notifications")
         if not notifContainer then warn("[PurchasePro] Notifications не найден"); return end
 
-        -- Берём реальный AbsoluteSize контейнера чтобы подогнать размер
-        local containerAbsSize = notifContainer.AbsoluteSize
-        -- Высота уведомления = примерно 1/6 высоты контейнера или минимум 28px
-        local notifHeight = math.max(28, math.floor(containerAbsSize.Y / 6))
+        -- Пробуем найти шаблон
+        local template = findSuccessNotification()
 
-        -- Создаём Frame
-        local notifFrame = Instance.new("Frame")
-        notifFrame.Name = "SuccessNotification"
-        -- Точные свойства из скриншота
-        notifFrame.BackgroundColor3 = Color3.fromRGB(255,255,255)
-        notifFrame.BackgroundTransparency = 1   -- прозрачный фон
-        notifFrame.BorderColor3 = Color3.fromRGB(27,42,53)
-        notifFrame.BorderMode = Enum.BorderMode.Outline
-        notifFrame.BorderSizePixel = 1
-        -- Размер: полная ширина контейнера, высота рассчитана
-        notifFrame.Size = UDim2.new(1, 0, 0, notifHeight)
-        notifFrame.ZIndex = 1
-        notifFrame.Visible = true               -- сразу видимый (резко)
-        notifFrame.Parent = notifContainer
+        local notifFrame
 
-        -- TextLabel
-        local notifLabel = Instance.new("TextLabel")
-        notifLabel.Name = "TextLabel"
-        notifLabel.Size = UDim2.new(1,0,1,0)
-        notifLabel.Position = UDim2.new(0,0,0,0)
-        notifLabel.BackgroundTransparency = 1
-        notifLabel.Text = "Thank you for your support!"
-        notifLabel.TextColor3 = Color3.fromRGB(255,255,255)
-        notifLabel.TextScaled = true            -- из скриншота
-        notifLabel.TextWrapped = true
-        notifLabel.TextXAlignment = Enum.TextXAlignment.Center
-        notifLabel.TextTransparency = 0         -- сразу видимый (резко)
-        notifLabel.Font = Enum.Font.GothamBold
-        notifLabel.ZIndex = 1
-        notifLabel.Parent = notifFrame
+        if template then
+            -- Клонируем 1 в 1
+            notifFrame = template:Clone()
+            -- Меняем только текст
+            local lbl = notifFrame:FindFirstChildWhichIsA("TextLabel")
+            if lbl then
+                lbl.Text = "Thank you for your support!"
+            end
+            notifFrame.Visible = true
+            notifFrame.Parent = notifContainer
+            print("[PurchasePro] Уведомление клонировано успешно!")
+        else
+            -- Резервный вариант — строго по скриншотам
+            -- Frame: BackgroundTransparency=1, BorderSizePixel=1
+            -- TextLabel: TextScaled=true, TextColor3=white, Font=GothamBold
+            -- UIStroke: Color=[0,177,0], Thickness=0.663
+            notifFrame = Instance.new("Frame")
+            notifFrame.Name = "SuccessNotification"
+            notifFrame.BackgroundColor3 = Color3.fromRGB(255,255,255)
+            notifFrame.BackgroundTransparency = 1
+            notifFrame.BorderColor3 = Color3.fromRGB(27,42,53)
+            notifFrame.BorderMode = Enum.BorderMode.Outline
+            notifFrame.BorderSizePixel = 1
+            notifFrame.Size = UDim2.new(1,0,0,23)
+            notifFrame.ZIndex = 1
+            notifFrame.Visible = true
+            notifFrame.Parent = notifContainer
 
-        -- UIStroke на тексте (зелёный, из скриншота)
-        local stroke = Instance.new("UIStroke")
-        stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
-        stroke.Color = Color3.fromRGB(0,177,0)
-        stroke.LineJoinMode = Enum.LineJoinMode.Round
-        stroke.Thickness = 0.663
-        stroke.Transparency = 0                 -- сразу видимый (резко)
-        stroke.Parent = notifLabel
+            local lbl = Instance.new("TextLabel")
+            lbl.Name = "TextLabel"
+            lbl.Size = UDim2.new(1,0,1,0)
+            lbl.Position = UDim2.new(0,0,0,0)
+            lbl.BackgroundTransparency = 1
+            lbl.Text = "Thank you for your support!"
+            lbl.TextColor3 = Color3.fromRGB(255,255,255)
+            lbl.TextScaled = true
+            lbl.TextWrapped = true
+            lbl.TextXAlignment = Enum.TextXAlignment.Center
+            lbl.TextTransparency = 0
+            lbl.Font = Enum.Font.GothamBold
+            lbl.ZIndex = 1
+            lbl.Parent = notifFrame
 
-        -- Ждём ровно 5 секунд
+            local stroke = Instance.new("UIStroke")
+            stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
+            stroke.Color = Color3.fromRGB(0,177,0)
+            stroke.LineJoinMode = Enum.LineJoinMode.Round
+            stroke.Thickness = 0.663
+            stroke.Transparency = 0
+            stroke.Parent = lbl
+        end
+
+        -- Ждём 5 секунд и резко удаляем
         task.wait(5)
-
-        -- Резко удаляем без анимации
         if notifFrame and notifFrame.Parent then
             notifFrame:Destroy()
         end
@@ -415,15 +465,12 @@ end
 -- ===============================================
 applyBtn.MouseButton1Click:Connect(function()
     customBalance=balanceInput.Text~="" and balanceInput.Text or "76"
-    amountToAdd=addInput.Text
-    amountToSet=setInput.Text
+    amountToAdd=addInput.Text; amountToSet=setInput.Text
     balanceText.Text=customBalance
-
     if doSetEnabled then
         local sv=tonumber(amountToSet)
         if sv~=nil then setCoins(sv) end
     end
-
     setupFrame.Visible=false
 end)
 
@@ -452,13 +499,8 @@ buyBtn.MouseButton1Click:Connect(function()
     title.Text="Purchase completed"; title.TextSize=20
     successMsg.Text="You have successfully bought "..itemName.Text.."."
 
-    -- Списываем робуксы
     spendRobux(currentItemPrice)
-
-    -- Добавляем монеты
     task.spawn(function() addCoins(tonumber(amountToAdd) or 0) end)
-
-    -- Уведомление
     showGameNotification()
 end)
 

@@ -170,210 +170,134 @@ end)
 local overlay=Instance.new("TextButton")
 overlay.Size=UDim2.new(1,0,1,0)
 overlay.BackgroundColor3=Color3.new(0,0,0)
-overlay.BackgroundTransparency=1
-overlay.Text=""
-overlay.AutoButtonColor=false
-overlay.Visible=false
-overlay.ZIndex=1
-overlay.Parent=gui
+overlay.BackgroundTransparency=1; overlay.Text=""
+overlay.AutoButtonColor=false; overlay.Visible=false
+overlay.ZIndex=1; overlay.Parent=gui
 
 local modal=Instance.new("Frame")
 modal.Size=UDim2.fromOffset(435,185)
 modal.Position=UDim2.new(0.5,-217,0.5,-92)
 modal.BackgroundColor3=Color3.fromRGB(17,19,28)
-modal.BorderSizePixel=0
-modal.Visible=false
-modal.ClipsDescendants=true
-modal.ZIndex=2
-modal.Parent=gui
+modal.BorderSizePixel=0; modal.Visible=false
+modal.ClipsDescendants=true; modal.ZIndex=2; modal.Parent=gui
 
 local mc=Instance.new("UISizeConstraint")
-mc.MaxSize=Vector2.new(435,185)
-mc.MinSize=Vector2.new(435,185)
-mc.Parent=modal
+mc.MaxSize=Vector2.new(435,185); mc.MinSize=Vector2.new(435,185); mc.Parent=modal
 Instance.new("UICorner",modal).CornerRadius=UDim.new(0,18)
 
 local title=Instance.new("TextLabel")
-title.Size=UDim2.new(0,220,0,34)
-title.Position=UDim2.new(0,16,0,14)
-title.BackgroundTransparency=1
-title.Font=Enum.Font.GothamBold
-title.Text="Buy item"
-title.TextSize=24
-title.TextColor3=Color3.new(1,1,1)
-title.TextXAlignment=Enum.TextXAlignment.Left
-title.ZIndex=3
-title.Parent=modal
+title.Size=UDim2.new(0,220,0,34); title.Position=UDim2.new(0,16,0,14)
+title.BackgroundTransparency=1; title.Font=Enum.Font.GothamBold
+title.Text="Buy item"; title.TextSize=24; title.TextColor3=Color3.new(1,1,1)
+title.TextXAlignment=Enum.TextXAlignment.Left; title.ZIndex=3; title.Parent=modal
 
 local closeBtn=Instance.new("ImageButton")
-closeBtn.Size=UDim2.fromOffset(24,24)
-closeBtn.Position=UDim2.new(1,-32,0,16)
+closeBtn.Size=UDim2.fromOffset(24,24); closeBtn.Position=UDim2.new(1,-32,0,16)
 closeBtn.BackgroundTransparency=1
 closeBtn.Image="rbxthumb://type=Asset&id=78940278565096&w=420&h=420"
-closeBtn.ScaleType=Enum.ScaleType.Fit
-closeBtn.ZIndex=4
-closeBtn.Parent=modal
+closeBtn.ScaleType=Enum.ScaleType.Fit; closeBtn.ZIndex=4; closeBtn.Parent=modal
 
 local balanceFrame=Instance.new("Frame")
 balanceFrame.AutomaticSize=Enum.AutomaticSize.X
-balanceFrame.Size=UDim2.new(0,0,0,24)
-balanceFrame.AnchorPoint=Vector2.new(1,0)
-balanceFrame.Position=UDim2.new(1,-62,0,18)
-balanceFrame.BackgroundTransparency=1
-balanceFrame.ZIndex=3
-balanceFrame.Parent=modal
+balanceFrame.Size=UDim2.new(0,0,0,24); balanceFrame.AnchorPoint=Vector2.new(1,0)
+balanceFrame.Position=UDim2.new(1,-62,0,18); balanceFrame.BackgroundTransparency=1
+balanceFrame.ZIndex=3; balanceFrame.Parent=modal
 
 local bfl=Instance.new("UIListLayout")
 bfl.FillDirection=Enum.FillDirection.Horizontal
 bfl.HorizontalAlignment=Enum.HorizontalAlignment.Left
 bfl.VerticalAlignment=Enum.VerticalAlignment.Center
-bfl.Padding=UDim.new(0,5)
-bfl.Parent=balanceFrame
+bfl.Padding=UDim.new(0,5); bfl.Parent=balanceFrame
 
 local balanceIcon=Instance.new("ImageLabel")
-balanceIcon.Size=UDim2.fromOffset(20,20)
-balanceIcon.BackgroundTransparency=1
+balanceIcon.Size=UDim2.fromOffset(20,20); balanceIcon.BackgroundTransparency=1
 balanceIcon.Image="rbxthumb://type=Asset&id=70493384532723&w=420&h=420"
-balanceIcon.ScaleType=Enum.ScaleType.Fit
-balanceIcon.ZIndex=4
-balanceIcon.Parent=balanceFrame
+balanceIcon.ScaleType=Enum.ScaleType.Fit; balanceIcon.ZIndex=4; balanceIcon.Parent=balanceFrame
 
 local balanceText=Instance.new("TextLabel")
-balanceText.AutomaticSize=Enum.AutomaticSize.X
-balanceText.Size=UDim2.new(0,0,1,0)
-balanceText.BackgroundTransparency=1
-balanceText.Font=Enum.Font.GothamMedium
-balanceText.TextSize=16
-balanceText.TextColor3=Color3.new(1,1,1)
-balanceText.Text=customBalance
-balanceText.ZIndex=4
-balanceText.Parent=balanceFrame
+balanceText.AutomaticSize=Enum.AutomaticSize.X; balanceText.Size=UDim2.new(0,0,1,0)
+balanceText.BackgroundTransparency=1; balanceText.Font=Enum.Font.GothamMedium
+balanceText.TextSize=16; balanceText.TextColor3=Color3.new(1,1,1)
+balanceText.Text=customBalance; balanceText.ZIndex=4; balanceText.Parent=balanceFrame
 
 local promptContainer=Instance.new("Frame")
-promptContainer.Size=UDim2.new(1,0,1,0)
-promptContainer.BackgroundTransparency=1
-promptContainer.ZIndex=3
-promptContainer.Parent=modal
+promptContainer.Size=UDim2.new(1,0,1,0); promptContainer.BackgroundTransparency=1
+promptContainer.ZIndex=3; promptContainer.Parent=modal
 
 local itemIcon=Instance.new("ImageLabel")
-itemIcon.Size=UDim2.fromOffset(64,64)
-itemIcon.Position=UDim2.new(0,14,0,52)
-itemIcon.BackgroundTransparency=1
-itemIcon.ZIndex=3
-itemIcon.Parent=promptContainer
+itemIcon.Size=UDim2.fromOffset(64,64); itemIcon.Position=UDim2.new(0,14,0,52)
+itemIcon.BackgroundTransparency=1; itemIcon.ZIndex=3; itemIcon.Parent=promptContainer
 
 local itemName=Instance.new("TextLabel")
-itemName.Size=UDim2.new(0,280,0,28)
-itemName.Position=UDim2.new(0,88,0,55)
-itemName.BackgroundTransparency=1
-itemName.Font=Enum.Font.GothamBold
-itemName.TextSize=17
-itemName.TextColor3=Color3.new(1,1,1)
-itemName.TextXAlignment=Enum.TextXAlignment.Left
-itemName.Text="Loading..."
-itemName.ZIndex=3
-itemName.Parent=promptContainer
+itemName.Size=UDim2.new(0,280,0,28); itemName.Position=UDim2.new(0,88,0,55)
+itemName.BackgroundTransparency=1; itemName.Font=Enum.Font.GothamBold
+itemName.TextSize=17; itemName.TextColor3=Color3.new(1,1,1)
+itemName.TextXAlignment=Enum.TextXAlignment.Left; itemName.Text="Loading..."
+itemName.ZIndex=3; itemName.Parent=promptContainer
 
 local priceFrame=Instance.new("Frame")
-priceFrame.AutomaticSize=Enum.AutomaticSize.X
-priceFrame.Size=UDim2.new(0,0,0,22)
-priceFrame.Position=UDim2.new(0,88,0,83)
-priceFrame.BackgroundTransparency=1
-priceFrame.ZIndex=3
-priceFrame.Parent=promptContainer
+priceFrame.AutomaticSize=Enum.AutomaticSize.X; priceFrame.Size=UDim2.new(0,0,0,22)
+priceFrame.Position=UDim2.new(0,88,0,83); priceFrame.BackgroundTransparency=1
+priceFrame.ZIndex=3; priceFrame.Parent=promptContainer
 
 local pfl=Instance.new("UIListLayout")
 pfl.FillDirection=Enum.FillDirection.Horizontal
 pfl.HorizontalAlignment=Enum.HorizontalAlignment.Left
 pfl.VerticalAlignment=Enum.VerticalAlignment.Center
-pfl.Padding=UDim.new(0,5)
-pfl.Parent=priceFrame
+pfl.Padding=UDim.new(0,5); pfl.Parent=priceFrame
 
 local priceIcon=Instance.new("ImageLabel")
-priceIcon.Size=UDim2.fromOffset(20,20)
-priceIcon.BackgroundTransparency=1
+priceIcon.Size=UDim2.fromOffset(20,20); priceIcon.BackgroundTransparency=1
 priceIcon.Image="rbxthumb://type=Asset&id=70493384532723&w=420&h=420"
-priceIcon.ScaleType=Enum.ScaleType.Fit
-priceIcon.ZIndex=4
-priceIcon.Parent=priceFrame
+priceIcon.ScaleType=Enum.ScaleType.Fit; priceIcon.ZIndex=4; priceIcon.Parent=priceFrame
 
 local itemPrice=Instance.new("TextLabel")
-itemPrice.AutomaticSize=Enum.AutomaticSize.X
-itemPrice.Size=UDim2.new(0,0,1,0)
-itemPrice.BackgroundTransparency=1
-itemPrice.Font=Enum.Font.GothamMedium
-itemPrice.TextSize=16
-itemPrice.TextColor3=Color3.new(1,1,1)
-itemPrice.Text="5"
-itemPrice.ZIndex=4
-itemPrice.Parent=priceFrame
+itemPrice.AutomaticSize=Enum.AutomaticSize.X; itemPrice.Size=UDim2.new(0,0,1,0)
+itemPrice.BackgroundTransparency=1; itemPrice.Font=Enum.Font.GothamMedium
+itemPrice.TextSize=16; itemPrice.TextColor3=Color3.new(1,1,1)
+itemPrice.Text="5"; itemPrice.ZIndex=4; itemPrice.Parent=priceFrame
 
 local buyBtn=Instance.new("TextButton")
-buyBtn.Size=UDim2.new(1,-28,0,44)
-buyBtn.Position=UDim2.new(0,14,1,-56)
-buyBtn.BackgroundColor3=Color3.fromRGB(58,86,217)
-buyBtn.Text=""
-buyBtn.AutoButtonColor=false
-buyBtn.ClipsDescendants=true
-buyBtn.ZIndex=3
-buyBtn.Parent=promptContainer
+buyBtn.Size=UDim2.new(1,-28,0,44); buyBtn.Position=UDim2.new(0,14,1,-56)
+buyBtn.BackgroundColor3=Color3.fromRGB(58,86,217); buyBtn.Text=""
+buyBtn.AutoButtonColor=false; buyBtn.ClipsDescendants=true
+buyBtn.ZIndex=3; buyBtn.Parent=promptContainer
 Instance.new("UICorner",buyBtn).CornerRadius=UDim.new(0,10)
 
 local progressFill=Instance.new("Frame")
 progressFill.Size=UDim2.new(0,0,1,0)
 progressFill.BackgroundColor3=Color3.fromRGB(43,63,165)
-progressFill.BorderSizePixel=0
-progressFill.ZIndex=4
-progressFill.Parent=buyBtn
+progressFill.BorderSizePixel=0; progressFill.ZIndex=4; progressFill.Parent=buyBtn
 Instance.new("UICorner",progressFill).CornerRadius=UDim.new(0,9)
 
 local buyText=Instance.new("TextLabel")
-buyText.Size=UDim2.new(1,0,1,0)
-buyText.BackgroundTransparency=1
-buyText.Font=Enum.Font.GothamMedium
-buyText.TextSize=16
-buyText.Text="Buy"
-buyText.TextColor3=Color3.new(1,1,1)
-buyText.ZIndex=5
-buyText.Parent=buyBtn
+buyText.Size=UDim2.new(1,0,1,0); buyText.BackgroundTransparency=1
+buyText.Font=Enum.Font.GothamMedium; buyText.TextSize=16
+buyText.Text="Buy"; buyText.TextColor3=Color3.new(1,1,1)
+buyText.ZIndex=5; buyText.Parent=buyBtn
 
 local successContainer=Instance.new("Frame")
-successContainer.Size=UDim2.new(1,0,1,0)
-successContainer.BackgroundTransparency=1
-successContainer.Visible=false
-successContainer.ZIndex=3
-successContainer.Parent=modal
+successContainer.Size=UDim2.new(1,0,1,0); successContainer.BackgroundTransparency=1
+successContainer.Visible=false; successContainer.ZIndex=3; successContainer.Parent=modal
 
 local checkIcon=Instance.new("ImageLabel")
-checkIcon.Size=UDim2.fromOffset(52,52)
-checkIcon.Position=UDim2.new(0.5,-26,0,24)
+checkIcon.Size=UDim2.fromOffset(52,52); checkIcon.Position=UDim2.new(0.5,-26,0,24)
 checkIcon.BackgroundTransparency=1
 checkIcon.Image="rbxthumb://type=Asset&id=110759125205910&w=420&h=420"
-checkIcon.ScaleType=Enum.ScaleType.Fit
-checkIcon.ZIndex=4
-checkIcon.Parent=successContainer
+checkIcon.ScaleType=Enum.ScaleType.Fit; checkIcon.ZIndex=4; checkIcon.Parent=successContainer
 
 local successMsg=Instance.new("TextLabel")
-successMsg.Size=UDim2.new(1,-40,0,18)
-successMsg.Position=UDim2.new(0,20,0,80)
-successMsg.BackgroundTransparency=1
-successMsg.Font=Enum.Font.Gotham
-successMsg.TextSize=12
-successMsg.TextColor3=Color3.fromRGB(200,200,200)
+successMsg.Size=UDim2.new(1,-40,0,18); successMsg.Position=UDim2.new(0,20,0,80)
+successMsg.BackgroundTransparency=1; successMsg.Font=Enum.Font.Gotham
+successMsg.TextSize=12; successMsg.TextColor3=Color3.fromRGB(200,200,200)
 successMsg.TextXAlignment=Enum.TextXAlignment.Center
-successMsg.ZIndex=3
-successMsg.Parent=successContainer
+successMsg.ZIndex=3; successMsg.Parent=successContainer
 
 local okBtn=Instance.new("TextButton")
-okBtn.Size=UDim2.new(1,-28,0,44)
-okBtn.Position=UDim2.new(0,14,1,-56)
-okBtn.BackgroundColor3=Color3.fromRGB(58,86,217)
-okBtn.Font=Enum.Font.GothamMedium
-okBtn.Text="OK"
-okBtn.TextSize=16
-okBtn.TextColor3=Color3.new(1,1,1)
-okBtn.ZIndex=3
-okBtn.Parent=successContainer
+okBtn.Size=UDim2.new(1,-28,0,44); okBtn.Position=UDim2.new(0,14,1,-56)
+okBtn.BackgroundColor3=Color3.fromRGB(58,86,217); okBtn.Font=Enum.Font.GothamMedium
+okBtn.Text="OK"; okBtn.TextSize=16; okBtn.TextColor3=Color3.new(1,1,1)
+okBtn.ZIndex=3; okBtn.Parent=successContainer
 Instance.new("UICorner",okBtn).CornerRadius=UDim.new(0,10)
 
 ContentProvider:PreloadAsync({closeBtn,balanceIcon,priceIcon,checkIcon})
@@ -428,49 +352,83 @@ local function addCoins(val)
 end
 
 -- ===============================================
--- [ИСПРАВЛЕНО] Берём шаблон уведомления из игры
--- и клонируем его 1 в 1
+-- Кэш данных шаблона уведомления
 -- ===============================================
-
--- Кэшируем шаблон при старте
-local cachedTemplate = nil
-local cachedTemplateColor = Color3.fromRGB(100,220,50)
-local cachedTemplateStrokeColor = Color3.fromRGB(0,177,0)
-local cachedTemplateStrokeThickness = 0.663
-local cachedTemplateFont = Enum.Font.GothamBold
-local cachedTemplateTextSize = 15
+local tmplData = {
+    -- Размер фрейма
+    frameSize        = UDim2.new(1, 0, 0, 36),     -- дефолт если не нашли
+    -- Фон фрейма
+    frameBgColor     = Color3.fromRGB(255,255,255),
+    frameBgTrans     = 1,
+    -- Цвет текста
+    textColor        = Color3.fromRGB(100,220,50),
+    textFont         = Enum.Font.GothamBold,
+    textSize         = 14,
+    textScaled       = false,
+    textWrapped      = true,
+    textXAlign       = Enum.TextXAlignment.Center,
+    -- UIStroke текста
+    strokeColor      = Color3.fromRGB(0,177,0),
+    strokeThickness  = 0.663,
+    strokeJoin       = Enum.LineJoinMode.Round,
+    strokeMode       = Enum.ApplyStrokeMode.Contextual,
+    -- Текст
+    notifText        = "Thank you for your support!",
+}
 
 local function tryGetTemplate()
-    if cachedTemplate then return cachedTemplate end
-    local ok, result = pcall(function()
-        local mf = player.PlayerGui:WaitForChild("MainFrames", 3)
-        local notifs = mf:WaitForChild("Notifications", 3)
-        local handler = notifs:WaitForChild("NotificationHandler", 3)
-        local tmpl = handler:WaitForChild("SuccessNotification", 3)
-        return tmpl
+    local ok, tmpl = pcall(function()
+        local mf      = player.PlayerGui:WaitForChild("MainFrames",3)
+        local notifs  = mf:WaitForChild("Notifications",3)
+        local handler = notifs:WaitForChild("NotificationHandler",3)
+        return handler:WaitForChild("SuccessNotification",3)
     end)
-    if ok and result then
-        cachedTemplate = result
-        -- Считываем стиль текста из шаблона
-        local lbl = result:FindFirstChildWhichIsA("TextLabel")
-        if lbl then
-            cachedTemplateColor = lbl.TextColor3
-            cachedTemplateFont = lbl.Font
-            cachedTemplateTextSize = lbl.TextSize
-            local stroke = lbl:FindFirstChildWhichIsA("UIStroke")
-            if stroke then
-                cachedTemplateStrokeColor = stroke.Color
-                cachedTemplateStrokeThickness = stroke.Thickness
-            end
-        end
-        return result
+
+    if not ok or not tmpl then
+        warn("[PurchasePro] Шаблон SuccessNotification не найден, используем дефолт")
+        return
     end
-    return nil
+
+    -- [ИСПРАВЛЕНО] Берём размер самого фрейма
+    tmplData.frameSize    = tmpl.Size
+    tmplData.frameBgColor = tmpl.BackgroundColor3
+    tmplData.frameBgTrans = tmpl.BackgroundTransparency
+
+    -- Берём данные TextLabel
+    local lbl = tmpl:FindFirstChildWhichIsA("TextLabel")
+    if lbl then
+        tmplData.textColor   = lbl.TextColor3
+        tmplData.textFont    = lbl.Font
+        tmplData.textSize    = lbl.TextSize
+        tmplData.textScaled  = lbl.TextScaled
+        tmplData.textWrapped = lbl.TextWrapped
+        tmplData.textXAlign  = lbl.TextXAlignment
+        -- Текст тоже берём из шаблона
+        if lbl.Text and lbl.Text ~= "" then
+            tmplData.notifText = lbl.Text
+        end
+
+        -- UIStroke текста
+        local stroke = lbl:FindFirstChildWhichIsA("UIStroke")
+        if stroke then
+            tmplData.strokeColor     = stroke.Color
+            tmplData.strokeThickness = stroke.Thickness
+            tmplData.strokeJoin      = stroke.LineJoinMode
+            tmplData.strokeMode      = stroke.ApplyStrokeMode
+        end
+    end
+
+    print("[PurchasePro] Шаблон загружен. Текст:", tmplData.notifText, "| Размер:", tmplData.frameSize)
 end
 
--- Запускаем поиск шаблона в фоне при старте
+-- Запускаем в фоне при старте
 task.spawn(tryGetTemplate)
 
+-- ===============================================
+-- [ИСПРАВЛЕНО] Уведомление берёт ВСЁ из шаблона:
+-- размер, цвет фона, стиль текста, обводку
+-- Синей рамки вокруг блока НЕТ
+-- ===============================================
 local function showGameNotification()
     task.spawn(function()
         local pgui = player.PlayerGui
@@ -481,77 +439,58 @@ local function showGameNotification()
 
         task.wait(1 + math.random() * 0.4)
 
-        -- Пробуем получить шаблон (для стиля)
-        tryGetTemplate()
+        -- Создаём фрейм с размером из шаблона
+        local notifFrame = Instance.new("Frame")
+        notifFrame.Name = "SuccessNotification"
+        notifFrame.Size = tmplData.frameSize              -- из шаблона!
+        notifFrame.BackgroundColor3 = tmplData.frameBgColor
+        notifFrame.BackgroundTransparency = tmplData.frameBgTrans
+        notifFrame.BorderSizePixel = 0
+        notifFrame.ZIndex = 10
+        notifFrame.Visible = true
+        notifFrame.Parent = notifContainer
 
-        -- Создаём wrapper
-        local wrapper = Instance.new("Frame")
-        wrapper.Name = "SuccessNotification"
-        wrapper.Size = UDim2.new(1, 0, 0, 40)
-        wrapper.BackgroundTransparency = 1
-        wrapper.BorderSizePixel = 0
-        wrapper.ZIndex = 10
-        wrapper.Parent = notifContainer
-
-        -- Блок уведомления
-        local notifBlock = Instance.new("Frame")
-        notifBlock.AnchorPoint = Vector2.new(0.5, 0.5)
-        notifBlock.Position = UDim2.new(0.5, 0, 0.5, 0)
-        notifBlock.Size = UDim2.new(0, 340, 0, 36)
-        notifBlock.BackgroundColor3 = Color3.fromRGB(255,255,255)
-        notifBlock.BackgroundTransparency = 0.85
-        notifBlock.BorderSizePixel = 0
-        notifBlock.ZIndex = 10
-        notifBlock.Parent = wrapper
-        Instance.new("UICorner",notifBlock).CornerRadius = UDim.new(0,4)
-
-        -- Синяя рамка блока
-        local blockStroke = Instance.new("UIStroke")
-        blockStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-        blockStroke.Color = Color3.fromRGB(0,180,255)
-        blockStroke.Thickness = 1.5
-        blockStroke.Transparency = 1
-        blockStroke.Parent = notifBlock
-
-        -- TextLabel — стиль берём из шаблона если нашли
+        -- TextLabel — всё из шаблона
         local notifLabel = Instance.new("TextLabel")
         notifLabel.Name = "TextLabel"
-        notifLabel.Size = UDim2.new(1,-10,1,0)
-        notifLabel.Position = UDim2.new(0,5,0,0)
+        notifLabel.Size = UDim2.new(1, 0, 1, 0)
+        notifLabel.Position = UDim2.new(0, 0, 0, 0)
         notifLabel.BackgroundTransparency = 1
-        notifLabel.Text = "Thank you for your support!"
-        notifLabel.TextColor3 = cachedTemplateColor
-        notifLabel.TextScaled = false
-        notifLabel.TextSize = cachedTemplateTextSize
-        notifLabel.Font = cachedTemplateFont
-        notifLabel.TextWrapped = false
-        notifLabel.TextXAlignment = Enum.TextXAlignment.Center
-        notifLabel.TextTransparency = 1
+        notifLabel.Text = tmplData.notifText              -- из шаблона!
+        notifLabel.TextColor3 = tmplData.textColor        -- из шаблона!
+        notifLabel.Font = tmplData.textFont               -- из шаблона!
+        notifLabel.TextSize = tmplData.textSize           -- из шаблона!
+        notifLabel.TextScaled = tmplData.textScaled       -- из шаблона!
+        notifLabel.TextWrapped = tmplData.textWrapped     -- из шаблона!
+        notifLabel.TextXAlignment = tmplData.textXAlign   -- из шаблона!
+        notifLabel.TextTransparency = 1                   -- начинаем невидимым
         notifLabel.ZIndex = 11
-        notifLabel.Parent = notifBlock
+        notifLabel.Parent = notifFrame
 
         -- UIStroke на тексте — из шаблона
+        -- [ИСПРАВЛЕНО] Синей рамки вокруг блока НЕТ — только обводка текста
         local textStroke = Instance.new("UIStroke")
-        textStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
-        textStroke.Color = cachedTemplateStrokeColor
-        textStroke.LineJoinMode = Enum.LineJoinMode.Round
-        textStroke.Thickness = cachedTemplateStrokeThickness
+        textStroke.ApplyStrokeMode = tmplData.strokeMode
+        textStroke.Color = tmplData.strokeColor
+        textStroke.LineJoinMode = tmplData.strokeJoin
+        textStroke.Thickness = tmplData.strokeThickness
         textStroke.Transparency = 1
         textStroke.Parent = notifLabel
 
         -- Плавное появление
-        TweenService:Create(notifLabel,  TweenInfo.new(0.35), {TextTransparency=0}):Play()
-        TweenService:Create(textStroke,  TweenInfo.new(0.35), {Transparency=0}):Play()
-        TweenService:Create(blockStroke, TweenInfo.new(0.35), {Transparency=0}):Play()
+        TweenService:Create(notifLabel, TweenInfo.new(0.35), {TextTransparency = 0}):Play()
+        TweenService:Create(textStroke, TweenInfo.new(0.35), {Transparency = 0}):Play()
 
         task.wait(5)
 
-        TweenService:Create(notifLabel,  TweenInfo.new(0.35), {TextTransparency=1}):Play()
-        TweenService:Create(textStroke,  TweenInfo.new(0.35), {Transparency=1}):Play()
-        TweenService:Create(blockStroke, TweenInfo.new(0.35), {Transparency=1}):Play()
+        -- Плавное исчезновение
+        TweenService:Create(notifLabel, TweenInfo.new(0.35), {TextTransparency = 1}):Play()
+        TweenService:Create(textStroke, TweenInfo.new(0.35), {Transparency = 1}):Play()
         task.wait(0.35)
 
-        if wrapper and wrapper.Parent then wrapper:Destroy() end
+        if notifFrame and notifFrame.Parent then
+            notifFrame:Destroy()
+        end
     end)
 end
 
@@ -608,49 +547,15 @@ buyBtn.MouseButton1Click:Connect(function()
 end)
 
 -- ===============================================
--- [ИСПРАВЛЕНО] Получение правильной иконки
+--                    ХУК
 -- ===============================================
-
-local function getThumbType(infoType)
-    if infoType == Enum.InfoType.GamePass then
-        return "GamePass"
-    elseif infoType == Enum.InfoType.Bundle then
-        return "BundleThumbnail"
-    else
-        -- Для Product и Asset — используем Asset
-        return "Asset"
-    end
-end
-
--- [КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ] Для Developer Product
--- иконка берётся из IconImageAssetId, а не из id продукта
-local function getIconImage(id, infoType)
-    if infoType == Enum.InfoType.Product then
-        -- Получаем реальный IconImageAssetId продукта
-        local ok, info = pcall(function()
-            return MarketplaceService:GetProductInfo(id, Enum.InfoType.Product)
-        end)
-        if ok and info and info.IconImageAssetId and info.IconImageAssetId ~= 0 then
-            return "rbxthumb://type=Asset&id=" .. tostring(info.IconImageAssetId) .. "&w=150&h=150"
-        end
-        -- Фолбек если нет иконки
-        return "rbxthumb://type=Asset&id=" .. tostring(id) .. "&w=150&h=150"
-    elseif infoType == Enum.InfoType.GamePass then
-        return "rbxthumb://type=GamePass&id=" .. tostring(id) .. "&w=150&h=150"
-    elseif infoType == Enum.InfoType.Bundle then
-        return "rbxthumb://type=BundleThumbnail&id=" .. tostring(id) .. "&w=150&h=150"
-    else
-        return "rbxthumb://type=Asset&id=" .. tostring(id) .. "&w=150&h=150"
-    end
-end
 
 local function fetchAndShow(id, infoType)
     title.Text="Buy item"; title.TextSize=24
     successContainer.Visible=false; promptContainer.Visible=true
     if not balanceFrame.Parent then balanceFrame.Parent=modal end
     itemName.Text="Loading..."; itemPrice.Text="..."
-    -- Сначала ставим плейсхолдер
-    itemIcon.Image = ""
+    itemIcon.Image=""
     buyBtn.BackgroundColor3=Color3.fromRGB(58,86,217)
     progressFill.BackgroundColor3=Color3.fromRGB(43,63,165)
     buyText.TextTransparency=0
@@ -658,7 +563,6 @@ local function fetchAndShow(id, infoType)
     progressFill.Size=UDim2.new(0,0,1,0)
     ShowModal()
 
-    -- Загружаем инфо и иконку в фоне
     task.spawn(function()
         local ok, info = pcall(function()
             return MarketplaceService:GetProductInfo(id, infoType)
@@ -667,9 +571,7 @@ local function fetchAndShow(id, infoType)
             itemName.Text = info.Name or "Unknown Item"
             itemPrice.Text = tostring(info.PriceInRobux or 0)
 
-            -- [ИСПРАВЛЕНО] Правильная иконка для каждого типа
             if infoType == Enum.InfoType.Product then
-                -- Developer Product: берём IconImageAssetId
                 local iconId = info.IconImageAssetId
                 if iconId and iconId ~= 0 then
                     itemIcon.Image = "rbxthumb://type=Asset&id="..tostring(iconId).."&w=150&h=150"
@@ -708,10 +610,6 @@ local function fetchAndShowDelayed(id, infoType)
         fetchAndShow(id, infoType)
     end)
 end
-
--- ===============================================
---                    ХУК
--- ===============================================
 
 local oldNamecall
 local hasHook      = typeof(hookmetamethod)    == "function"

@@ -165,7 +165,7 @@ UserInputService.InputChanged:Connect(function(inp)
 end)
 
 -- ===============================================
---          МОДАЛЬНОЕ ОКНО
+--              МОДАЛЬНОЕ ОКНО
 -- ===============================================
 
 local overlay=Instance.new("TextButton")
@@ -215,7 +215,6 @@ closeBtn.ScaleType=Enum.ScaleType.Fit
 closeBtn.ZIndex=4
 closeBtn.Parent=modal
 
--- Баланс робуксов
 local balanceFrame=Instance.new("Frame")
 balanceFrame.AutomaticSize=Enum.AutomaticSize.X
 balanceFrame.Size=UDim2.new(0,0,0,26)
@@ -232,7 +231,6 @@ bfl.VerticalAlignment=Enum.VerticalAlignment.Center
 bfl.Padding=UDim.new(0,4)
 bfl.Parent=balanceFrame
 
--- [ИСПРАВЛЕНО] Иконка робуксов — правильная и нужного размера
 local balanceIcon=Instance.new("ImageLabel")
 balanceIcon.Size=UDim2.fromOffset(22,22)
 balanceIcon.BackgroundTransparency=1
@@ -252,14 +250,12 @@ balanceText.Text=customBalance
 balanceText.ZIndex=4
 balanceText.Parent=balanceFrame
 
--- Контейнер предмета
 local promptContainer=Instance.new("Frame")
 promptContainer.Size=UDim2.new(1,0,1,0)
 promptContainer.BackgroundTransparency=1
 promptContainer.ZIndex=3
 promptContainer.Parent=modal
 
--- [ИСПРАВЛЕНО] Иконка предмета — больше и правильно позиционирована
 local itemIcon=Instance.new("ImageLabel")
 itemIcon.Size=UDim2.fromOffset(70,70)
 itemIcon.Position=UDim2.new(0,14,0,48)
@@ -267,7 +263,6 @@ itemIcon.BackgroundTransparency=1
 itemIcon.ZIndex=3
 itemIcon.Parent=promptContainer
 
--- [ИСПРАВЛЕНО] Название предмета — выровнено под новый размер иконки
 local itemName=Instance.new("TextLabel")
 itemName.Size=UDim2.new(0,270,0,28)
 itemName.Position=UDim2.new(0,94,0,52)
@@ -280,7 +275,6 @@ itemName.Text="Loading..."
 itemName.ZIndex=3
 itemName.Parent=promptContainer
 
--- [ИСПРАВЛЕНО] Цена — выровнена с названием
 local priceFrame=Instance.new("Frame")
 priceFrame.AutomaticSize=Enum.AutomaticSize.X
 priceFrame.Size=UDim2.new(0,0,0,22)
@@ -296,7 +290,6 @@ pfl.VerticalAlignment=Enum.VerticalAlignment.Center
 pfl.Padding=UDim.new(0,4)
 pfl.Parent=priceFrame
 
--- [ИСПРАВЛЕНО] Иконка робуксов у цены
 local priceIcon=Instance.new("ImageLabel")
 priceIcon.Size=UDim2.fromOffset(22,22)
 priceIcon.BackgroundTransparency=1
@@ -345,7 +338,6 @@ buyText.TextColor3=Color3.new(1,1,1)
 buyText.ZIndex=5
 buyText.Parent=buyBtn
 
--- Экран успеха
 local successContainer=Instance.new("Frame")
 successContainer.Size=UDim2.new(1,0,1,0)
 successContainer.BackgroundTransparency=1
@@ -353,7 +345,6 @@ successContainer.Visible=false
 successContainer.ZIndex=3
 successContainer.Parent=modal
 
--- [ИСПРАВЛЕНО] checkIcon — точно по центру, больше
 local checkIcon=Instance.new("ImageLabel")
 checkIcon.Size=UDim2.fromOffset(64,64)
 checkIcon.AnchorPoint=Vector2.new(0.5,0)
@@ -364,7 +355,6 @@ checkIcon.ScaleType=Enum.ScaleType.Fit
 checkIcon.ZIndex=4
 checkIcon.Parent=successContainer
 
--- [ИСПРАВЛЕНО] successMsg — ниже иконки, правильный размер
 local successMsg=Instance.new("TextLabel")
 successMsg.Size=UDim2.new(1,-40,0,20)
 successMsg.Position=UDim2.new(0,20,0,88)
@@ -387,8 +377,6 @@ okBtn.TextColor3=Color3.new(1,1,1)
 okBtn.ZIndex=3
 okBtn.Parent=successContainer
 Instance.new("UICorner",okBtn).CornerRadius=UDim.new(0,10)
-
-ContentProvider:PreloadAsync({closeBtn,balanceIcon,priceIcon,checkIcon})
 
 -- ===============================================
 --                  ФУНКЦИИ
@@ -425,29 +413,39 @@ local function getAmountLabel()
 end
 
 local function setCoins(val)
-    local lbl=getAmountLabel()
+    val = tonumber(val)
+    if val == nil then warn("[PurchasePro] setCoins: не число"); return end
+    local lbl = getAmountLabel()
     if lbl then
-        lbl.Text=tostring(val)
-        print("[PurchasePro] SET монет:",val)
+        lbl.Text = tostring(val)
+        print("[PurchasePro] SET монет:", val)
     end
 end
 
+-- [ИСПРАВЛЕНО] Правильная функция addCoins без ошибки tonumber
 local function addCoins(val)
-    val=tonumber(val)
-    if not val or val==0 then return end
-    local lbl=getAmountLabel()
+    val = tonumber(val)
+    if val == nil or val == 0 then
+        warn("[PurchasePro] addCoins: некорректное значение")
+        return
+    end
+    local lbl = getAmountLabel()
     if not lbl then return end
-    local cur=tonumber(lbl.Text:gsub("[^%d%-]","")) or 0
-    lbl.Text=tostring(cur+val)
-    print("[PurchasePro] ADD монет:",val,"| стало:",cur+val)
+    -- [ИСПРАВЛЕНО] Правильная очистка строки — только первый результат gsub
+    local cleanText = string.match(lbl.Text, "-?%d+") or "0"
+    local cur = tonumber(cleanText) or 0
+    local new = cur + val
+    lbl.Text = tostring(new)
+    print("[PurchasePro] ADD монет:", val, "| было:", cur, "| стало:", new)
 end
 
 local function spendRobux(amount)
-    amount=tonumber(amount) or 0
-    if amount<=0 then return end
-    local cur=tonumber(customBalance) or 0
-    customBalance=tostring(math.max(0,cur-amount))
-    balanceText.Text=customBalance
+    amount = tonumber(amount) or 0
+    if amount <= 0 then return end
+    local cur = tonumber(customBalance) or 0
+    customBalance = tostring(math.max(0, cur - amount))
+    balanceText.Text = customBalance
+    print("[PurchasePro] Списано робуксов:", amount, "| остаток:", customBalance)
 end
 
 -- ===============================================
@@ -457,33 +455,31 @@ local function showGameNotification()
     task.spawn(function()
         task.wait(1 + math.random()*0.4)
 
-        local pgui=player.PlayerGui
-        local mainFrames=pgui:FindFirstChild("MainFrames")
+        local pgui = player.PlayerGui
+        local mainFrames = pgui:FindFirstChild("MainFrames")
         if not mainFrames then warn("[PurchasePro] MainFrames не найден"); return end
-        local notifContainer=mainFrames:FindFirstChild("Notifications")
+        local notifContainer = mainFrames:FindFirstChild("Notifications")
         if not notifContainer then warn("[PurchasePro] Notifications не найден"); return end
-        local handler=notifContainer:FindFirstChild("NotificationHandler")
+        local handler = notifContainer:FindFirstChild("NotificationHandler")
         if not handler then warn("[PurchasePro] NotificationHandler не найден"); return end
-        local template=handler:FindFirstChild("SuccessNotification")
+        local template = handler:FindFirstChild("SuccessNotification")
         if not template then warn("[PurchasePro] SuccessNotification не найден"); return end
 
-        local notifFrame=template:Clone()
+        local notifFrame = template:Clone()
 
-        -- Удаляем Setup чтобы не было анимации
-        local setup=notifFrame:FindFirstChild("Setup")
+        local setup = notifFrame:FindFirstChild("Setup")
         if setup then setup:Destroy() end
 
-        -- Меняем текст, убираем анимацию
-        local lbl=notifFrame:FindFirstChildWhichIsA("TextLabel")
+        local lbl = notifFrame:FindFirstChildWhichIsA("TextLabel")
         if lbl then
-            lbl.Text="Thank you for your support!"
-            lbl.TextTransparency=0
-            local stroke=lbl:FindFirstChildWhichIsA("UIStroke")
-            if stroke then stroke.Transparency=0 end
+            lbl.Text = "Thank you for your support!"
+            lbl.TextTransparency = 0
+            local stroke = lbl:FindFirstChildWhichIsA("UIStroke")
+            if stroke then stroke.Transparency = 0 end
         end
 
-        notifFrame.Visible=true
-        notifFrame.Parent=notifContainer
+        notifFrame.Visible = true
+        notifFrame.Parent = notifContainer
 
         task.wait(5)
         if notifFrame and notifFrame.Parent then
@@ -496,17 +492,18 @@ end
 --              СОХРАНЕНИЕ НАСТРОЕК
 -- ===============================================
 applyBtn.MouseButton1Click:Connect(function()
-    customBalance=balanceInput.Text~="" and balanceInput.Text or "76"
-    amountToAdd=addInput.Text~="" and addInput.Text or "0"
-    amountToSet=setInput.Text~="" and setInput.Text or "0"
-    balanceText.Text=customBalance
+    customBalance = balanceInput.Text ~= "" and balanceInput.Text or "76"
+    amountToAdd   = addInput.Text ~= "" and addInput.Text or "0"
+    amountToSet   = setInput.Text ~= "" and setInput.Text or "0"
+    balanceText.Text = customBalance
 
     if doSetEnabled then
-        local sv=tonumber(amountToSet)
-        if sv~=nil then setCoins(sv) end
+        local sv = tonumber(amountToSet)
+        if sv ~= nil then setCoins(sv) end
     end
 
-    setupFrame.Visible=false
+    setupFrame.Visible = false
+    print("[PurchasePro] Сохранено | Balance:", customBalance, "| Add:", amountToAdd, "| Set:", amountToSet)
 end)
 
 closeBtn.MouseButton1Click:Connect(HideModal)
@@ -516,27 +513,27 @@ okBtn.MouseButton1Click:Connect(HideModal)
 --                  ЛОГИКА BUY
 -- ===============================================
 
-local canBuy=false
+local canBuy = false
 local currentTween
 
 buyBtn.MouseButton1Click:Connect(function()
     if not canBuy then return end
-    canBuy=false
+    canBuy = false
 
     TweenService:Create(buyBtn,TweenInfo.new(0.18),{BackgroundColor3=Color3.fromRGB(39,52,120)}):Play()
     TweenService:Create(progressFill,TweenInfo.new(0.18),{BackgroundColor3=Color3.fromRGB(30,40,90)}):Play()
     TweenService:Create(buyText,TweenInfo.new(0.18),{TextTransparency=0.35}):Play()
     task.wait(1.1)
 
-    promptContainer.Visible=false
-    successContainer.Visible=true
-    balanceFrame.Parent=nil
-    title.Text="Purchase completed"
-    title.TextSize=20
-    successMsg.Text="You have successfully bought "..itemName.Text.."."
+    promptContainer.Visible = false
+    successContainer.Visible = true
+    balanceFrame.Parent = nil
+    title.Text = "Purchase completed"
+    title.TextSize = 20
+    successMsg.Text = "You have successfully bought " .. itemName.Text .. "."
 
     spendRobux(currentItemPrice)
-    addCoins(tonumber(amountToAdd) or 0)
+    addCoins(amountToAdd)
     showGameNotification()
 end)
 
@@ -544,7 +541,7 @@ end)
 --                      ХУК
 -- ===============================================
 
-local function fetchAndShow(id,infoType)
+local function fetchAndShow(id, infoType)
     title.Text="Buy item"; title.TextSize=24
     successContainer.Visible=false; promptContainer.Visible=true
     if not balanceFrame.Parent then balanceFrame.Parent=modal end
@@ -562,28 +559,30 @@ local function fetchAndShow(id,infoType)
             return MarketplaceService:GetProductInfo(id,infoType)
         end)
         if ok and info then
-            itemName.Text=info.Name or "Unknown Item"
-            local price=info.PriceInRobux or 0
-            itemPrice.Text=tostring(price)
-            currentItemPrice=price
+            itemName.Text = info.Name or "Unknown Item"
+            local price = info.PriceInRobux or 0
+            itemPrice.Text = tostring(price)
+            currentItemPrice = price
 
             if infoType==Enum.InfoType.Product then
-                local iconId=info.IconImageAssetId
-                itemIcon.Image=(iconId and iconId~=0)
-                    and "rbxthumb://type=Asset&id="..tostring(iconId).."&w=150&h=150"
-                    or ""
+                local iconId = info.IconImageAssetId
+                if iconId and iconId ~= 0 then
+                    itemIcon.Image = "rbxthumb://type=Asset&id="..tostring(iconId).."&w=150&h=150"
+                else
+                    itemIcon.Image = ""
+                end
             elseif infoType==Enum.InfoType.GamePass then
-                itemIcon.Image="rbxthumb://type=GamePass&id="..tostring(id).."&w=150&h=150"
+                itemIcon.Image = "rbxthumb://type=GamePass&id="..tostring(id).."&w=150&h=150"
             elseif infoType==Enum.InfoType.Bundle then
-                itemIcon.Image="rbxthumb://type=BundleThumbnail&id="..tostring(id).."&w=150&h=150"
+                itemIcon.Image = "rbxthumb://type=BundleThumbnail&id="..tostring(id).."&w=150&h=150"
             else
-                itemIcon.Image="rbxthumb://type=Asset&id="..tostring(id).."&w=150&h=150"
+                itemIcon.Image = "rbxthumb://type=Asset&id="..tostring(id).."&w=150&h=150"
             end
         end
     end)
 
     if currentTween then currentTween:Cancel() end
-    currentTween=TweenService:Create(
+    currentTween = TweenService:Create(
         progressFill,
         TweenInfo.new(3,Enum.EasingStyle.Linear),
         {Size=UDim2.new(1,0,1,0)}
@@ -592,8 +591,8 @@ local function fetchAndShow(id,infoType)
     task.spawn(function()
         currentTween.Completed:Wait()
         if promptContainer.Visible then
-            progressFill.Visible=false
-            canBuy=true
+            progressFill.Visible = false
+            canBuy = true
         end
     end)
 end
@@ -606,16 +605,16 @@ local function fetchAndShowDelayed(id,infoType)
 end
 
 local oldNamecall
-local hasHook=typeof(hookmetamethod)=="function"
-local hasGetMethod=typeof(getnamecallmethod)=="function"
+local hasHook = typeof(hookmetamethod) == "function"
+local hasGetMethod = typeof(getnamecallmethod) == "function"
 
 if hasHook and hasGetMethod then
-    oldNamecall=hookmetamethod(game,"__namecall",function(self,...)
-        local ok,method=pcall(getnamecallmethod)
+    oldNamecall = hookmetamethod(game,"__namecall",function(self,...)
+        local ok,method = pcall(getnamecallmethod)
         if not ok then return oldNamecall(self,...) end
-        local args={...}
+        local args = {...}
         if self==MarketplaceService and not setupFrame.Visible then
-            local id=tonumber(args[2])
+            local id = tonumber(args[2])
             if id then
                 if method=="PromptGamePassPurchase" then
                     fetchAndShowDelayed(id,Enum.InfoType.GamePass); return

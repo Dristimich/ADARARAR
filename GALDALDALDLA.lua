@@ -379,67 +379,33 @@ end
 -- ===============================================
 local function showGameNotification()
     task.spawn(function()
-        -- Задержка перед показом
         task.wait(1 + math.random() * 0.4)
 
         local pgui = player.PlayerGui
         local mainFrames = pgui:FindFirstChild("MainFrames")
-        if not mainFrames then
-            warn("[PurchasePro] MainFrames не найден")
-            return
-        end
+        if not mainFrames then warn("[PurchasePro] MainFrames не найден"); return end
         local notifContainer = mainFrames:FindFirstChild("Notifications")
-        if not notifContainer then
-            warn("[PurchasePro] Notifications не найден")
-            return
+        if not notifContainer then warn("[PurchasePro] Notifications не найден"); return end
+        local handler = notifContainer:FindFirstChild("NotificationHandler")
+        if not handler then warn("[PurchasePro] NotificationHandler не найден"); return end
+
+        -- Клонируем напрямую из handler:GetChildren()
+        local template = handler:FindFirstChild("SuccessNotification")
+        if not template then warn("[PurchasePro] SuccessNotification не найден"); return end
+
+        local notifFrame = template:Clone()
+
+        -- Меняем текст в TextLabel
+        local lbl = notifFrame:FindFirstChildWhichIsA("TextLabel")
+        if lbl then
+            lbl.Text = "Thank you for your support!"
         end
 
-        -- Создаём Frame уведомления
-        local notifFrame = Instance.new("Frame")
-        notifFrame.Name = "SuccessNotification"
-        notifFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        notifFrame.BackgroundTransparency = 1
-        notifFrame.BorderColor3 = Color3.fromRGB(27, 42, 53)
-        notifFrame.BorderMode = Enum.BorderMode.Outline
-        notifFrame.BorderSizePixel = 1
-        -- Размер из скриншота: AbsoluteSize ~400x23
-        notifFrame.Size = UDim2.new(1, 0, 0, 23)
-        notifFrame.ZIndex = 1
         notifFrame.Visible = true
         notifFrame.Parent = notifContainer
 
-        -- TextLabel точно по скриншотам
-        local lbl = Instance.new("TextLabel")
-        lbl.Name = "TextLabel"
-        lbl.Size = UDim2.new(1, 0, 1, 0)
-        lbl.Position = UDim2.new(0, 0, 0, 0)
-        lbl.BackgroundTransparency = 1
-        lbl.Text = "Thank you for your support!"
-        lbl.TextColor3 = Color3.fromRGB(255, 255, 255)
-        -- ВАЖНО: TextScaled = FALSE, иначе текст на весь экран!
-        lbl.TextScaled = false
-        lbl.TextSize = 14
-        lbl.TextWrapped = true
-        lbl.TextXAlignment = Enum.TextXAlignment.Center
-        lbl.TextTransparency = 0
-        lbl.TextStrokeTransparency = 1
-        lbl.Font = Enum.Font.GothamBold
-        lbl.ZIndex = 1
-        lbl.Parent = notifFrame
-
-        -- UIStroke точно по скриншоту
-        local stroke = Instance.new("UIStroke")
-        stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
-        stroke.Color = Color3.fromRGB(0, 177, 0)
-        stroke.LineJoinMode = Enum.LineJoinMode.Round
-        stroke.Thickness = 0.663
-        stroke.Transparency = 0
-        stroke.Parent = lbl
-
-        -- Ждём РОВНО 5 секунд
+        -- Ровно 5 секунд, резко удаляем
         task.wait(5)
-
-        -- Резко удаляем
         if notifFrame and notifFrame.Parent then
             notifFrame:Destroy()
         end

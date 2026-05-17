@@ -389,16 +389,32 @@ local function showGameNotification()
         local handler = notifContainer:FindFirstChild("NotificationHandler")
         if not handler then warn("[PurchasePro] NotificationHandler не найден"); return end
 
-        -- Клонируем напрямую из handler:GetChildren()
         local template = handler:FindFirstChild("SuccessNotification")
         if not template then warn("[PurchasePro] SuccessNotification не найден"); return end
 
         local notifFrame = template:Clone()
 
-        -- Меняем текст в TextLabel
+        -- Удаляем Setup ModuleScript чтобы он не запустил анимацию
+        local setup = notifFrame:FindFirstChild("Setup")
+        if setup then setup:Destroy() end
+
+        -- Меняем текст и делаем всё сразу видимым
         local lbl = notifFrame:FindFirstChildWhichIsA("TextLabel")
         if lbl then
             lbl.Text = "Thank you for your support!"
+            lbl.TextTransparency = 0
+
+            local stroke = lbl:FindFirstChildWhichIsA("UIStroke")
+            if stroke then
+                stroke.Transparency = 0
+            end
+        end
+
+        -- Убираем все возможные анимации внутри
+        for _, v in pairs(notifFrame:GetDescendants()) do
+            if v:IsA("UIGradient") then
+                v.Enabled = false
+            end
         end
 
         notifFrame.Visible = true

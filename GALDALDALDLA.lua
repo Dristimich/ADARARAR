@@ -165,249 +165,147 @@ UserInputService.InputChanged:Connect(function(inp)
 end)
 
 -- ===============================================
---              МОДАЛЬНОЕ ОКНО
+--          МОДАЛЬНОЕ ОКНО
 -- ===============================================
 
 local overlay=Instance.new("TextButton")
-overlay.Size=UDim2.new(1,0,1,0)
-overlay.BackgroundColor3=Color3.new(0,0,0)
-overlay.BackgroundTransparency=1
-overlay.Text=""
-overlay.AutoButtonColor=false
-overlay.Visible=false
-overlay.ZIndex=1
-overlay.Parent=gui
+overlay.Size=UDim2.new(1,0,1,0); overlay.BackgroundColor3=Color3.new(0,0,0)
+overlay.BackgroundTransparency=1; overlay.Text=""; overlay.AutoButtonColor=false
+overlay.Visible=false; overlay.ZIndex=1; overlay.Parent=gui
 
 local modal=Instance.new("Frame")
-modal.Size=UDim2.fromOffset(435,185)
-modal.Position=UDim2.new(0.5,-217,0.5,-92)
-modal.BackgroundColor3=Color3.fromRGB(17,19,28)
-modal.BorderSizePixel=0
-modal.Visible=false
-modal.ClipsDescendants=true
-modal.ZIndex=2
-modal.Parent=gui
+modal.Size=UDim2.fromOffset(435,185); modal.Position=UDim2.new(0.5,-217,0.5,-92)
+modal.BackgroundColor3=Color3.fromRGB(17,19,28); modal.BorderSizePixel=0
+modal.Visible=false; modal.ClipsDescendants=true; modal.ZIndex=2; modal.Parent=gui
 
 local mc=Instance.new("UISizeConstraint")
-mc.MaxSize=Vector2.new(435,185)
-mc.MinSize=Vector2.new(435,185)
-mc.Parent=modal
+mc.MaxSize=Vector2.new(435,185); mc.MinSize=Vector2.new(435,185); mc.Parent=modal
 Instance.new("UICorner",modal).CornerRadius=UDim.new(0,18)
 
 local title=Instance.new("TextLabel")
-title.Size=UDim2.new(0,220,0,34)
-title.Position=UDim2.new(0,16,0,14)
-title.BackgroundTransparency=1
-title.Font=Enum.Font.GothamBold
-title.Text="Buy item"
-title.TextSize=24
-title.TextColor3=Color3.new(1,1,1)
-title.TextXAlignment=Enum.TextXAlignment.Left
-title.ZIndex=3
-title.Parent=modal
+title.Size=UDim2.new(0,220,0,34); title.Position=UDim2.new(0,16,0,14)
+title.BackgroundTransparency=1; title.Font=Enum.Font.GothamBold
+title.Text="Buy item"; title.TextSize=24; title.TextColor3=Color3.new(1,1,1)
+title.TextXAlignment=Enum.TextXAlignment.Left; title.ZIndex=3; title.Parent=modal
 
 local closeBtn=Instance.new("ImageButton")
-closeBtn.Size=UDim2.fromOffset(24,24)
-closeBtn.Position=UDim2.new(1,-32,0,16)
+closeBtn.Size=UDim2.fromOffset(24,24); closeBtn.Position=UDim2.new(1,-32,0,16)
 closeBtn.BackgroundTransparency=1
 closeBtn.Image="rbxthumb://type=Asset&id=78940278565096&w=420&h=420"
-closeBtn.ScaleType=Enum.ScaleType.Fit
-closeBtn.ZIndex=4
-closeBtn.Parent=modal
+closeBtn.ScaleType=Enum.ScaleType.Fit; closeBtn.ZIndex=4; closeBtn.Parent=modal
 
--- Баланс робуксов
 local balanceFrame=Instance.new("Frame")
-balanceFrame.AutomaticSize=Enum.AutomaticSize.X
-balanceFrame.Size=UDim2.new(0,0,0,26)
-balanceFrame.AnchorPoint=Vector2.new(1,0)
-balanceFrame.Position=UDim2.new(1,-62,0,16)
-balanceFrame.BackgroundTransparency=1
-balanceFrame.ZIndex=3
-balanceFrame.Parent=modal
+balanceFrame.AutomaticSize=Enum.AutomaticSize.X; balanceFrame.Size=UDim2.new(0,0,0,24)
+balanceFrame.AnchorPoint=Vector2.new(1,0); balanceFrame.Position=UDim2.new(1,-62,0,18)
+balanceFrame.BackgroundTransparency=1; balanceFrame.ZIndex=3; balanceFrame.Parent=modal
 
 local bfl=Instance.new("UIListLayout")
 bfl.FillDirection=Enum.FillDirection.Horizontal
 bfl.HorizontalAlignment=Enum.HorizontalAlignment.Left
 bfl.VerticalAlignment=Enum.VerticalAlignment.Center
-bfl.Padding=UDim.new(0,4)
-bfl.Parent=balanceFrame
+bfl.Padding=UDim.new(0,5); bfl.Parent=balanceFrame
+
+-- [ИСПРАВЛЕНО] Рабочий asset иконки робуксов
+local ROBUX_IMG = "rbxthumb://type=Asset&id=70493384532723&w=420&h=420"
 
 local balanceIcon=Instance.new("ImageLabel")
-balanceIcon.Size=UDim2.fromOffset(22,22)
-balanceIcon.BackgroundTransparency=1
-balanceIcon.Image=ROBUX_ICON
-balanceIcon.ScaleType=Enum.ScaleType.Fit
-balanceIcon.ZIndex=4
-balanceIcon.Parent=balanceFrame
+balanceIcon.Size=UDim2.fromOffset(20,20); balanceIcon.BackgroundTransparency=1
+balanceIcon.Image=ROBUX_IMG
+balanceIcon.ScaleType=Enum.ScaleType.Fit; balanceIcon.ZIndex=4; balanceIcon.Parent=balanceFrame
 
 local balanceText=Instance.new("TextLabel")
-balanceText.AutomaticSize=Enum.AutomaticSize.X
-balanceText.Size=UDim2.new(0,0,1,0)
-balanceText.BackgroundTransparency=1
-balanceText.Font=Enum.Font.GothamMedium
-balanceText.TextSize=16
-balanceText.TextColor3=Color3.new(1,1,1)
-balanceText.Text=customBalance
-balanceText.ZIndex=4
-balanceText.Parent=balanceFrame
+balanceText.AutomaticSize=Enum.AutomaticSize.X; balanceText.Size=UDim2.new(0,0,1,0)
+balanceText.BackgroundTransparency=1; balanceText.Font=Enum.Font.GothamMedium
+balanceText.TextSize=16; balanceText.TextColor3=Color3.new(1,1,1)
+balanceText.Text=customBalance; balanceText.ZIndex=4; balanceText.Parent=balanceFrame
 
--- Контейнер предмета
 local promptContainer=Instance.new("Frame")
-promptContainer.Size=UDim2.new(1,0,1,0)
-promptContainer.BackgroundTransparency=1
-promptContainer.ZIndex=3
-promptContainer.Parent=modal
+promptContainer.Size=UDim2.new(1,0,1,0); promptContainer.BackgroundTransparency=1
+promptContainer.ZIndex=3; promptContainer.Parent=modal
 
 local itemIcon=Instance.new("ImageLabel")
-itemIcon.Size=UDim2.fromOffset(70,70)
-itemIcon.Position=UDim2.new(0,14,0,48)
-itemIcon.BackgroundTransparency=1
-itemIcon.ZIndex=3
-itemIcon.Parent=promptContainer
+itemIcon.Size=UDim2.fromOffset(64,64); itemIcon.Position=UDim2.new(0,14,0,52)
+itemIcon.BackgroundTransparency=1; itemIcon.ZIndex=3; itemIcon.Parent=promptContainer
 
 local itemName=Instance.new("TextLabel")
-itemName.Size=UDim2.new(0,270,0,28)
-itemName.Position=UDim2.new(0,94,0,52)
-itemName.BackgroundTransparency=1
-itemName.Font=Enum.Font.GothamBold
-itemName.TextSize=17
-itemName.TextColor3=Color3.new(1,1,1)
-itemName.TextXAlignment=Enum.TextXAlignment.Left
-itemName.Text="Loading..."
-itemName.ZIndex=3
-itemName.Parent=promptContainer
+itemName.Size=UDim2.new(0,280,0,28); itemName.Position=UDim2.new(0,88,0,55)
+itemName.BackgroundTransparency=1; itemName.Font=Enum.Font.GothamBold
+itemName.TextSize=17; itemName.TextColor3=Color3.new(1,1,1)
+itemName.TextXAlignment=Enum.TextXAlignment.Left; itemName.Text="Loading..."
+itemName.ZIndex=3; itemName.Parent=promptContainer
 
 local priceFrame=Instance.new("Frame")
-priceFrame.AutomaticSize=Enum.AutomaticSize.X
-priceFrame.Size=UDim2.new(0,0,0,22)
-priceFrame.Position=UDim2.new(0,94,0,82)
-priceFrame.BackgroundTransparency=1
-priceFrame.ZIndex=3
-priceFrame.Parent=promptContainer
+priceFrame.AutomaticSize=Enum.AutomaticSize.X; priceFrame.Size=UDim2.new(0,0,0,22)
+priceFrame.Position=UDim2.new(0,88,0,83); priceFrame.BackgroundTransparency=1
+priceFrame.ZIndex=3; priceFrame.Parent=promptContainer
 
 local pfl=Instance.new("UIListLayout")
 pfl.FillDirection=Enum.FillDirection.Horizontal
 pfl.HorizontalAlignment=Enum.HorizontalAlignment.Left
 pfl.VerticalAlignment=Enum.VerticalAlignment.Center
-pfl.Padding=UDim.new(0,4)
-pfl.Parent=priceFrame
+pfl.Padding=UDim.new(0,5); pfl.Parent=priceFrame
 
 local priceIcon=Instance.new("ImageLabel")
-priceIcon.Size=UDim2.fromOffset(22,22)
-priceIcon.BackgroundTransparency=1
-priceIcon.Image=ROBUX_ICON
-priceIcon.ScaleType=Enum.ScaleType.Fit
-priceIcon.ZIndex=4
-priceIcon.Parent=priceFrame
+priceIcon.Size=UDim2.fromOffset(20,20); priceIcon.BackgroundTransparency=1
+priceIcon.Image=ROBUX_IMG
+priceIcon.ScaleType=Enum.ScaleType.Fit; priceIcon.ZIndex=4; priceIcon.Parent=priceFrame
 
 local itemPrice=Instance.new("TextLabel")
-itemPrice.AutomaticSize=Enum.AutomaticSize.X
-itemPrice.Size=UDim2.new(0,0,1,0)
-itemPrice.BackgroundTransparency=1
-itemPrice.Font=Enum.Font.GothamMedium
-itemPrice.TextSize=16
-itemPrice.TextColor3=Color3.new(1,1,1)
-itemPrice.Text="5"
-itemPrice.ZIndex=4
-itemPrice.Parent=priceFrame
+itemPrice.AutomaticSize=Enum.AutomaticSize.X; itemPrice.Size=UDim2.new(0,0,1,0)
+itemPrice.BackgroundTransparency=1; itemPrice.Font=Enum.Font.GothamMedium
+itemPrice.TextSize=16; itemPrice.TextColor3=Color3.new(1,1,1)
+itemPrice.Text="5"; itemPrice.ZIndex=4; itemPrice.Parent=priceFrame
 
 local buyBtn=Instance.new("TextButton")
-buyBtn.Size=UDim2.new(1,-28,0,44)
-buyBtn.Position=UDim2.new(0,14,1,-56)
-buyBtn.BackgroundColor3=Color3.fromRGB(58,86,217)
-buyBtn.Text=""
-buyBtn.AutoButtonColor=false
-buyBtn.ClipsDescendants=true
-buyBtn.ZIndex=3
-buyBtn.Parent=promptContainer
+buyBtn.Size=UDim2.new(1,-28,0,44); buyBtn.Position=UDim2.new(0,14,1,-56)
+buyBtn.BackgroundColor3=Color3.fromRGB(58,86,217); buyBtn.Text=""
+buyBtn.AutoButtonColor=false; buyBtn.ClipsDescendants=true
+buyBtn.ZIndex=3; buyBtn.Parent=promptContainer
 Instance.new("UICorner",buyBtn).CornerRadius=UDim.new(0,10)
 
 local progressFill=Instance.new("Frame")
-progressFill.Size=UDim2.new(0,0,1,0)
-progressFill.BackgroundColor3=Color3.fromRGB(43,63,165)
-progressFill.BorderSizePixel=0
-progressFill.ZIndex=4
-progressFill.Parent=buyBtn
+progressFill.Size=UDim2.new(0,0,1,0); progressFill.BackgroundColor3=Color3.fromRGB(43,63,165)
+progressFill.BorderSizePixel=0; progressFill.ZIndex=4; progressFill.Parent=buyBtn
 Instance.new("UICorner",progressFill).CornerRadius=UDim.new(0,9)
 
 local buyText=Instance.new("TextLabel")
-buyText.Size=UDim2.new(1,0,1,0)
-buyText.BackgroundTransparency=1
-buyText.Font=Enum.Font.GothamMedium
-buyText.TextSize=16
-buyText.Text="Buy"
-buyText.TextColor3=Color3.new(1,1,1)
-buyText.ZIndex=5
-buyText.Parent=buyBtn
+buyText.Size=UDim2.new(1,0,1,0); buyText.BackgroundTransparency=1
+buyText.Font=Enum.Font.GothamMedium; buyText.TextSize=16
+buyText.Text="Buy"; buyText.TextColor3=Color3.new(1,1,1)
+buyText.ZIndex=5; buyText.Parent=buyBtn
 
--- Экран успеха
 local successContainer=Instance.new("Frame")
-successContainer.Size=UDim2.new(1,0,1,0)
-successContainer.BackgroundTransparency=1
-successContainer.Visible=false
-successContainer.ZIndex=3
-successContainer.Parent=modal
+successContainer.Size=UDim2.new(1,0,1,0); successContainer.BackgroundTransparency=1
+successContainer.Visible=false; successContainer.ZIndex=3; successContainer.Parent=modal
 
--- [ИСПРАВЛЕНО] Большая галочка по центру сверху
--- Экран успеха - ТОЛЬКО большая галочка опущена ниже
+-- [ИСПРАВЛЕНО] Одна галочка, опущена ниже, по центру
 local checkIcon=Instance.new("ImageLabel")
-checkIcon.Size=UDim2.fromOffset(72,72)
+checkIcon.Size=UDim2.fromOffset(60,60)
 checkIcon.AnchorPoint=Vector2.new(0.5,0)
-checkIcon.Position=UDim2.new(0.5,0,0,30)  -- опустил ниже
+checkIcon.Position=UDim2.new(0.5,0,0,22)
 checkIcon.BackgroundTransparency=1
 checkIcon.Image="rbxthumb://type=Asset&id=110759125205910&w=420&h=420"
 checkIcon.ScaleType=Enum.ScaleType.Fit
 checkIcon.ZIndex=4
 checkIcon.Parent=successContainer
 
--- [ИСПРАВЛЕНО] Строка: маленькая иконка + текст рядом (как на 2м скрине)
-local msgRow=Instance.new("Frame")
-msgRow.Size=UDim2.new(1,-28,0,28)
-msgRow.Position=UDim2.new(0,14,0,100)
-msgRow.BackgroundTransparency=1
-msgRow.ZIndex=3
-msgRow.Parent=successContainer
-
-local msgRowLayout=Instance.new("UIListLayout")
-msgRowLayout.FillDirection=Enum.FillDirection.Horizontal
-msgRowLayout.HorizontalAlignment=Enum.HorizontalAlignment.Left
-msgRowLayout.VerticalAlignment=Enum.VerticalAlignment.Center
-msgRowLayout.Padding=UDim.new(0,8)
-msgRowLayout.Parent=msgRow
-
-local smallCheck=Instance.new("ImageLabel")
-smallCheck.Size=UDim2.fromOffset(24,24)
-smallCheck.BackgroundTransparency=1
-smallCheck.Image="rbxthumb://type=Asset&id=110759125205910&w=420&h=420"
-smallCheck.ScaleType=Enum.ScaleType.Fit
-smallCheck.ZIndex=4
-smallCheck.Parent=msgRow
-
+-- [ИСПРАВЛЕНО] Текст по центру, без лишней иконки
 local successMsg=Instance.new("TextLabel")
-successMsg.Size=UDim2.new(1,-28,0,20)
-successMsg.Position=UDim2.new(0,14,0,112)  -- под галочкой
+successMsg.Size=UDim2.new(1,-40,0,18)
+successMsg.Position=UDim2.new(0,20,0,90)
 successMsg.BackgroundTransparency=1
 successMsg.Font=Enum.Font.Gotham
-successMsg.TextSize=13
+successMsg.TextSize=12
 successMsg.TextColor3=Color3.fromRGB(200,200,200)
 successMsg.TextXAlignment=Enum.TextXAlignment.Center
-successMsg.Text=""
 successMsg.ZIndex=3
 successMsg.Parent=successContainer
 
-local ROBUX_ICON = "rbxassetid://4882429010"
-
-
 local okBtn=Instance.new("TextButton")
-okBtn.Size=UDim2.new(1,-28,0,44)
-okBtn.Position=UDim2.new(0,14,1,-56)
-okBtn.BackgroundColor3=Color3.fromRGB(58,86,217)
-okBtn.Font=Enum.Font.GothamMedium
-okBtn.Text="OK"
-okBtn.TextSize=16
-okBtn.TextColor3=Color3.new(1,1,1)
-okBtn.ZIndex=3
-okBtn.Parent=successContainer
+okBtn.Size=UDim2.new(1,-28,0,44); okBtn.Position=UDim2.new(0,14,1,-56)
+okBtn.BackgroundColor3=Color3.fromRGB(58,86,217); okBtn.Font=Enum.Font.GothamMedium
+okBtn.Text="OK"; okBtn.TextSize=16; okBtn.TextColor3=Color3.new(1,1,1)
+okBtn.ZIndex=3; okBtn.Parent=successContainer
 Instance.new("UICorner",okBtn).CornerRadius=UDim.new(0,10)
 
 -- ===============================================
@@ -417,8 +315,7 @@ Instance.new("UICorner",okBtn).CornerRadius=UDim.new(0,10)
 local function ShowModal()
     overlay.Visible=true; modal.Visible=true
     overlay.BackgroundTransparency=1; modal.BackgroundTransparency=1
-    modal.Size=UDim2.fromOffset(420,175)
-    modal.Position=UDim2.new(0.5,-210,0.5,-87)
+    modal.Size=UDim2.fromOffset(420,175); modal.Position=UDim2.new(0.5,-210,0.5,-87)
     TweenService:Create(overlay,TweenInfo.new(0.12,Enum.EasingStyle.Linear),{BackgroundTransparency=0.4}):Play()
     TweenService:Create(modal,TweenInfo.new(0.16,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{
         BackgroundTransparency=0,
@@ -445,8 +342,6 @@ local function getAmountLabel()
 end
 
 local function setCoins(val)
-    val = tonumber(val)
-    if val == nil then warn("[PurchasePro] setCoins: не число"); return end
     local lbl = getAmountLabel()
     if lbl then
         lbl.Text = tostring(val)
@@ -456,8 +351,8 @@ end
 
 local function addCoins(val)
     val = tonumber(val)
-    if val == nil or val == 0 then
-        warn("[PurchasePro] addCoins: некорректное значение")
+    if not val or val == 0 then
+        warn("[PurchasePro] addCoins: некорректное значение", val)
         return
     end
     local lbl = getAmountLabel()
@@ -466,7 +361,7 @@ local function addCoins(val)
     local cur = tonumber(cleanText) or 0
     local new = cur + val
     lbl.Text = tostring(new)
-    print("[PurchasePro] ADD:", val, "| было:", cur, "| стало:", new)
+    print("[PurchasePro] ADD монет:", val, "| было:", cur, "| стало:", new)
 end
 
 local function spendRobux(amount)
@@ -475,14 +370,12 @@ local function spendRobux(amount)
     local cur = tonumber(customBalance) or 0
     customBalance = tostring(math.max(0, cur - amount))
     balanceText.Text = customBalance
+    print("[PurchasePro] Списано:", amount, "| остаток:", customBalance)
 end
 
--- ===============================================
---                 УВЕДОМЛЕНИЕ
--- ===============================================
 local function showGameNotification()
     task.spawn(function()
-        task.wait(1 + math.random()*0.4)
+        task.wait(1 + math.random() * 0.4)
 
         local pgui = player.PlayerGui
         local mainFrames = pgui:FindFirstChild("MainFrames")
@@ -522,8 +415,8 @@ end
 -- ===============================================
 applyBtn.MouseButton1Click:Connect(function()
     customBalance = balanceInput.Text ~= "" and balanceInput.Text or "76"
-    amountToAdd   = addInput.Text ~= "" and addInput.Text or "0"
-    amountToSet   = setInput.Text ~= "" and setInput.Text or "0"
+    amountToAdd = addInput.Text ~= "" and addInput.Text or "0"
+    amountToSet = setInput.Text ~= "" and setInput.Text or "0"
     balanceText.Text = customBalance
 
     if doSetEnabled then
@@ -532,6 +425,7 @@ applyBtn.MouseButton1Click:Connect(function()
     end
 
     setupFrame.Visible = false
+    print("[PurchasePro] Сохранено. Balance:", customBalance, "| Add:", amountToAdd, "| Set:", amountToSet)
 end)
 
 closeBtn.MouseButton1Click:Connect(HideModal)
@@ -577,8 +471,7 @@ local function fetchAndShow(id, infoType)
     itemIcon.Image=""; currentItemPrice=0
     buyBtn.BackgroundColor3=Color3.fromRGB(58,86,217)
     progressFill.BackgroundColor3=Color3.fromRGB(43,63,165)
-    buyText.TextTransparency=0
-    progressFill.Visible=true
+    buyText.TextTransparency=0; progressFill.Visible=true
     progressFill.Size=UDim2.new(0,0,1,0)
     ShowModal()
 
@@ -593,24 +486,20 @@ local function fetchAndShow(id, infoType)
             currentItemPrice = price
 
             if infoType==Enum.InfoType.Product then
-                local iconId = info.IconImageAssetId
-                if iconId and iconId ~= 0 then
-                    itemIcon.Image = "rbxthumb://type=Asset&id="..tostring(iconId).."&w=150&h=150"
-                else
-                    itemIcon.Image = ""
-                end
+                local iconId=info.IconImageAssetId
+                itemIcon.Image=(iconId and iconId~=0) and "rbxthumb://type=Asset&id="..tostring(iconId).."&w=150&h=150" or ""
             elseif infoType==Enum.InfoType.GamePass then
-                itemIcon.Image = "rbxthumb://type=GamePass&id="..tostring(id).."&w=150&h=150"
+                itemIcon.Image="rbxthumb://type=GamePass&id="..tostring(id).."&w=150&h=150"
             elseif infoType==Enum.InfoType.Bundle then
-                itemIcon.Image = "rbxthumb://type=BundleThumbnail&id="..tostring(id).."&w=150&h=150"
+                itemIcon.Image="rbxthumb://type=BundleThumbnail&id="..tostring(id).."&w=150&h=150"
             else
-                itemIcon.Image = "rbxthumb://type=Asset&id="..tostring(id).."&w=150&h=150"
+                itemIcon.Image="rbxthumb://type=Asset&id="..tostring(id).."&w=150&h=150"
             end
         end
     end)
 
     if currentTween then currentTween:Cancel() end
-    currentTween = TweenService:Create(
+    currentTween=TweenService:Create(
         progressFill,
         TweenInfo.new(3,Enum.EasingStyle.Linear),
         {Size=UDim2.new(1,0,1,0)}
@@ -619,8 +508,8 @@ local function fetchAndShow(id, infoType)
     task.spawn(function()
         currentTween.Completed:Wait()
         if promptContainer.Visible then
-            progressFill.Visible = false
-            canBuy = true
+            progressFill.Visible=false
+            canBuy=true
         end
     end)
 end
@@ -633,16 +522,16 @@ local function fetchAndShowDelayed(id,infoType)
 end
 
 local oldNamecall
-local hasHook = typeof(hookmetamethod) == "function"
-local hasGetMethod = typeof(getnamecallmethod) == "function"
+local hasHook=typeof(hookmetamethod)=="function"
+local hasGetMethod=typeof(getnamecallmethod)=="function"
 
 if hasHook and hasGetMethod then
-    oldNamecall = hookmetamethod(game,"__namecall",function(self,...)
-        local ok,method = pcall(getnamecallmethod)
+    oldNamecall=hookmetamethod(game,"__namecall",function(self,...)
+        local ok,method=pcall(getnamecallmethod)
         if not ok then return oldNamecall(self,...) end
-        local args = {...}
+        local args={...}
         if self==MarketplaceService and not setupFrame.Visible then
-            local id = tonumber(args[2])
+            local id=tonumber(args[2])
             if id then
                 if method=="PromptGamePassPurchase" then
                     fetchAndShowDelayed(id,Enum.InfoType.GamePass); return

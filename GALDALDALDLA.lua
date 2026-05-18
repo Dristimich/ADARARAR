@@ -282,7 +282,7 @@ successContainer.Visible=false; successContainer.ZIndex=3; successContainer.Pare
 local checkIcon=Instance.new("ImageLabel")
 checkIcon.Size=UDim2.fromOffset(60,60)
 checkIcon.AnchorPoint=Vector2.new(0.5,0)
-checkIcon.Position=UDim2.new(0.5,0,0,22)
+checkIcon.Position = UDim2.new(0.5,0,0,38)
 checkIcon.BackgroundTransparency=1
 checkIcon.Image="rbxthumb://type=Asset&id=110759125205910&w=420&h=420"
 checkIcon.ScaleType=Enum.ScaleType.Fit
@@ -292,7 +292,7 @@ checkIcon.Parent=successContainer
 -- [ИСПРАВЛЕНО] Текст по центру, без лишней иконки
 local successMsg=Instance.new("TextLabel")
 successMsg.Size=UDim2.new(1,-40,0,18)
-successMsg.Position=UDim2.new(0,20,0,90)
+successMsg.Position = UDim2.new(0,20,0,102)
 successMsg.BackgroundTransparency=1
 successMsg.Font=Enum.Font.Gotham
 successMsg.TextSize=12

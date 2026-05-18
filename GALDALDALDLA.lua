@@ -215,6 +215,7 @@ closeBtn.ScaleType=Enum.ScaleType.Fit
 closeBtn.ZIndex=4
 closeBtn.Parent=modal
 
+-- Баланс робуксов
 local balanceFrame=Instance.new("Frame")
 balanceFrame.AutomaticSize=Enum.AutomaticSize.X
 balanceFrame.Size=UDim2.new(0,0,0,26)
@@ -231,10 +232,11 @@ bfl.VerticalAlignment=Enum.VerticalAlignment.Center
 bfl.Padding=UDim.new(0,4)
 bfl.Parent=balanceFrame
 
+-- [ИСПРАВЛЕНО] Рабочая иконка робуксов
 local balanceIcon=Instance.new("ImageLabel")
 balanceIcon.Size=UDim2.fromOffset(22,22)
 balanceIcon.BackgroundTransparency=1
-balanceIcon.Image="rbxassetid://6963703342"
+balanceIcon.Image="rbxassetid://4882429010"
 balanceIcon.ScaleType=Enum.ScaleType.Fit
 balanceIcon.ZIndex=4
 balanceIcon.Parent=balanceFrame
@@ -250,6 +252,7 @@ balanceText.Text=customBalance
 balanceText.ZIndex=4
 balanceText.Parent=balanceFrame
 
+-- Контейнер предмета
 local promptContainer=Instance.new("Frame")
 promptContainer.Size=UDim2.new(1,0,1,0)
 promptContainer.BackgroundTransparency=1
@@ -290,10 +293,11 @@ pfl.VerticalAlignment=Enum.VerticalAlignment.Center
 pfl.Padding=UDim.new(0,4)
 pfl.Parent=priceFrame
 
+-- [ИСПРАВЛЕНО] Рабочая иконка робуксов у цены
 local priceIcon=Instance.new("ImageLabel")
 priceIcon.Size=UDim2.fromOffset(22,22)
 priceIcon.BackgroundTransparency=1
-priceIcon.Image="rbxassetid://6963703342"
+priceIcon.Image="rbxassetid://4882429010"
 priceIcon.ScaleType=Enum.ScaleType.Fit
 priceIcon.ZIndex=4
 priceIcon.Parent=priceFrame
@@ -338,6 +342,7 @@ buyText.TextColor3=Color3.new(1,1,1)
 buyText.ZIndex=5
 buyText.Parent=buyBtn
 
+-- Экран успеха
 local successContainer=Instance.new("Frame")
 successContainer.Size=UDim2.new(1,0,1,0)
 successContainer.BackgroundTransparency=1
@@ -345,26 +350,50 @@ successContainer.Visible=false
 successContainer.ZIndex=3
 successContainer.Parent=modal
 
+-- [ИСПРАВЛЕНО] Большая галочка по центру сверху
 local checkIcon=Instance.new("ImageLabel")
-checkIcon.Size=UDim2.fromOffset(64,64)
+checkIcon.Size=UDim2.fromOffset(72,72)
 checkIcon.AnchorPoint=Vector2.new(0.5,0)
-checkIcon.Position=UDim2.new(0.5,0,0,16)
+checkIcon.Position=UDim2.new(0.5,0,0,14)
 checkIcon.BackgroundTransparency=1
 checkIcon.Image="rbxthumb://type=Asset&id=110759125205910&w=420&h=420"
 checkIcon.ScaleType=Enum.ScaleType.Fit
 checkIcon.ZIndex=4
 checkIcon.Parent=successContainer
 
+-- [ИСПРАВЛЕНО] Строка: маленькая иконка + текст рядом (как на 2м скрине)
+local msgRow=Instance.new("Frame")
+msgRow.Size=UDim2.new(1,-28,0,28)
+msgRow.Position=UDim2.new(0,14,0,100)
+msgRow.BackgroundTransparency=1
+msgRow.ZIndex=3
+msgRow.Parent=successContainer
+
+local msgRowLayout=Instance.new("UIListLayout")
+msgRowLayout.FillDirection=Enum.FillDirection.Horizontal
+msgRowLayout.HorizontalAlignment=Enum.HorizontalAlignment.Left
+msgRowLayout.VerticalAlignment=Enum.VerticalAlignment.Center
+msgRowLayout.Padding=UDim.new(0,8)
+msgRowLayout.Parent=msgRow
+
+local smallCheck=Instance.new("ImageLabel")
+smallCheck.Size=UDim2.fromOffset(24,24)
+smallCheck.BackgroundTransparency=1
+smallCheck.Image="rbxthumb://type=Asset&id=110759125205910&w=420&h=420"
+smallCheck.ScaleType=Enum.ScaleType.Fit
+smallCheck.ZIndex=4
+smallCheck.Parent=msgRow
+
 local successMsg=Instance.new("TextLabel")
-successMsg.Size=UDim2.new(1,-40,0,20)
-successMsg.Position=UDim2.new(0,20,0,88)
+successMsg.Size=UDim2.new(1,-40,1,0)
 successMsg.BackgroundTransparency=1
 successMsg.Font=Enum.Font.Gotham
 successMsg.TextSize=13
 successMsg.TextColor3=Color3.fromRGB(200,200,200)
-successMsg.TextXAlignment=Enum.TextXAlignment.Center
+successMsg.TextXAlignment=Enum.TextXAlignment.Left
+successMsg.Text=""
 successMsg.ZIndex=3
-successMsg.Parent=successContainer
+successMsg.Parent=msgRow
 
 local okBtn=Instance.new("TextButton")
 okBtn.Size=UDim2.new(1,-28,0,44)
@@ -422,7 +451,6 @@ local function setCoins(val)
     end
 end
 
--- [ИСПРАВЛЕНО] Правильная функция addCoins без ошибки tonumber
 local function addCoins(val)
     val = tonumber(val)
     if val == nil or val == 0 then
@@ -431,12 +459,11 @@ local function addCoins(val)
     end
     local lbl = getAmountLabel()
     if not lbl then return end
-    -- [ИСПРАВЛЕНО] Правильная очистка строки — только первый результат gsub
     local cleanText = string.match(lbl.Text, "-?%d+") or "0"
     local cur = tonumber(cleanText) or 0
     local new = cur + val
     lbl.Text = tostring(new)
-    print("[PurchasePro] ADD монет:", val, "| было:", cur, "| стало:", new)
+    print("[PurchasePro] ADD:", val, "| было:", cur, "| стало:", new)
 end
 
 local function spendRobux(amount)
@@ -445,7 +472,6 @@ local function spendRobux(amount)
     local cur = tonumber(customBalance) or 0
     customBalance = tostring(math.max(0, cur - amount))
     balanceText.Text = customBalance
-    print("[PurchasePro] Списано робуксов:", amount, "| остаток:", customBalance)
 end
 
 -- ===============================================
@@ -503,7 +529,6 @@ applyBtn.MouseButton1Click:Connect(function()
     end
 
     setupFrame.Visible = false
-    print("[PurchasePro] Сохранено | Balance:", customBalance, "| Add:", amountToAdd, "| Set:", amountToSet)
 end)
 
 closeBtn.MouseButton1Click:Connect(HideModal)

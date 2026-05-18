@@ -232,11 +232,10 @@ bfl.VerticalAlignment=Enum.VerticalAlignment.Center
 bfl.Padding=UDim.new(0,4)
 bfl.Parent=balanceFrame
 
--- [ИСПРАВЛЕНО] Рабочая иконка робуксов
 local balanceIcon=Instance.new("ImageLabel")
 balanceIcon.Size=UDim2.fromOffset(22,22)
 balanceIcon.BackgroundTransparency=1
-balanceIcon.Image="rbxassetid://4882429010"
+balanceIcon.Image=ROBUX_ICON
 balanceIcon.ScaleType=Enum.ScaleType.Fit
 balanceIcon.ZIndex=4
 balanceIcon.Parent=balanceFrame
@@ -293,11 +292,10 @@ pfl.VerticalAlignment=Enum.VerticalAlignment.Center
 pfl.Padding=UDim.new(0,4)
 pfl.Parent=priceFrame
 
--- [ИСПРАВЛЕНО] Рабочая иконка робуксов у цены
 local priceIcon=Instance.new("ImageLabel")
 priceIcon.Size=UDim2.fromOffset(22,22)
 priceIcon.BackgroundTransparency=1
-priceIcon.Image="rbxassetid://4882429010"
+priceIcon.Image=ROBUX_ICON
 priceIcon.ScaleType=Enum.ScaleType.Fit
 priceIcon.ZIndex=4
 priceIcon.Parent=priceFrame
@@ -351,10 +349,11 @@ successContainer.ZIndex=3
 successContainer.Parent=modal
 
 -- [ИСПРАВЛЕНО] Большая галочка по центру сверху
+-- Экран успеха - ТОЛЬКО большая галочка опущена ниже
 local checkIcon=Instance.new("ImageLabel")
 checkIcon.Size=UDim2.fromOffset(72,72)
 checkIcon.AnchorPoint=Vector2.new(0.5,0)
-checkIcon.Position=UDim2.new(0.5,0,0,14)
+checkIcon.Position=UDim2.new(0.5,0,0,30)  -- опустил ниже
 checkIcon.BackgroundTransparency=1
 checkIcon.Image="rbxthumb://type=Asset&id=110759125205910&w=420&h=420"
 checkIcon.ScaleType=Enum.ScaleType.Fit
@@ -385,15 +384,19 @@ smallCheck.ZIndex=4
 smallCheck.Parent=msgRow
 
 local successMsg=Instance.new("TextLabel")
-successMsg.Size=UDim2.new(1,-40,1,0)
+successMsg.Size=UDim2.new(1,-28,0,20)
+successMsg.Position=UDim2.new(0,14,0,112)  -- под галочкой
 successMsg.BackgroundTransparency=1
 successMsg.Font=Enum.Font.Gotham
 successMsg.TextSize=13
 successMsg.TextColor3=Color3.fromRGB(200,200,200)
-successMsg.TextXAlignment=Enum.TextXAlignment.Left
+successMsg.TextXAlignment=Enum.TextXAlignment.Center
 successMsg.Text=""
 successMsg.ZIndex=3
-successMsg.Parent=msgRow
+successMsg.Parent=successContainer
+
+local ROBUX_ICON = "rbxassetid://4882429010"
+
 
 local okBtn=Instance.new("TextButton")
 okBtn.Size=UDim2.new(1,-28,0,44)
